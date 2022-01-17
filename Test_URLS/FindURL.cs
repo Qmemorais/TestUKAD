@@ -23,9 +23,9 @@ namespace Test_URLS
                 //if OK add this url to list and work
                 htmlScan.Add(url);
                 //scan all exist pages on web
-                htmlScan = ScanWebPages(htmlScan);
+                //htmlScan = ScanWebPages(htmlScan);
                 //find sitemap and if yes: scan
-                htmlSitemap = ScanExistSitemap(htmlSitemap);
+                htmlSitemap = ScanExistSitemap(url, htmlSitemap);
             }
             catch(WebException e)
             {
@@ -113,8 +113,31 @@ namespace Test_URLS
             return htmlScan;
         }
 
-        private List<string> ScanExistSitemap(List<string> htmlSitemap)
+        private List<string> ScanExistSitemap(string url, List<string> htmlSitemap)
         {
+            var firstUrl = getMainURL(url);
+            try
+            {
+                //try open page/sitemap.xml
+                var isSitemapExist = IsPageHTML(firstUrl + "/sitemap.xml");
+                htmlSitemap = ScanSitemap(firstUrl + "/sitemap.xml");
+            }
+            catch
+            {
+                //if it doesn`t exist try to find url of sitemap
+                var request = WebRequest.Create(firstUrl + "/robots.txt");
+                var response = request.GetResponse();
+                var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(1251));
+                string line = "";
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.IndexOf("Sitemap: ") != -1)
+                    {
+                        htmlSitemap = ScanSitemap(line.Substring(9));
+                    }
+                }
+                response.Close();
+            }
             return htmlSitemap;
         }
 
