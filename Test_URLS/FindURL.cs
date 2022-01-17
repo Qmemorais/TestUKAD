@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Test_URLS
 {
@@ -7,19 +8,35 @@ namespace Test_URLS
     {
         public void GetContent(string url)
         {
+            //values to work
             var htmlScan = new List<string>();
             var htmlSitemap = new List<string>();
+
             try
             {
-
+                //try open url
+                var isWebContent = IsPageHTML(url);
+                //if OK add this url to list and work
+                htmlScan.Add(url);
+                //scan all exist pages on web
+                htmlScan = ScanWebPages(htmlScan);
+                //find sitemap and if yes: scan
+                htmlSitemap = ScanExistSitemap(htmlSitemap);
             }
-            catch(Exception e)
+            catch(WebException e)
             {
-
+                //catch 403 and 404 error
+                WebExceptionStatus status = e.Status;
+                if (status == WebExceptionStatus.ProtocolError)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)e.Response;
+                }
             }
             finally
             {
-
+                OutputData(htmlScan, htmlSitemap);
+                Console.Write("Press <Enter>");
+                Console.ReadLine();
             }
         }
 
@@ -38,7 +55,7 @@ namespace Test_URLS
             return false;
         }
 
-        private void OutputData()
+        private void OutputData(List<string> htmlScan, List<string> htmlSitemap)
         {
                 
         }
