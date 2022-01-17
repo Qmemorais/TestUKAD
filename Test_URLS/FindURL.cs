@@ -52,7 +52,19 @@ namespace Test_URLS
 
         private bool IsPageHTML(string url)
         {
-            return false;
+            try
+            {
+                //find text/html pages
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Timeout = 10000;
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                response.Close();
+                return (response.ContentType.IndexOf("text/html") != -1);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void OutputData(List<string> htmlScan, List<string> htmlSitemap)
