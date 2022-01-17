@@ -10,7 +10,7 @@ using System.Xml;
 namespace Test_URLS
 {
     internal class FindURL
-    {
+    {//http://ovgorskiy.ru/Page2.html
         public void GetContent(string url)
         {
             //values to work
@@ -24,7 +24,7 @@ namespace Test_URLS
                 //if OK add this url to list and work
                 htmlScan.Add(url);
                 //scan all exist pages on web
-                //htmlScan = ScanWebPages(htmlScan);
+                htmlScan = ScanWebPages(htmlScan);
                 //find sitemap and if yes: scan
                 htmlSitemap = ScanExistSitemap(url, htmlSitemap);
             }
@@ -186,7 +186,8 @@ namespace Test_URLS
                 foreach (XmlNode xnode in xRoot)
                     foreach (XmlNode childnode in xnode.ChildNodes)
                         if (childnode.Name == "loc")
-                            htmlSitemap.Add(childnode.InnerText);
+                                    htmlSitemap.Add(childnode.InnerText);
+                htmlSitemap = htmlSitemap.Distinct().ToList();
             }
             catch (Exception e)
             {
