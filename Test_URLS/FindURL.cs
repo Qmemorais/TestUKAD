@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Test_URLS
 {
@@ -171,6 +172,27 @@ namespace Test_URLS
             if (lastSymbolBefore != -1)
                 url = url.Substring(0, lastSymbolBefore);
             return url;
+        }
+
+        private List<string> ScanSitemap(string sitemapURL)
+        {
+            var htmlSitemap = new List<string>();
+            //create value to get xml-document and data from
+            var xDoc = new XmlDocument();
+            try
+            {
+                xDoc.Load(sitemapURL);
+                XmlElement xRoot = xDoc.DocumentElement;
+                foreach (XmlNode xnode in xRoot)
+                    foreach (XmlNode childnode in xnode.ChildNodes)
+                        if (childnode.Name == "loc")
+                            htmlSitemap.Add(childnode.InnerText);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return htmlSitemap;
         }
     }
 }
