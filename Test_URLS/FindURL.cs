@@ -11,7 +11,7 @@ using System.Xml;
 namespace Test_URLS
 {
     internal class FindURL
-    {//http://ovgorskiy.ru/Page2.html
+    {
         public void GetContent(string url)
         {
             //values to work
@@ -28,6 +28,8 @@ namespace Test_URLS
                 htmlScan = ScanWebPages(htmlScan);
                 //find sitemap and if yes: scan
                 htmlSitemap = ScanExistSitemap(url, htmlSitemap);
+                //
+                OutputData(htmlScan, htmlSitemap);
             }
             catch(WebException e)
             {
@@ -36,11 +38,12 @@ namespace Test_URLS
                 if (status == WebExceptionStatus.ProtocolError)
                 {
                     HttpWebResponse httpResponse = (HttpWebResponse)e.Response;
+                    Console.WriteLine((int)httpResponse.StatusCode + " - "
+                        + httpResponse.StatusCode);
                 }
             }
             finally
             {
-                OutputData(htmlScan, htmlSitemap);
                 Console.Write("Press <Enter>");
                 Console.ReadLine();
             }
@@ -170,8 +173,19 @@ namespace Test_URLS
             }
             else
             {
-                var existInSitemapNotWeb = htmlSitemap.Except(htmlScan).ToList();
-                var existInWebNotSitemap = htmlScan.Except(htmlSitemap).ToList();
+                var existInSitemapNotWeb = new List<string>();
+                var existInWebNotSitemap = new List<string>();
+                foreach (string url in htmlScan)
+                {//find any url like this. this foreach better then remove http/https and add after distinct method
+                    if (!(htmlSitemap.Any(web => web.IndexOf(url.Substring(5)) != -1)))
+                        existInWebNotSitemap.Add(url);
+                }
+                foreach (string url in htmlSitemap)
+                {
+                    if (!(htmlScan.Any(web => web.IndexOf(url.Substring(5)) != -1)))
+                        existInSitemapNotWeb.Add(url);
+                }
+
                 Console.WriteLine("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
                 OutputList(existInSitemapNotWeb);
                 Console.WriteLine("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
@@ -238,6 +252,21 @@ namespace Test_URLS
                 else
                     Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", (i + 1) + ") " + urlWithTime.ElementAt(i).Key.Substring(0, 43) + "...", urlWithTime.ElementAt(i).Value + "ms", "|");
                 Console.WriteLine(new string('_', 64));
+            }
+        }
+
+        private void OutputList(List<string> html)
+        {
+            Console.WriteLine(new string('_', 52));
+            Console.WriteLine("{0}{1,-50}{2}", "|", "URL", "|");
+            Console.WriteLine(new string('_', 52));
+            for (int i = 0; i < html.Count; i++)
+            {
+                if (html[i].Length < 44)
+                    Console.WriteLine("{0}{1,-50}|", "|", (i + 1) + ") " + html[i]);
+                else
+                    Console.WriteLine("{0}{1,-50}|", "|", (i + 1) + ") " + html[i][..43] + "...");
+                Console.WriteLine(new string('_', 52));
             }
         }
     }
