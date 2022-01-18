@@ -162,7 +162,24 @@ namespace Test_URLS
 
         private void OutputData(List<string> htmlScan, List<string> htmlSitemap)
         {
-                
+            if (htmlSitemap.Count == 0)
+            {
+                OutputTime(htmlScan);
+                Console.WriteLine("Urls(html documents) found after crawling a website: " + htmlScan.Count);
+            }
+            else
+            {
+                var existInSitemapNotWeb = htmlSitemap.Except(htmlScan).ToList();
+                var existInWebNotSitemap = htmlScan.Except(htmlSitemap).ToList();
+                Console.WriteLine("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
+                OutputList(existInSitemapNotWeb);
+                Console.WriteLine("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
+                OutputList(existInWebNotSitemap);
+                Console.WriteLine("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
+                OutputTime(htmlScan.Union(existInSitemapNotWeb).ToList());
+                Console.WriteLine("Urls(html documents) found after crawling a website: " + htmlScan.Count);
+                Console.WriteLine("Urls found in sitemap: " + htmlSitemap.Count);
+            }
         }
 
         private string getMainURL(string url)
