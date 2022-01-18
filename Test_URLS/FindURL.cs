@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -206,11 +207,38 @@ namespace Test_URLS
                                     htmlSitemap.Add(childnode.InnerText);
                 htmlSitemap = htmlSitemap.Distinct().ToList();
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
             }
             return htmlSitemap;
+        }
+
+        private void OutputTime(List<string> html)
+        {
+            var urlWithTime = new Dictionary<string, int>();
+            foreach (string url in html)
+            {
+                //get time of request
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                Stopwatch sw = Stopwatch.StartNew();
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                sw.Stop();
+                response.Close();
+                var time = (int)sw.ElapsedMilliseconds;
+                urlWithTime.Add(url, time);
+            }
+            urlWithTime = urlWithTime.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            Console.WriteLine(new string('_', 64));
+            Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", "URL", "Timing (ms)", "|");
+            Console.WriteLine(new string('_', 64));
+            for (int i = 0; i < urlWithTime.Count(); i++)
+            {
+                if (urlWithTime.ElementAt(i).Key.Length < 44)
+                    Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", (i + 1) + ") " + urlWithTime.ElementAt(i).Key, urlWithTime.ElementAt(i).Value + "ms", "|");
+                else
+                    Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", (i + 1) + ") " + urlWithTime.ElementAt(i).Key.Substring(0, 43) + "...", urlWithTime.ElementAt(i).Value + "ms", "|");
+                Console.WriteLine(new string('_', 64));
+            }
         }
     }
 }
