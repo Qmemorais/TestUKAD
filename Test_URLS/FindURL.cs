@@ -53,6 +53,9 @@ namespace Test_URLS
         {
             //get main page to find only url from website
             var firstUrl = getMainURL(htmlScan[0]);
+            if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1) 
+                htmlScan.Add(firstUrl);
+
             var scannedPages = new List<string>
             {
                 htmlScan[0]
@@ -108,7 +111,7 @@ namespace Test_URLS
                         {
                             //if difference is only http or https
                             var existingPages = htmlScan.Any(web => web.IndexOf(matches[k].Substring(5)) != -1);
-                            if (!existingPages || matches[k] == firstUrl + "/")
+                            if (!existingPages && matches[k] != firstUrl + "/")
                                 if (IsPageHTML(matches[k]))
                                     //if this page is text/html then add to scanList
                                     htmlScan.Add(matches[k]);
@@ -242,31 +245,27 @@ namespace Test_URLS
                 urlWithTime.Add(url, time);
             }
             urlWithTime = urlWithTime.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
-            Console.WriteLine(new string('_', 64));
-            Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", "URL", "Timing (ms)", "|");
-            Console.WriteLine(new string('_', 64));
+            var lengthURL = html.Max(x => x.Length) + 4;
+            Console.WriteLine(new string('_', lengthURL+14));
+            Console.WriteLine("{0}{1}|{2,-12}{3}", "|", "URL".PadRight(lengthURL, ' '), "Timing (ms)", "|");
+            Console.WriteLine(new string('_', lengthURL+14));
             for (int i = 0; i < urlWithTime.Count(); i++)
             {
-                if (urlWithTime.ElementAt(i).Key.Length < 44)
-                    Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", (i + 1) + ") " + urlWithTime.ElementAt(i).Key, urlWithTime.ElementAt(i).Value + "ms", "|");
-                else
-                    Console.WriteLine("{0}{1,-50}|{2,-12}{3}", "|", (i + 1) + ") " + urlWithTime.ElementAt(i).Key.Substring(0, 43) + "...", urlWithTime.ElementAt(i).Value + "ms", "|");
-                Console.WriteLine(new string('_', 64));
+                Console.WriteLine("{0}{1}|{2,-12}{3}", "|", ((i + 1) + ") " + urlWithTime.ElementAt(i).Key).PadRight(lengthURL, ' '), urlWithTime.ElementAt(i).Value + "ms", "|");
+                Console.WriteLine(new string('_', lengthURL+14));
             }
         }
 
         private void OutputList(List<string> html)
         {
-            Console.WriteLine(new string('_', 52));
-            Console.WriteLine("{0}{1,-50}{2}", "|", "URL", "|");
-            Console.WriteLine(new string('_', 52));
+            var lengthURL = html.Max(x => x.Length) + 4;
+            Console.WriteLine(new string('_', lengthURL + 2));
+            Console.WriteLine("{0}{1}{2}", "|", "URL".PadRight(lengthURL,' '), "|");
+            Console.WriteLine(new string('_', lengthURL + 2));
             for (int i = 0; i < html.Count; i++)
             {
-                if (html[i].Length < 44)
-                    Console.WriteLine("{0}{1,-50}|", "|", (i + 1) + ") " + html[i]);
-                else
-                    Console.WriteLine("{0}{1,-50}|", "|", (i + 1) + ") " + html[i][..43] + "...");
-                Console.WriteLine(new string('_', 52));
+                Console.WriteLine("{0}{1}|", "|", ((i + 1) + ") " + html[i]).PadRight(lengthURL, ' '));
+                Console.WriteLine(new string('_', lengthURL + 2));
             }
         }
     }
