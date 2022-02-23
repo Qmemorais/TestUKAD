@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace Test_URLS.urlLogic
 {
     public class MainLogic
     {
-        public virtual List<string> GetResults(string url)
+        public virtual IEnumerable<string> GetResults(string url)
         {
             //values to work
             GetSettingFromURL ofURL = new GetSettingFromURL();
@@ -16,12 +17,13 @@ namespace Test_URLS.urlLogic
             LogicScanBySitemap scanBySitemap = new LogicScanBySitemap();
             var htmlScan = new List<string>();
             var htmlSitemap = new List<string>();
-            var stringToType = new List<string>();
+            IEnumerable<string> stringToType = htmlScan;
 
             try
             {
                 //try open url
-                var isWebContent = ofURL.IsPageHTML(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 //if OK add this url to list and work
                 htmlScan.Add(url);
                 //scan all exist pages on web
@@ -35,11 +37,11 @@ namespace Test_URLS.urlLogic
             {
                 //catch 403 and 404 errorsdf
                 WebExceptionStatus status = e.Status;
+
                 if (status == WebExceptionStatus.ProtocolError)
                 {
                     HttpWebResponse httpResponse = (HttpWebResponse)e.Response;
-                    stringToType.Add((int)httpResponse.StatusCode + " - "
-                        + httpResponse.StatusCode);
+                    stringToType = (IEnumerable<string>)(IEnumerable)$"{(int)httpResponse.StatusCode} - {httpResponse.StatusCode}";
                 }
             }
                 return stringToType;
@@ -58,14 +60,16 @@ namespace Test_URLS.urlLogic
             {
                 var existInSitemapNotWeb = new List<string>();
                 var existInWebNotSitemap = new List<string>();
+
                 foreach (string url in htmlScan)
                 {//find any url like this. this foreach better then remove http/https and add after distinct method
-                    if (!(htmlSitemap.Any(web => web.IndexOf(url.Substring(5)) != -1)))
+                    if (!(htmlSitemap.Any(web => web.IndexOf(url[5..]) != -1)))
                         existInWebNotSitemap.Add(url);
                 }
+
                 foreach (string url in htmlSitemap)
                 {
-                    if (!(htmlScan.Any(web => web.IndexOf(url.Substring(5)) != -1)))
+                    if (!(htmlScan.Any(web => web.IndexOf(url[5..]) != -1)))
                         existInSitemapNotWeb.Add(url);
                 }
 
@@ -84,6 +88,7 @@ namespace Test_URLS.urlLogic
         private List<string> OutputTime(List<string> html, List<string> stringToType)
         {
             var urlWithTime = new Dictionary<string, int>();
+
             foreach (string url in html)
             {
                 //get time of request
@@ -95,16 +100,20 @@ namespace Test_URLS.urlLogic
                 var time = (int)sw.ElapsedMilliseconds;
                 urlWithTime.Add(url, time);
             }
+
             urlWithTime = urlWithTime.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+
             var lengthURL = html.Max(x => x.Length) + 4;
             stringToType.Add(new string('_', lengthURL + 14));
             stringToType.Add(String.Format("{0}{1}|{2,-12}{3}", "|", "URL".PadRight(lengthURL, ' '), "Timing (ms)", "|"));
             stringToType.Add(new string('_', lengthURL + 14));
+
             for (int i = 0; i < urlWithTime.Count; i++)
             {
                 stringToType.Add(String.Format("{0}{1}|{2,-12}{3}", "|", ((i + 1) + ") " + urlWithTime.ElementAt(i).Key).PadRight(lengthURL, ' '), urlWithTime.ElementAt(i).Value + "ms", "|"));
                 stringToType.Add(new string('_', lengthURL + 14));
             }
+
             return stringToType;
         }
 
@@ -114,11 +123,13 @@ namespace Test_URLS.urlLogic
             stringToType.Add(new string('_', lengthURL + 2));
             stringToType.Add(String.Format("{0}{1}{2}", "|", "URL".PadRight(lengthURL, ' '), "|"));
             stringToType.Add(new string('_', lengthURL + 2));
+
             for (int i = 0; i < html.Count; i++)
             {
                 stringToType.Add(String.Format("{0}{1}|", "|", ((i + 1) + ") " + html[i]).PadRight(lengthURL, ' ')));
                 stringToType.Add(new string('_', lengthURL + 2));
             }
+
             return stringToType;
         }
     }
