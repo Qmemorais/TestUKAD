@@ -8,8 +8,8 @@ namespace Test_URLS.ConsoleApp
         {
             Console.Write("Enter URL: ");
             string url = Console.ReadLine();
-            FindURL getData = new FindURL();
-            getData.GetContent(url);
+            //FindURL getData = new FindURL();
+            //getData.GetContent(url);
         }
     }
 }
