@@ -22,8 +22,11 @@ namespace Test_URLS.ConsoleApp
             _consoleInOut.Write("Enter URL: ");
                 string urlToScan = _consoleInOut.Read();
 
-            var resultDictionary = _logic.GetResults(urlToScan);
-            _consoleInOut.Write(resultDictionary);
+            var resultList = _logic.GetResults(urlToScan);
+            foreach(string s in resultList)
+            {
+                _consoleInOut.Write(s);
+            }
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();
