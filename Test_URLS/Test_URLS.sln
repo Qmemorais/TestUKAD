@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_URLS.ConsoleApp", "Test_URLS.ConsoleApp.csproj", "{8102CE21-4644-43D0-9FAD-ECB8CF2F49F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_URLS.urlLogic", "..\Test_URLS.urlLogic\Test_URLS.urlLogic.csproj", "{091C7E03-B27A-4556-B501-B257EE335AA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_URLS.urlLogic", "..\Test_URLS.urlLogic\Test_URLS.urlLogic.csproj", "{091C7E03-B27A-4556-B501-B257EE335AA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_URLS.ConsoleApp.Tests", "..\Test_URLS.ConsoleApp.Tests\Test_URLS.ConsoleApp.Tests.csproj", "{A53275A9-DA83-476B-91C2-FFE3B66B668F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{091C7E03-B27A-4556-B501-B257EE335AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{091C7E03-B27A-4556-B501-B257EE335AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{091C7E03-B27A-4556-B501-B257EE335AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A53275A9-DA83-476B-91C2-FFE3B66B668F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A53275A9-DA83-476B-91C2-FFE3B66B668F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A53275A9-DA83-476B-91C2-FFE3B66B668F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A53275A9-DA83-476B-91C2-FFE3B66B668F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
