@@ -12,7 +12,7 @@ namespace Test_URLS.urlLogic
     {
         public virtual List<string> ScanWebPages(List<string> htmlScan)
         {
-            TypeOfURL ofURL = new TypeOfURL();
+            GetSettingFromURL ofURL = new GetSettingFromURL();
             //get main page to find only url from website
             var firstUrl = ofURL.getMainURL(htmlScan[0]);
             if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1)

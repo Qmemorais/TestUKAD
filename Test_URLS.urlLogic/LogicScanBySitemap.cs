@@ -11,7 +11,7 @@ namespace Test_URLS.urlLogic
     {
         public virtual List<string> ScanExistSitemap(string url, List<string> htmlSitemap)
         {
-            TypeOfURL ofURL = new TypeOfURL();
+            GetSettingFromURL ofURL = new GetSettingFromURL();
             var firstUrl = ofURL.getMainURL(url);
             try
             {
