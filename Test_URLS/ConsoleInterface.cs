@@ -1,15 +1,17 @@
-﻿using Test_URLS.urlLogic;
+﻿using System;
+using Test_URLS.urlLogic;
 
 namespace Test_URLS.ConsoleApp
 {
-    class ConsoleInterface
+    public class ConsoleInterface
     {
-        private IConsoleInOut _consoleInOut = new ConsoleInOut();
-        private MainLogic _logic = new MainLogic();
+        private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
+        private readonly MainLogic _logic = new MainLogic();
 
-        public ConsoleInterface(IConsoleInOut consoleInOut)
+        public ConsoleInterface(IConsoleInOut consoleInOut, MainLogic logic)
         {
             _consoleInOut = consoleInOut;
+            _logic = logic;
         }
 
         public ConsoleInterface()
@@ -19,13 +21,21 @@ namespace Test_URLS.ConsoleApp
 
         public void Start()
         {
-            _consoleInOut.Write("Enter URL: ");
+            try
+            {
+                _consoleInOut.Write("Enter URL: ");
                 string urlToScan = _consoleInOut.Read();
 
-            var resultList = _logic.GetResults(urlToScan);
-            foreach(string s in resultList)
+                var resultList = _logic.GetResults(urlToScan);
+
+                foreach (string s in resultList)
+                {
+                    _consoleInOut.Write(s);
+                }
+            }
+            catch(Exception ex)
             {
-                _consoleInOut.Write(s);
+                _consoleInOut.Write(ex.Message);
             }
 
             _consoleInOut.Write("Press <Enter>");
