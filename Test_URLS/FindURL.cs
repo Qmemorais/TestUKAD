@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace Test_URLS
+namespace Test_URLS.ConsoleApp
 {
     internal class FindURL
     {
@@ -33,7 +33,7 @@ namespace Test_URLS
             }
             catch(WebException e)
             {
-                //catch 403 and 404 error
+                //catch 403 and 404 errorsdf
                 WebExceptionStatus status = e.Status;
                 if (status == WebExceptionStatus.ProtocolError)
                 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Test_URLS
+namespace Test_URLS.ConsoleApp
 {
     internal class Program
     {
