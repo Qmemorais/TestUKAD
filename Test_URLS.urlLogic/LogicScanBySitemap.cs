@@ -25,12 +25,12 @@ namespace Test_URLS.urlLogic
                 var request = WebRequest.Create(firstUrl + "/robots.txt");
                 var response = request.GetResponse();
                 var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(1251));
-                string line = "";
+                string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (line.IndexOf("Sitemap: ") != -1)
                     {
-                        htmlSitemap = ScanSitemap(line.Substring(9));
+                        htmlSitemap = ScanSitemap(line[9..]);
                     }
                 }
                 response.Close();

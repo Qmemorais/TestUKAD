@@ -15,8 +15,11 @@ namespace Test_URLS.urlLogic
             GetSettingFromURL ofURL = new GetSettingFromURL();
             //get main page to find only url from website
             var firstUrl = ofURL.getMainURL(htmlScan[0]);
+
             if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1)
+            {
                 htmlScan.Add(firstUrl);
+            }
 
             var scannedPages = new List<string>
             {
@@ -39,14 +42,17 @@ namespace Test_URLS.urlLogic
 
                 while (match.Success)
                 {   //delete part "href=''"
-                    var urlFromMatch = match.Value.Substring(6);
+                    var urlFromMatch = match.Value[6..];
 
                     if (!urlFromMatch.Contains("http"))
                     {
                         //if we have href="/index.html"
                         urlFromMatch = firstUrl + urlFromMatch;
+
                         if (urlFromMatch.IndexOf(firstUrl + "/") == -1)
+                        {
                             urlFromMatch = urlFromMatch.Insert(firstUrl.Length, "/");
+                        }
                     }
 
                     if (urlFromMatch.Contains(firstUrl))
@@ -54,7 +60,9 @@ namespace Test_URLS.urlLogic
                         var length = urlFromMatch.LastIndexOf("\"");
 
                         if (length != -1)
+                        {
                             urlFromMatch = urlFromMatch.Substring(0, length);
+                        }
 
                         matches.Add(urlFromMatch);
                     }
@@ -66,19 +74,26 @@ namespace Test_URLS.urlLogic
                 scannedPages.AddRange(matches);
 
                 if (matches.Count != 0)
+                {
                     for (int k = 0; k < matches.Count; k++)
                     {
                         //part of existing pages doesn`t interesting
                         if (matches[k].IndexOf("#") == -1)
                         {
                             //if difference is only http or https
-                            var existingPages = htmlScan.Any(web => web.IndexOf(matches[k].Substring(5)) != -1);
+                            var existingPages = htmlScan.Any(web => web.IndexOf(matches[k][5..]) != -1);
+
                             if (!existingPages && matches[k] != firstUrl + "/")
+                            {
                                 if (ofURL.IsPageHTML(matches[k]))
-                                    //if this page is text/html then add to scanList
+                                //if this page is text/html then add to scanList
+                                {
                                     htmlScan.Add(matches[k]);
+                                }
+                            }
                         }
                     }
+                }
             }
             return htmlScan;
         }
