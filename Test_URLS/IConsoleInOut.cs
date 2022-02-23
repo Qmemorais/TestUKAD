@@ -1,6 +1,6 @@
 ﻿namespace Test_URLS.ConsoleApp
 {
-    interface IConsoleInOut
+    public interface IConsoleInOut
     {
         public void Write(string s);
 
