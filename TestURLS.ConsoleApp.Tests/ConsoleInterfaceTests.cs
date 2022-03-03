@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Moq;
-using TestURLS.urlLogic;
+using TestURLS.UrlLogic;
 using System.Net;
 using System.Collections.Generic;
 

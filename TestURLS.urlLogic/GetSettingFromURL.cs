@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace TestURLS.urlLogic
+namespace TestURLS.UrlLogic
 {
     class GetSettingFromURL
     {

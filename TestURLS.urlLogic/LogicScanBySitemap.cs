@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Xml;
 
-namespace TestURLS.urlLogic
+namespace TestURLS.UrlLogic
 {
     class LogicScanBySitemap
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using TestURLS.urlLogic;
+using TestURLS.UrlLogic;
 
 namespace TestURLS.ConsoleApp
 {

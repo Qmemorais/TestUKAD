@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.ConsoleApp", "TestURLS.ConsoleApp\TestURLS.ConsoleApp.csproj", "{8102CE21-4644-43D0-9FAD-ECB8CF2F49F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.urlLogic", "TestURLS.urlLogic\TestURLS.urlLogic.csproj", "{091C7E03-B27A-4556-B501-B257EE335AA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.UrlLogic", "TestURLS.UrlLogic\TestURLS.UrlLogic.csproj", "{091C7E03-B27A-4556-B501-B257EE335AA5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.ConsoleApp.Tests", "TestURLS.ConsoleApp.Tests\TestURLS.ConsoleApp.Tests.csproj", "{A53275A9-DA83-476B-91C2-FFE3B66B668F}"
 EndProject
