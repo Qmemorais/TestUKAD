@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Test_URLS.urlLogic
+namespace TestURLS.urlLogic
 {
     internal class LogicScanByHTML
     {

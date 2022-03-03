@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Test_URLS.urlLogic\Test_URLS.urlLogic.csproj" />
-    <ProjectReference Include="..\Test_URLS\Test_URLS.ConsoleApp.csproj" />
+    <ProjectReference Include="..\TestURLS.urlLogic\TestURLS.urlLogic.csproj" />
+    <ProjectReference Include="..\TestURLS\TestURLS.ConsoleApp.csproj" />
   </ItemGroup>
 
 </Project>

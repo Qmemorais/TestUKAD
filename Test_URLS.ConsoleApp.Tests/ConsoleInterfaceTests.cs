@@ -1,10 +1,10 @@
 using NUnit.Framework;
 using Moq;
-using Test_URLS.urlLogic;
+using TestURLS.urlLogic;
 using System.Net;
 using System.Collections.Generic;
 
-namespace Test_URLS.ConsoleApp.Tests
+namespace TestURLS.ConsoleApp.Tests
 {
     public class Tests
     {

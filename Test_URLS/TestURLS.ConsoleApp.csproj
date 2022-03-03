@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Test_URLS.urlLogic\Test_URLS.urlLogic.csproj" />
+    <ProjectReference Include="..\TestURLS.urlLogic\TestURLS.urlLogic.csproj" />
   </ItemGroup>
 
 </Project>

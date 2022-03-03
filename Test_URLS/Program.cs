@@ -1,4 +1,4 @@
-﻿namespace Test_URLS.ConsoleApp
+﻿namespace TestURLS.ConsoleApp
 {
     internal class Program
     {

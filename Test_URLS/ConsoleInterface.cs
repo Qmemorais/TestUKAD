@@ -1,7 +1,7 @@
 ﻿using System;
-using Test_URLS.urlLogic;
+using TestURLS.urlLogic;
 
-namespace Test_URLS.ConsoleApp
+namespace TestURLS.ConsoleApp
 {
     public class ConsoleInterface
     {

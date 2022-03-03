@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Test_URLS.ConsoleApp
+namespace TestURLS.ConsoleApp
 {
     class ConsoleInOut:IConsoleInOut
     {

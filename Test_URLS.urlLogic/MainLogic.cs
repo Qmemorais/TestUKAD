@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
-namespace Test_URLS.urlLogic
+namespace TestURLS.urlLogic
 {
     public class MainLogic
     {
