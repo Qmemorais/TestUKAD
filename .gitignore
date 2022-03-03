@@ -6,9 +6,12 @@
 /TestURLS.ConsoleApp/obj/
 /TestURLS.ConsoleApp/bin/
 
-/TestURLS.urlLogic/.vs/
-/TestURLS.urlLogic/obj/
-/TestURLS.urlLogic/bin/
+/TestURLS.UrlLogic/.vs/
+/TestURLS.UrlLogic/obj/
+/TestURLS.UrlLogic/bin/
 
 /TestURLS.ConsoleApp.Tests/bin/
 /TestURLS.ConsoleApp.Tests/obj/
+
+/TestURLS.UrlLogic.Tests/bin/
+/TestURLS.UrlLogic.Tests/obj/
