@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestURLS.urlLogic\TestURLS.urlLogic.csproj" />
-    <ProjectReference Include="..\TestURLS\TestURLS.ConsoleApp.csproj" />
+    <ProjectReference Include="..\TestURLS.ConsoleApp\TestURLS.ConsoleApp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,13 +2,13 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Test_URLS/.vs/
-/Test_URLS/obj/
-/Test_URLS/bin/
+/TestURLS.ConsoleApp/.vs/
+/TestURLS.ConsoleApp/obj/
+/TestURLS.ConsoleApp/bin/
 
-/Test_URLS.urlLogic/.vs/
-/Test_URLS.urlLogic/obj/
-/Test_URLS.urlLogic/bin/
+/TestURLS.urlLogic/.vs/
+/TestURLS.urlLogic/obj/
+/TestURLS.urlLogic/bin/
 
-/Test_URLS.ConsoleApp.Tests/bin/
-/Test_URLS.ConsoleApp.Tests/obj/
+/TestURLS.ConsoleApp.Tests/bin/
+/TestURLS.ConsoleApp.Tests/obj/
