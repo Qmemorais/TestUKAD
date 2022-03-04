@@ -2,7 +2,7 @@
 
 namespace TestURLS.UrlLogic
 {
-    class GetSettingFromURL
+    public class GetSettingFromURL
     {
         public virtual bool IsPageHTML(string url)
         {
