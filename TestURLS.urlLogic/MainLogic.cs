@@ -12,7 +12,6 @@ namespace TestURLS.UrlLogic
         public virtual IEnumerable<string> GetResults(string url)
         {
             //values to work
-            GetSettingFromURL ofURL = new GetSettingFromURL();
             LogicScanByHTML scanByHTML = new LogicScanByHTML();
             LogicScanBySitemap scanBySitemap = new LogicScanBySitemap();
             var htmlScan = new List<string>();
