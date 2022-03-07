@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace TestURLS.UrlLogic
 {
-    internal class LogicScanByHTML
+    public class LogicScanByHTML
     {
         public virtual List<string> ScanWebPages(List<string> htmlScan)
         {

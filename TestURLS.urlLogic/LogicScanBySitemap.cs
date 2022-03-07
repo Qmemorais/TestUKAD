@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace TestURLS.UrlLogic
 {
-    class LogicScanBySitemap
+    public class LogicScanBySitemap
     {
         public virtual List<string> ScanExistSitemap(string url, List<string> htmlSitemap)
         {
