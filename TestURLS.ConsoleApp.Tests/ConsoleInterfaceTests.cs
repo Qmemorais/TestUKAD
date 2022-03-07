@@ -3,6 +3,7 @@ using Moq;
 using TestURLS.UrlLogic;
 using System.Net;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TestURLS.ConsoleApp.Tests
 {
@@ -88,20 +89,23 @@ namespace TestURLS.ConsoleApp.Tests
         public void Start_InputCorrectURL_ReturnCorectCountWriteLine()
         {
             //arrange
-            var readLine = "";
-            var writeLineRes = "this is Url";
-            IEnumerable<string> expectRes = new List<string> { writeLineRes, writeLineRes, writeLineRes };
+            var fakeURL = "https://example.com/";
+            var expectedURL = new List<string>()
+            {
+                "https://test.crawler.com/Info",
+                "https://test.crawler.com/main.html"
+            };
 
             _consoleInOut
                 .Setup(x => x.Read())
-                .Returns(readLine);
+                .Returns(fakeURL);
             _mainLogic
-                .Setup(x => x.GetResults(""))
-                .Returns(expectRes);
+                .Setup(x => x.GetResults(fakeURL))
+                .Returns(expectedURL);
             //act
             _consoleInterface.Start();
             //assert
-            _consoleInOut.Verify(x => x.Write(writeLineRes), Times.Exactly(3));
+            _consoleInOut.Verify(x => x.Write(expectedURL.First()), Times.Once);
             _consoleInOut.Verify(x => x.Write(_writeLineOutput), Times.Once);
         }
     }
