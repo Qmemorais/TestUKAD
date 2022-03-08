@@ -9,11 +9,23 @@ namespace TestURLS.UrlLogic
 {
     public class MainLogic
     {
+        LogicScanByHTML scanByHTML = new LogicScanByHTML();
+        LogicScanBySitemap scanBySitemap = new LogicScanBySitemap();
+
+        public MainLogic(LogicScanByHTML _scanByHTML, LogicScanBySitemap _scanBySitemap)
+        {
+            scanByHTML = _scanByHTML;
+            scanBySitemap = _scanBySitemap;
+        }
+
+        public MainLogic()
+        {
+
+        }
+
         public virtual IEnumerable<string> GetResults(string url)
         {
             //values to work
-            LogicScanByHTML scanByHTML = new LogicScanByHTML();
-            LogicScanBySitemap scanBySitemap = new LogicScanBySitemap();
             var htmlScan = new List<string>();
             var htmlSitemap = new List<string>();
             IEnumerable<string> stringToType = htmlScan;
@@ -46,7 +58,7 @@ namespace TestURLS.UrlLogic
                 return stringToType;
         }
 
-        private List<string> OutputData(List<string> htmlScan, List<string> htmlSitemap)
+        protected virtual List<string> OutputData(List<string> htmlScan, List<string> htmlSitemap)
         {
             var stringToType = new List<string>();
 
@@ -91,9 +103,9 @@ namespace TestURLS.UrlLogic
             foreach (string url in html)
             {
                 //get time of request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                WebRequest request = WebRequest.Create(url);
                 Stopwatch sw = Stopwatch.StartNew();
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                WebResponse response = request.GetResponse();
                 sw.Stop();
                 response.Close();
                 var time = (int)sw.ElapsedMilliseconds;
