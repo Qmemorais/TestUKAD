@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,11 +9,21 @@ namespace TestURLS.UrlLogic
 {
     public class LogicScanByHTML
     {
+        private readonly GetSettingFromURL _settingOfURL = new GetSettingFromURL();
+        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
+
+        public LogicScanByHTML(GetSettingFromURL settingOfURL, GetResponseFromURL getResponse)
+        {
+            _settingOfURL = settingOfURL;
+            _getResponse = getResponse;
+        }
+
+        public LogicScanByHTML() { }
+
         public virtual List<string> ScanWebPages(List<string> htmlScan)
         {
-            GetSettingFromURL ofURL = new GetSettingFromURL();
             //get main page to find only url from website
-            var firstUrl = ofURL.getMainURL(htmlScan[0]);
+            var firstUrl = _settingOfURL.GetMainURL(htmlScan[0]);
 
             if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1)
             {
@@ -31,8 +40,7 @@ namespace TestURLS.UrlLogic
 
             for (int i = 0; i < htmlScan.Count; i++)
             {
-                var request = (HttpWebRequest)WebRequest.Create(htmlScan[i]);
-                var response = (HttpWebResponse)request.GetResponse();
+                var response = _getResponse.GetResponse(htmlScan[i]);
                 var read = new StreamReader(response.GetResponseStream(), Encoding.Default, true, 8192);
                 var HTMLtxt = read.ReadToEnd();
                 response.Close();
@@ -61,7 +69,7 @@ namespace TestURLS.UrlLogic
 
                         if (length != -1)
                         {
-                            urlFromMatch = urlFromMatch.Substring(0, length);
+                            urlFromMatch = urlFromMatch[..length];
                         }
 
                         matches.Add(urlFromMatch);
@@ -69,6 +77,7 @@ namespace TestURLS.UrlLogic
 
                     match = match.NextMatch();
                 }
+
                 //scan only pages that doesn`t looking for before
                 matches = matches.Except(scannedPages).ToList();
                 scannedPages.AddRange(matches);
@@ -85,7 +94,7 @@ namespace TestURLS.UrlLogic
 
                             if (!existingPages && matches[k] != firstUrl + "/")
                             {
-                                if (ofURL.IsPageHTML(matches[k]))
+                                if (_settingOfURL.IsPageHTML(matches[k]))
                                 //if this page is text/html then add to scanList
                                 {
                                     htmlScan.Add(matches[k]);
@@ -95,6 +104,7 @@ namespace TestURLS.UrlLogic
                     }
                 }
             }
+
             return htmlScan;
         }
     }
