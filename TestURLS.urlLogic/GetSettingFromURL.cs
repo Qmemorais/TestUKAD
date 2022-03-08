@@ -1,17 +1,22 @@
-﻿using System.Net;
-
-namespace TestURLS.UrlLogic
+﻿namespace TestURLS.UrlLogic
 {
     public class GetSettingFromURL
     {
+        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
+
+        public GetSettingFromURL(GetResponseFromURL _response)
+        {
+            _getResponse = _response;
+        }
+
+        public GetSettingFromURL() { }
+
         public virtual bool IsPageHTML(string url)
         {
             try
             {
                 //find text/html pages
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Timeout = 10000;
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                var response = _getResponse.GetResponse(url);
                 var contentType = response.ContentType.IndexOf("text/html") != -1;
                 response.Close();
                 return contentType;
@@ -22,12 +27,12 @@ namespace TestURLS.UrlLogic
             }
         }
 
-        public virtual string getMainURL(string url)
+        public virtual string GetMainURL(string url)
         {
             int lastSymbolBefore = url.IndexOf("/", 8);
 
             if (lastSymbolBefore != -1)
-                url = url.Substring(0, lastSymbolBefore);
+                url = url[..lastSymbolBefore];
             return url;
         }
     }
