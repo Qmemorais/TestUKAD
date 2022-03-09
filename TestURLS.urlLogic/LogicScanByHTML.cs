@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace TestURLS.UrlLogic
@@ -10,9 +8,9 @@ namespace TestURLS.UrlLogic
     public class LogicScanByHTML
     {
         private readonly GetSettingFromURL _settingOfURL = new GetSettingFromURL();
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
+        private readonly GetRequestFromURL _getResponse = new GetRequestFromURL();
 
-        public LogicScanByHTML(GetSettingFromURL settingOfURL, GetResponseFromURL getResponse)
+        public LogicScanByHTML(GetSettingFromURL settingOfURL, GetRequestFromURL getResponse)
         {
             _settingOfURL = settingOfURL;
             _getResponse = getResponse;
@@ -40,10 +38,7 @@ namespace TestURLS.UrlLogic
 
             for (int i = 0; i < htmlScan.Count; i++)
             {
-                var response = _getResponse.GetResponse(htmlScan[i]);
-                var read = new StreamReader(response.GetResponseStream(), Encoding.Default, true, 8192);
-                var HTMLtxt = read.ReadToEnd();
-                response.Close();
+                var HTMLtxt = _getResponse.GetBodyFromURL(htmlScan[i]);
 
                 var match = reg.Match(HTMLtxt);
                 var matches = new List<string>();
@@ -72,7 +67,12 @@ namespace TestURLS.UrlLogic
                             urlFromMatch = urlFromMatch[..length];
                         }
 
-                        matches.Add(urlFromMatch);
+                        if (urlFromMatch.Contains(".html") ||
+                            urlFromMatch.Contains(".php") ||
+                            urlFromMatch.LastIndexOf("/") == urlFromMatch.Length - 1)
+                        {
+                            matches.Add(urlFromMatch);
+                        }
                     }
 
                     match = match.NextMatch();
@@ -94,7 +94,7 @@ namespace TestURLS.UrlLogic
 
                             if (!existingPages && matches[k] != firstUrl + "/")
                             {
-                                if (_settingOfURL.IsPageHTML(matches[k]))
+                                if (_getResponse.GetContentType(matches[k]))
                                 //if this page is text/html then add to scanList
                                 {
                                     htmlScan.Add(matches[k]);
