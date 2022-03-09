@@ -7,9 +7,9 @@ namespace TestURLS.UrlLogic
 {
     public class OutputList
     {
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
+        private readonly GetRequestFromURL _getResponse = new GetRequestFromURL();
 
-        public OutputList(GetResponseFromURL getResponse)
+        public OutputList(GetRequestFromURL getResponse)
         {
             _getResponse = getResponse;
         }
@@ -27,20 +27,8 @@ namespace TestURLS.UrlLogic
             }
             else
             {
-                var existInSitemapNotWeb = new List<string>();
-                var existInWebNotSitemap = new List<string>();
-
-                foreach (string url in htmlScan)
-                {//find any url like this. this foreach better then remove http/https and add after distinct method
-                    if (!(htmlSitemap.Any(web => web.IndexOf(url[5..]) != -1)))
-                        existInWebNotSitemap.Add(url);
-                }
-
-                foreach (string url in htmlSitemap)
-                {
-                    if (!(htmlScan.Any(web => web.IndexOf(url[5..]) != -1)))
-                        existInSitemapNotWeb.Add(url);
-                }
+                var existInSitemapNotWeb = GetExistLists(htmlSitemap, htmlScan);
+                var existInWebNotSitemap = GetExistLists(htmlScan, htmlSitemap);
 
                 stringToType.Add("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
                 stringToType = OutputURLS(existInSitemapNotWeb, stringToType);
@@ -62,9 +50,8 @@ namespace TestURLS.UrlLogic
             {
                 //get time of request
                 Stopwatch sw = Stopwatch.StartNew();
-                var response = _getResponse.GetResponse(url);
+                var response = _getResponse.GetStatusCode(url);
                 sw.Stop();
-                response.Close();
                 var time = (int)sw.ElapsedMilliseconds;
                 urlWithTime.Add(url, time);
             }
@@ -99,6 +86,17 @@ namespace TestURLS.UrlLogic
             }
 
             return stringToType;
+        }
+
+        protected virtual List<string> GetExistLists(List<string> htmlToScan, List<string> htmlToMove)
+        {
+            var listToReturn = new List<string>();
+            foreach (string url in htmlToScan)
+            {//find any url like this. this foreach better then remove http/https and add after distinct method
+                if (!(htmlToMove.Any(web => web.IndexOf(url[5..]) != -1)))
+                    listToReturn.Add(url);
+            }
+            return listToReturn;
         }
 
     }
