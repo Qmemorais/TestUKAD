@@ -7,11 +7,14 @@ namespace TestURLS.ConsoleApp
     {
         private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
         private readonly MainLogic _logic = new MainLogic();
+        private readonly OutputToConsole _outputToConsole = new OutputToConsole();
 
-        public ConsoleInterface(IConsoleInOut consoleInOut, MainLogic logic)
+        public ConsoleInterface(IConsoleInOut consoleInOut, MainLogic logic,
+            OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
             _logic = logic;
+            _outputToConsole = outputToConsole;
         }
 
         public ConsoleInterface()
@@ -26,12 +29,10 @@ namespace TestURLS.ConsoleApp
                 _consoleInOut.Write("Enter URL: ");
                 string urlToScan = _consoleInOut.Read();
 
-                var resultList = _logic.GetResults(urlToScan);
+                _logic.GetResults(urlToScan);
 
-                foreach (string s in resultList)
-                {
-                    _consoleInOut.Write(s);
-                }
+                _outputToConsole.Write(_logic.HtmlGetUrlFromSitemap,
+                    _logic.HtmlGetUrlFromWeb);
             }
             catch(Exception ex)
             {
