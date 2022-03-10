@@ -1,84 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace TestURLS.UrlLogic
 {
     public class LogicScanByHTML
     {
-        private readonly GetSettingFromURL _settingOfURL = new GetSettingFromURL();
-        private readonly GetRequestFromURL _getResponse = new GetRequestFromURL();
+        private readonly URLSettings _settingsURL = new URLSettings();
+        private readonly HttpLogic _getHttp = new HttpLogic();
 
-        public LogicScanByHTML(GetSettingFromURL settingOfURL, GetRequestFromURL getResponse)
+        public LogicScanByHTML(URLSettings settingOfURL, HttpLogic getResponse)
         {
-            _settingOfURL = settingOfURL;
-            _getResponse = getResponse;
+            _settingsURL = settingOfURL;
+            _getHttp = getResponse;
         }
 
         public LogicScanByHTML() { }
 
-        public virtual List<string> ScanWebPages(List<string> htmlScan)
+        public virtual List<string> ScanByXMLParse(List<string> htmlScan)
         {
             //get main page to find only url from website
-            var firstUrl = _settingOfURL.GetMainURL(htmlScan[0]);
+            var firstUrl = _settingsURL.GetMainURL(htmlScan.First());
 
-            if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1)
+            if (!firstUrl.Equals(htmlScan.First()) 
+                && (htmlScan.First().Length - firstUrl.Length) != 1)
             {
                 htmlScan.Add(firstUrl);
             }
 
-            var scannedPages = new List<string>
-            {
-                htmlScan[0]
-            };
-            var href = @"href\s*=\s*(?:[""'](?<1>[^""']*)[""']|(?<1>\S+))";
-            var reg = new Regex(href, RegexOptions.IgnoreCase | RegexOptions.Compiled,
-                                            TimeSpan.FromSeconds(1));
+            var scannedPages = new List<string>();
+            scannedPages.AddRange(htmlScan);
 
             for (int i = 0; i < htmlScan.Count; i++)
             {
-                var HTMLtxt = _getResponse.GetBodyFromURL(htmlScan[i]);
-
-                var match = reg.Match(HTMLtxt);
                 var matches = new List<string>();
+                var HTMLtxt = _getHttp.GetBodyFromURL(htmlScan[i]);
 
-                while (match.Success)
-                {   //delete part "href=''"
-                    var urlFromMatch = match.Value[6..];
+                HtmlDocument htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(HTMLtxt);
 
-                    if (!urlFromMatch.Contains("http"))
-                    {
-                        //if we have href="/index.html"
-                        urlFromMatch = firstUrl + urlFromMatch;
+                foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+                {
+                    HtmlAttribute att = link.Attributes["href"];
 
-                        if (urlFromMatch.IndexOf(firstUrl + "/") == -1)
-                        {
-                            urlFromMatch = urlFromMatch.Insert(firstUrl.Length, "/");
-                        }
-                    }
-
-                    if (urlFromMatch.Contains(firstUrl))
+                    att.Value = _settingsURL.GetValidURL(att.Value, firstUrl);
+                    //part of existing pages doesn`t interesting
+                    if (att.Value.Contains(firstUrl)
+                        && !att.Value.Contains("#"))
                     {   //delete \" at the end of string
-                        var length = urlFromMatch.LastIndexOf("\"");
-
-                        if (length != -1)
+                        if (att.Value.Contains(".html") ||
+                            att.Value.Contains(".php") ||
+                            att.Value.LastIndexOf("/") == att.Value.Length - 1)
                         {
-                            urlFromMatch = urlFromMatch[..length];
-                        }
-
-                        if (urlFromMatch.Contains(".html") ||
-                            urlFromMatch.Contains(".php") ||
-                            urlFromMatch.LastIndexOf("/") == urlFromMatch.Length - 1)
-                        {
-                            matches.Add(urlFromMatch);
+                            matches.Add(att.Value);
                         }
                     }
-
-                    match = match.NextMatch();
                 }
 
-                //scan only pages that doesn`t looking for before
                 matches = matches.Except(scannedPages).ToList();
                 scannedPages.AddRange(matches);
 
@@ -86,19 +64,16 @@ namespace TestURLS.UrlLogic
                 {
                     for (int k = 0; k < matches.Count; k++)
                     {
-                        //part of existing pages doesn`t interesting
-                        if (matches[k].IndexOf("#") == -1)
-                        {
-                            //if difference is only http or https
-                            var existingPages = htmlScan.Any(web => web.IndexOf(matches[k][5..]) != -1);
+                        //if difference is only http or https
+                        var existingPages = htmlScan
+                            .Any(web => web.IndexOf(matches[k][5..]) != -1);
 
-                            if (!existingPages && matches[k] != firstUrl + "/")
+                        if (!existingPages && matches[k] != firstUrl + "/")
+                        {
+                            if (_getHttp.GetContentType(matches[k]))
+                            //if this page is text/html then add to scanList
                             {
-                                if (_getResponse.GetContentType(matches[k]))
-                                //if this page is text/html then add to scanList
-                                {
-                                    htmlScan.Add(matches[k]);
-                                }
+                                htmlScan.Add(matches[k]);
                             }
                         }
                     }
