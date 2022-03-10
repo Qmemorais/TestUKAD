@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Xml;
 
 namespace TestURLS.UrlLogic
 {
     public class LogicScanBySitemap
     {
-        private readonly GetRequestFromURL _getResponse = new GetRequestFromURL();
-        private readonly GetSettingFromURL _settingsOfURL = new GetSettingFromURL();
+        private readonly HttpLogic _getResponse = new HttpLogic();
+        private readonly URLSettings _settingsOfURL = new URLSettings();
 
-        public LogicScanBySitemap(GetRequestFromURL getResponse, GetSettingFromURL settingsOfURL)
+        public LogicScanBySitemap(HttpLogic getResponse, URLSettings settingsOfURL)
         {
             _getResponse = getResponse;
             _settingsOfURL = settingsOfURL;
@@ -21,18 +22,28 @@ namespace TestURLS.UrlLogic
         {
             var firstUrl = _settingsOfURL.GetMainURL(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetContentType(firstUrl + "/sitemap.xml");
-            if (isSitemapExist)
+            var isSitemapExist = _getResponse.GetStatusCode(firstUrl + "/sitemap.xml");
+            if (isSitemapExist.Equals(HttpStatusCode.OK))
             {
                 htmlSitemap = ScanSitemap(firstUrl + "/sitemap.xml");
             }
             else
             {
-                //if it doesn`t exist try to find url of sitemap
-                var urlToFindWitemap = _getResponse.GetSitemapFromURL(firstUrl + "/robots.txt");
-                if (urlToFindWitemap != "")
+                var isRobotTxtExist = _getResponse.GetStatusCode(firstUrl + "/robots.txt");
+                if (isRobotTxtExist.Equals(HttpStatusCode.OK))
                 {
-                    htmlSitemap = ScanSitemap(urlToFindWitemap);
+                    //if it doesn`t exist try to find url of sitemap
+                    var reader = _getResponse.GetSitemapFromURL(firstUrl + "/robots.txt");
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.Contains("Sitemap: "))
+                        {
+                            var sitemapURL = line.Split("Sitemap: ").Last();
+
+                            htmlSitemap = ScanSitemap(sitemapURL);
+                        }
+                    }
                 }
             }
             return htmlSitemap;
@@ -55,7 +66,9 @@ namespace TestURLS.UrlLogic
                     }    
                 }
             }
-            htmlSitemap = htmlSitemap.Distinct().ToList();
+            htmlSitemap = htmlSitemap
+                .Distinct()
+                .ToList();
             return htmlSitemap;
         }
     }
