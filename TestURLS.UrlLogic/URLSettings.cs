@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace TestURLS.UrlLogic
 {
@@ -7,28 +6,38 @@ namespace TestURLS.UrlLogic
     {
         public virtual string GetMainURL(string url)
         {
-            List<string> getStartIndex = url.Split("://").ToList();
-            int lastSymbolBefore = getStartIndex.Last().IndexOf("/") 
-                + getStartIndex.First().Length
+            var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
+            var getPartAfterHttp = url.Split("://").LastOrDefault();
+            int CountToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/") 
+                + getHttpPartFromUrl.Length
                 + "://".Length;
 
-            if (lastSymbolBefore != -1)
-                url = url[..lastSymbolBefore];
+            if (CountToSubstringToGetMainURL != -1)
+            {
+                url = url.Substring(url.IndexOf(url.FirstOrDefault()), CountToSubstringToGetMainURL);
+            }
+
             return url;
         }
 
-        public virtual string GetValidURL(string url, string firstUrl)
+        public virtual string GetValidURL(string url, string mainPartOfURL)
         {
             if (!url.Contains("http"))
             {
-                //if we have href="/index.html"
-                url = firstUrl + url;
-
-                if (!url.Contains(firstUrl + "/"))
-                {
-                    url = url.Insert(firstUrl.Length, "/");
-                }
+                url = mainPartOfURL + url;
+                url = AddSlashAfterMainPartIfNoExist(url, mainPartOfURL);
             }
+
+            return url;
+        }
+
+        protected virtual string AddSlashAfterMainPartIfNoExist(string url, string mainPartOfURL)
+        {
+            if (!url.Contains(mainPartOfURL + "/"))
+            {
+                url = url.Insert(mainPartOfURL.Length, "/");
+            }
+
             return url;
         }
     }
