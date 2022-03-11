@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TestURLS.UrlLogic;
 
@@ -8,22 +7,18 @@ namespace TestURLS.ConsoleApp
 {
     public class OutputToConsole
     {
-        private readonly HttpLogic _getResponse = new HttpLogic();
         private readonly MainLogic _logic = new MainLogic();
         private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
 
-        public OutputToConsole(IConsoleInOut consoleInOut, MainLogic logic,
-            HttpLogic getResponse)
+        public OutputToConsole(IConsoleInOut consoleInOut, MainLogic logic)
         {
             _consoleInOut = consoleInOut;
             _logic = logic;
-            _getResponse = getResponse;
         }
 
         public OutputToConsole() { }
 
-        public virtual void Write(List<string> UrlsFromSitemap,
-            List<string> UrlFromWeb)
+        public virtual void Write(List<string> UrlsFromSitemap, List<string> UrlFromWeb)
         {
             if (UrlsFromSitemap.Count == 0)
             {
@@ -35,12 +30,15 @@ namespace TestURLS.ConsoleApp
 
                 _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
                 OutputURLS(_logic.GetExistLists(UrlsFromSitemap, UrlFromWeb));
+
                 _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
                 OutputURLS(_logic.GetExistLists(UrlFromWeb, UrlsFromSitemap));
+
                 _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
                 OutputTime(UrlFromWeb
                     .Union(_logic.GetExistLists(UrlsFromSitemap, UrlFromWeb))
                     .ToList());
+
                 _consoleInOut.Write("Urls(html documents) found after crawling a website: " + UrlFromWeb.Count);
                 _consoleInOut.Write("Urls found in sitemap: " + UrlsFromSitemap.Count);
             }
@@ -49,21 +47,12 @@ namespace TestURLS.ConsoleApp
 
         protected virtual void OutputTime(List<string> html)
         {
-            var urlWithTime = new Dictionary<string, int>();
-
-            foreach (string url in html)
-            {
-                //get time of request
-                Stopwatch sw = Stopwatch.StartNew();
-                var response = _getResponse.GetStatusCode(url);
-                sw.Stop();
-                var time = (int)sw.ElapsedMilliseconds;
-                urlWithTime.Add(url, time);
-            }
+            var urlWithTime = _logic.GetUrlsWithTimeResponse(html);
 
             urlWithTime = urlWithTime.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 
             var lengthURL = html.Max(x => x.Length) + 4;
+
             _consoleInOut.Write(new string('_', lengthURL + 14));
             _consoleInOut.Write(String.Format("{0}{1}|{2,-12}{3}", "|", "URL".PadRight(lengthURL, ' '), "Timing (ms)", "|"));
             _consoleInOut.Write(new string('_', lengthURL + 14));
@@ -78,6 +67,7 @@ namespace TestURLS.ConsoleApp
         protected virtual void OutputURLS(List<string> html)
         {
             var lengthURL = html.Max(x => x.Length) + 4;
+
             _consoleInOut.Write(new string('_', lengthURL + 2));
             _consoleInOut.Write(String.Format("{0}{1}{2}", "|", "URL".PadRight(lengthURL, ' '), "|"));
             _consoleInOut.Write(new string('_', lengthURL + 2));
