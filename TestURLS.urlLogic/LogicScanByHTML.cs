@@ -20,12 +20,12 @@ namespace TestURLS.UrlLogic
         public virtual List<string> ScanByXMLParse(List<string> htmlScan)
         {
             //get main page to find only url from website
-            var firstUrl = _settingsURL.GetMainURL(htmlScan.First());
+            var mainPartOfURL = _settingsURL.GetMainURL(htmlScan.First());
 
-            if (!firstUrl.Equals(htmlScan.First()) 
-                && (htmlScan.First().Length - firstUrl.Length) != 1)
+            if (mainPartOfURL != htmlScan.First() 
+                && (htmlScan.First().Length - mainPartOfURL.Length) != 1)
             {
-                htmlScan.Add(firstUrl);
+                htmlScan.Add(mainPartOfURL);
             }
 
             var scannedPages = new List<string>();
@@ -34,46 +34,51 @@ namespace TestURLS.UrlLogic
             for (int i = 0; i < htmlScan.Count; i++)
             {
                 var matches = new List<string>();
-                var HTMLtxt = _getHttp.GetBodyFromURL(htmlScan[i]);
+                var HTMLtxt = _getHttp.GetSitemapFromURL(htmlScan[i]);
 
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(HTMLtxt);
-
-                foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+                if (HTMLtxt != "")
                 {
-                    HtmlAttribute att = link.Attributes["href"];
+                    HtmlDocument htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(HTMLtxt);
 
-                    att.Value = _settingsURL.GetValidURL(att.Value, firstUrl);
-                    //part of existing pages doesn`t interesting
-                    if (att.Value.Contains(firstUrl)
-                        && !att.Value.Contains("#"))
-                    {   //delete \" at the end of string
-                        if (att.Value.Contains(".html") ||
-                            att.Value.Contains(".php") ||
-                            att.Value.LastIndexOf("/") == att.Value.Length - 1)
+                    foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+                    {
+                        HtmlAttribute att = link.Attributes["href"];
+
+                        att.Value = _settingsURL.GetValidURL(att.Value, mainPartOfURL);
+                        //part of existing pages doesn`t interesting
+
+                        if (att.Value.Contains(mainPartOfURL)
+                            && !att.Value.Contains("#"))
                         {
-                            matches.Add(att.Value);
+
+                            if (IsURL(att.Value))
+                            {
+                                matches.Add(att.Value);
+                            }
                         }
                     }
-                }
 
-                matches = matches.Except(scannedPages).ToList();
-                scannedPages.AddRange(matches);
+                    matches = matches.Except(scannedPages).ToList();
+                    scannedPages.AddRange(matches);
 
-                if (matches.Count != 0)
-                {
-                    for (int k = 0; k < matches.Count; k++)
+                    if (matches.Count != 0)
                     {
-                        //if difference is only http or https
-                        var existingPages = htmlScan
-                            .Any(web => web.IndexOf(matches[k][5..]) != -1);
 
-                        if (!existingPages && matches[k] != firstUrl + "/")
+                        for (int k = 0; k < matches.Count; k++)
                         {
-                            if (_getHttp.GetContentType(matches[k]))
-                            //if this page is text/html then add to scanList
+                            //if difference is only http or https
+                            var existingPages = htmlScan
+                                .Any(web => web.IndexOf(matches[k].Substring("https".Length)) != -1);
+
+                            if (!existingPages && matches[k] != mainPartOfURL + "/")
                             {
-                                htmlScan.Add(matches[k]);
+
+                                if (_getHttp.GetContentType(matches[k]))
+                                //if this page is text/html then add to scanList
+                                {
+                                    htmlScan.Add(matches[k]);
+                                }
                             }
                         }
                     }
@@ -81,6 +86,18 @@ namespace TestURLS.UrlLogic
             }
 
             return htmlScan;
+        }
+
+        protected virtual bool IsURL(string url)
+        {
+            if (url.Contains(".html") ||
+                url.Contains(".php") ||
+                url.LastIndexOf("/") == url.Length - 1)
+            {
+                return true;
+            }
+
+            else { return false; }
         }
     }
 }
