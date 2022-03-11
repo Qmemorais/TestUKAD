@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
 
 namespace TestURLS.UrlLogic
 {
@@ -27,18 +27,12 @@ namespace TestURLS.UrlLogic
 
         public virtual void GetResults(string url)
         {
-            // values to work
-            var statusCode = _getResponse.GetStatusCode(url);
-
-            if (statusCode == HttpStatusCode.OK)
-            {
-                // if OK add this url to list and work
-                htmlScanWeb.Add(url);
-                // scan all exist pages on web
-                htmlScanWeb = _scanByHTML.ScanByXMLParse(htmlScanWeb);
-                // find sitemap and if yes: scan
-                htmlScanSitemap = _scanBySitemap.VerifyExistStitemap(url, htmlScanSitemap);
-            }
+            // if OK add this url to list and work
+            htmlScanWeb.Add(url);
+            // scan all exist pages on web
+            htmlScanWeb = _scanByHTML.ScanByXMLParse(htmlScanWeb);
+            // find sitemap and if yes: scan
+            htmlScanSitemap = _scanBySitemap.VerifyExistStitemap(url, htmlScanSitemap);
         }
 
         public virtual List<string> GetExistLists(List<string> htmlToScan, List<string> htmlToMove)
@@ -47,10 +41,29 @@ namespace TestURLS.UrlLogic
             foreach (string url in htmlToScan)
             {// find any url like this. this foreach better then remove http/https
              // and add after distinct method
-                if (!(htmlToMove.Any(web => web.IndexOf(url["https".Length..]) != -1)))
+                if (!(htmlToMove.Any(web => web.IndexOf(url.Substring("https".Length)) != -1)))
+                {
                     listToReturn.Add(url);
+                }
             }
             return listToReturn;
+        }
+
+        public virtual Dictionary<string,int> GetUrlsWithTimeResponse(List<string> html)
+        {
+            var urlWithTime = new Dictionary<string, int>();
+
+            foreach (string url in html)
+            {
+                //get time of request
+                Stopwatch sw = Stopwatch.StartNew();
+                var response = _getResponse.GetContentType(url);
+                sw.Stop();
+                var time = (int)sw.ElapsedMilliseconds;
+                urlWithTime.Add(url, time);
+            }
+
+            return urlWithTime;
         }
     }
 }
