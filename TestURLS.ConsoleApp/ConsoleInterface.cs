@@ -1,5 +1,4 @@
-﻿using System;
-using TestURLS.UrlLogic;
+﻿using TestURLS.UrlLogic;
 
 namespace TestURLS.ConsoleApp
 {
@@ -24,20 +23,13 @@ namespace TestURLS.ConsoleApp
 
         public void Start()
         {
-            try
-            {
-                _consoleInOut.Write("Enter URL: ");
-                string urlToScan = _consoleInOut.Read();
+            _consoleInOut.Write("Enter URL: ");
+            string urlToScan = _consoleInOut.Read();
 
-                _logic.GetResults(urlToScan);
+            _logic.GetResults(urlToScan);
 
-                _outputToConsole.Write(_logic.HtmlGetUrlFromSitemap,
-                    _logic.HtmlGetUrlFromWeb);
-            }
-            catch(Exception ex)
-            {
-                _consoleInOut.Write(ex.Message);
-            }
+            _outputToConsole.Write(_logic.HtmlGetUrlFromSitemap,
+                _logic.HtmlGetUrlFromWeb);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();
