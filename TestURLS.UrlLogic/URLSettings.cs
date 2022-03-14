@@ -2,25 +2,26 @@
 
 namespace TestURLS.UrlLogic
 {
-    public class URLSettings
+    public class UrlSettings
     {
-        public virtual string GetMainURL(string url)
+        public virtual string GetMainUrl(string url)
         {
             var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
             var getPartAfterHttp = url.Split("://").LastOrDefault();
-            int CountToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/") 
+            int countToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/") 
                 + getHttpPartFromUrl.Length
                 + "://".Length;
 
-            if (CountToSubstringToGetMainURL != -1)
+            if (countToSubstringToGetMainURL != -1)
             {
-                url = url.Substring(url.IndexOf(url.FirstOrDefault()), CountToSubstringToGetMainURL);
+                var indexToStartSubstringUrl = url.IndexOf(url.FirstOrDefault());
+                url = url.Substring(indexToStartSubstringUrl, countToSubstringToGetMainURL);
             }
 
             return url;
         }
 
-        public virtual string GetValidURL(string url, string mainPartOfURL)
+        public virtual string GetValidUrl(string url, string mainPartOfURL)
         {
             if (!url.Contains("http"))
             {
