@@ -8,7 +8,7 @@ namespace TestURLS.UrlLogic
         {
             var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
             var getPartAfterHttp = url.Split("://").LastOrDefault();
-            int countToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/") 
+            var countToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/") 
                 + getHttpPartFromUrl.Length
                 + "://".Length;
 

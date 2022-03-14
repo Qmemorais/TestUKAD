@@ -14,15 +14,15 @@ namespace TestURLS.UrlLogic
             foreach (string url in linksToGetTime)
             {
                 //get time of request
-                Stopwatch timeToResponse = Stopwatch.StartNew();
+                var timeToResponse = Stopwatch.StartNew();
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 var response = (HttpWebResponse)request.GetResponse();
 
                 timeToResponse.Stop();
 
                 var time = timeToResponse.ElapsedMilliseconds;
-                UrlTimeModel model = new UrlTimeModel()
+                var model = new UrlTimeModel()
                 {
                     Link = url,
                     TimeOfResponse = time

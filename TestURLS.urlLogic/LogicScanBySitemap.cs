@@ -41,7 +41,7 @@ namespace TestURLS.UrlLogic
 
             xDoc.Load(sitemapUrl);
 
-            XmlElement xRoot = xDoc.DocumentElement;
+            var xRoot = xDoc.DocumentElement;
 
             foreach (XmlNode xnode in xRoot)
             {

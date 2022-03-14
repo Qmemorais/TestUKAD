@@ -13,7 +13,7 @@ namespace TestURLS.UrlLogic
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 var response = (HttpWebResponse)request.GetResponse();
                 var encoding = response.CharacterSet;
                 var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
