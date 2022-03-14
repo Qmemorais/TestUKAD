@@ -23,7 +23,7 @@ namespace TestURLS.UrlLogic
             //get main page to find only url from website
             var mainPartOfUrl = _settingsUrl.GetMainUrl(url);
             var linksWithScanPage = new List<UrlWithScanPage>();
-            string foundAt = "web";
+            var foundAt = "web";
 
             linksWithScanPage.Add(new UrlWithScanPage { Link = url, FoundAt = foundAt });
 
@@ -71,7 +71,7 @@ namespace TestURLS.UrlLogic
 
                 if (!string.IsNullOrEmpty(htmlTxt))
                 {
-                    HtmlDocument htmlDoc = new HtmlDocument();
+                    var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
 
                     var matches = GetLinksFromPage(htmlDoc, mainPartOfUrl);
@@ -81,13 +81,7 @@ namespace TestURLS.UrlLogic
 
                     scannedPages.AddRange(matches);
 
-                    if (matches.Count != 0)
-                    {
-                        foreach(string link in matches)
-                        {
-                            linksWithScanPage.Add(AddLinkToClass(link));
-                        }
-                    }
+                    linksWithScanPage = getMatchesFromScanPage(linksWithScanPage, matches);
                 }
             }
 
@@ -100,7 +94,7 @@ namespace TestURLS.UrlLogic
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
             {
-                HtmlAttribute att = link.Attributes["href"];
+                var att = link.Attributes["href"];
 
                 att.Value = _settingsUrl.GetValidUrl(att.Value, mainPartOfUrl);
                 //part of existing pages doesn`t interesting
@@ -127,10 +121,23 @@ namespace TestURLS.UrlLogic
         {
             if(link.Contains("#"))
             {
-                int indexOfSymbol = link.IndexOf("#");
+                var indexOfSymbol = link.IndexOf("#");
                 link = link.Substring(0, indexOfSymbol);
             }
             return link;
+        }
+
+        protected virtual List<UrlWithScanPage> getMatchesFromScanPage(List<UrlWithScanPage> linksWithScanPage, List<string> matches)
+        {
+            if (matches.Count != 0)
+            {
+                foreach (string link in matches)
+                {
+                    linksWithScanPage.Add(AddLinkToClass(link));
+                }
+            }
+
+            return linksWithScanPage;
         }
     }
 }
