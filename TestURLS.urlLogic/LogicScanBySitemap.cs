@@ -7,21 +7,21 @@ namespace TestURLS.UrlLogic
     public class LogicScanBySitemap
     {
         private readonly HttpLogic _getResponse = new HttpLogic();
-        private readonly URLSettings _settingsOfURL = new URLSettings();
+        private readonly UrlSettings _settingsOfUrl = new UrlSettings();
 
-        public LogicScanBySitemap(HttpLogic getResponse, URLSettings settingsOfURL)
+        public LogicScanBySitemap(HttpLogic getResponse, UrlSettings settingsOfUrl)
         {
             _getResponse = getResponse;
-            _settingsOfURL = settingsOfURL;
+            _settingsOfUrl = settingsOfUrl;
         }
 
         public LogicScanBySitemap() { }
 
         public virtual List<string> VerifyExistStitemap(string url, List<string> htmlSitemap)
         {
-            var firstUrl = _settingsOfURL.GetMainURL(url);
+            var firstUrl = _settingsOfUrl.GetMainUrl(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetSitemapFromURL(firstUrl + "/sitemap.xml");
+            var isSitemapExist = _getResponse.GetBodyFromUrl(firstUrl + "/sitemap.xml");
 
             if (isSitemapExist != "")
             {
@@ -30,26 +30,26 @@ namespace TestURLS.UrlLogic
             else
             {
                 //if it doesn`t exist try to find url of sitemap
-                var reader = _getResponse.GetSitemapFromURL(firstUrl + "/robots.txt");
+                var reader = _getResponse.GetBodyFromUrl(firstUrl + "/robots.txt");
 
                 if (reader.Contains("Sitemap: "))
                 {
-                    var sitemapURL = reader.Split("Sitemap: ").LastOrDefault();
+                    var sitemapUrl = reader.Split("Sitemap: ").LastOrDefault();
 
-                    htmlSitemap = ScanSitemap(sitemapURL);
+                    htmlSitemap = ScanSitemap(sitemapUrl);
                 }
             }
 
             return htmlSitemap;
         }
 
-        private List<string> ScanSitemap(string sitemapURL)
+        private List<string> ScanSitemap(string sitemapUrl)
         {
             //create value to get xml-document and data from
             var htmlSitemap = new List<string>();
             var xDoc = new XmlDocument();
 
-            xDoc.Load(sitemapURL);
+            xDoc.Load(sitemapUrl);
 
             XmlElement xRoot = xDoc.DocumentElement;
 
