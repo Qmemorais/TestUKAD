@@ -28,7 +28,7 @@ namespace TestURLS.ConsoleApp
 
             var results = _logic.GetResults(urlToScan);
 
-            _outputToConsole.Write(results[0], results[1]);
+            _outputToConsole.Write(results);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();
