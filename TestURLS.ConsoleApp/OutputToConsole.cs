@@ -29,18 +29,18 @@ namespace TestURLS.ConsoleApp
             {
 
                 _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
-                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan,"InSitemap"));
+                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan, "sitemap"));
 
                 _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
-                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan, "InWeb"));
+                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan, "web"));
 
                 _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
 
                 var getLinksFromWeb = allLinksFromSitemapAndScan
-                    .Where(link=>link.FoundAt=="web")
+                    .Where(link => link.FoundAt == "web")
                     .Select(links => links.Link)
                     .ToList();
-                var getlinksToDistinct = _logic.GetExistLists(allLinksFromSitemapAndScan, "InSitemap");
+                var getlinksToDistinct = _logic.GetExistLists(allLinksFromSitemapAndScan, "sitemap");
                 OutputTime(getLinksFromWeb.Union(getlinksToDistinct).ToList());
 
                 _consoleInOut.Write($"Urls(html documents) found after crawling a website: {allLinksFromSitemapAndScan.Count(link => link.FoundAt == "web")}");
