@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
@@ -17,36 +18,25 @@ namespace TestURLS.UrlLogic
 
         public LogicScanBySitemap() { }
 
-        public virtual List<string> VerifyExistStitemap(string url, List<string> htmlSitemap)
+        public virtual List<UrlWithScanPage> VerifyExistStitemap(string url)
         {
-            var firstUrl = _settingsOfUrl.GetMainUrl(url);
+            var linksFromSitemap = new List<UrlWithScanPage>();
+            var mainPartOfUrl = _settingsOfUrl.GetMainUrl(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetBodyFromUrl(firstUrl + "/sitemap.xml");
+            var isSitemapExist = _getResponse.GetBodyFromUrl(mainPartOfUrl + "/sitemap.xml");
 
-            if (isSitemapExist != "")
+            if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                htmlSitemap = ScanSitemap(firstUrl + "/sitemap.xml");
-            }
-            else
-            {
-                //if it doesn`t exist try to find url of sitemap
-                var reader = _getResponse.GetBodyFromUrl(firstUrl + "/robots.txt");
-
-                if (reader.Contains("Sitemap: "))
-                {
-                    var sitemapUrl = reader.Split("Sitemap: ").LastOrDefault();
-
-                    htmlSitemap = ScanSitemap(sitemapUrl);
-                }
+                linksFromSitemap = ScanSitemap(mainPartOfUrl + "/sitemap.xml");
             }
 
-            return htmlSitemap;
+            return linksFromSitemap;
         }
 
-        private List<string> ScanSitemap(string sitemapUrl)
+        private List<UrlWithScanPage> ScanSitemap(string sitemapUrl)
         {
             //create value to get xml-document and data from
-            var htmlSitemap = new List<string>();
+            var linksFromSitemap = new List<string>();
             var xDoc = new XmlDocument();
 
             xDoc.Load(sitemapUrl);
@@ -61,14 +51,28 @@ namespace TestURLS.UrlLogic
 
                     if (childnode.Name == "loc")
                     {
-                        htmlSitemap.Add(childnode.InnerText);
+                        linksFromSitemap.Add(childnode.InnerText);
                     }    
                 }
             }
 
-            htmlSitemap = htmlSitemap.Distinct().ToList();
+            linksFromSitemap = linksFromSitemap.Distinct().ToList();
 
-            return htmlSitemap;
+            var listFromSitemap = getClassFromLinks(linksFromSitemap);
+
+            return listFromSitemap;
+        }
+
+        protected List<UrlWithScanPage> getClassFromLinks(List<string> links)
+        {
+            List<UrlWithScanPage> finalListOfLinks = new List<UrlWithScanPage>();
+
+            foreach(string link in links)
+            {
+                finalListOfLinks.Add(new UrlWithScanPage { Link = link, FoundAt = "sitemap" });
+            }
+
+            return finalListOfLinks;
         }
     }
 }
