@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace TestURLS.UrlLogic
@@ -8,31 +7,34 @@ namespace TestURLS.UrlLogic
     {
         private readonly LogicScanByHTML _scanByHTML = new LogicScanByHTML();
         private readonly LogicScanBySitemap _scanBySitemap = new LogicScanBySitemap();
-        private readonly HttpLogic _getResponse = new HttpLogic();
-        private List<string> htmlScanSitemap = new List<string>();
-        private List<string> htmlScanWeb = new List<string>();
+        private readonly Time _getTime = new Time();
 
-        public List<string> HtmlGetUrlFromSitemap { get { return htmlScanSitemap; } }
-        public List<string> HtmlGetUrlFromWeb { get { return htmlScanWeb; } }
-
-        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap,
-            HttpLogic getResponse)
+        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap)
         {
             _scanByHTML = scanByHTML;
             _scanBySitemap = scanBySitemap;
-            _getResponse = getResponse;
         }
 
         public MainLogic() { }
 
-        public virtual void GetResults(string url)
+        public virtual List<List<string>> GetResults(string url)
         {
+            var htmlScanSitemap = new List<string>();
+            var htmlScanWeb = new List<string>();
             // if OK add this url to list and work
             htmlScanWeb.Add(url);
             // scan all exist pages on web
-            htmlScanWeb = _scanByHTML.ScanByXMLParse(htmlScanWeb);
+            htmlScanWeb = _scanByHTML.GetUrlsFromScanPages(htmlScanWeb);
             // find sitemap and if yes: scan
             htmlScanSitemap = _scanBySitemap.VerifyExistStitemap(url, htmlScanSitemap);
+
+            var listToReturn = new List<List<string>>()
+            {
+                htmlScanWeb,
+                htmlScanSitemap
+            };
+
+            return listToReturn;
         }
 
         public virtual List<string> GetExistLists(List<string> htmlToScan, List<string> htmlToMove)
@@ -49,21 +51,11 @@ namespace TestURLS.UrlLogic
             return listToReturn;
         }
 
-        public virtual Dictionary<string,int> GetUrlsWithTimeResponse(List<string> html)
+        public virtual List<UrlTimeModel> GetUrlsWithTimeResponse(List<string> html)
         {
-            var urlWithTime = new Dictionary<string, int>();
+            var values = _getTime.GetLinksWithTime(html);
 
-            foreach (string url in html)
-            {
-                //get time of request
-                Stopwatch sw = Stopwatch.StartNew();
-                var response = _getResponse.GetContentType(url);
-                sw.Stop();
-                var time = (int)sw.ElapsedMilliseconds;
-                urlWithTime.Add(url, time);
-            }
-
-            return urlWithTime;
+            return values;
         }
     }
 }
