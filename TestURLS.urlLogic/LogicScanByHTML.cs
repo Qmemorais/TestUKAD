@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
+using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
@@ -17,20 +18,25 @@ namespace TestURLS.UrlLogic
 
         public LogicScanByHTML() { }
 
-        public virtual List<string> GetUrlsFromScanPages(List<string> htmlScan)
+        public virtual List<UrlWithScanPage> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
-            var mainPartOfUrl = _settingsUrl.GetMainUrl(htmlScan.First());
+            var mainPartOfUrl = _settingsUrl.GetMainUrl(url);
+            var linksWithScanPage = new List<UrlWithScanPage>();
+            string foundAt = "web";
 
-            if (mainPartOfUrl != htmlScan.First() 
-                && (htmlScan.First().Length - mainPartOfUrl.Length) != 1)
+            linksWithScanPage.Add(new UrlWithScanPage { Link = url, FoundAt = foundAt });
+
+            if (mainPartOfUrl != url
+                && (url.Length - mainPartOfUrl.Length) != 1)
             {
-                htmlScan.Add(mainPartOfUrl);
+                var newLink = new UrlWithScanPage { Link = mainPartOfUrl, FoundAt = foundAt };
+                linksWithScanPage.Add(newLink);
             }
 
-            htmlScan = GetScannedUrls(htmlScan, mainPartOfUrl);
+            linksWithScanPage = GetScannedUrls(linksWithScanPage, mainPartOfUrl);
 
-            return htmlScan;
+            return linksWithScanPage;
         }
 
         protected virtual bool IsUrl(string url)
@@ -43,6 +49,10 @@ namespace TestURLS.UrlLogic
             {
                 return true;
             }
+            if (url.Contains(".aspx"))
+            {
+                return true;
+            }
             if (url.LastIndexOf("/") == url.Length - 1)
             {
                 return true;
@@ -50,17 +60,16 @@ namespace TestURLS.UrlLogic
             return false;
         }
 
-        protected virtual List<string> GetScannedUrls(List<string> htmlScan, string mainPartOfUrl)
+        protected virtual List<UrlWithScanPage> GetScannedUrls(List<UrlWithScanPage> linksWithScanPage, string mainPartOfUrl)
         {
             var scannedPages = new List<string>();
-            scannedPages.AddRange(htmlScan);
+            scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
 
-            for (int i = 0; i < htmlScan.Count; i++)
+            for (int i = 0; i < linksWithScanPage.Count; i++)
             {
-                //var matches = new List<string>();
-                var htmlTxt = _getHttp.GetBodyFromUrl(htmlScan[i]);
+                var htmlTxt = _getHttp.GetBodyFromUrl(linksWithScanPage[i].Link);
 
-                if (htmlTxt != "")
+                if (!string.IsNullOrEmpty(htmlTxt))
                 {
                     HtmlDocument htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
@@ -74,12 +83,15 @@ namespace TestURLS.UrlLogic
 
                     if (matches.Count != 0)
                     {
-                        htmlScan.AddRange(matches);
+                        foreach(string link in matches)
+                        {
+                            linksWithScanPage.Add(AddLinkToClass(link));
+                        }
                     }
                 }
             }
 
-            return htmlScan;
+            return linksWithScanPage;
         }
 
         protected virtual List<string> GetLinksFromPage(HtmlDocument htmlDoc, string mainPartOfUrl)
@@ -93,17 +105,32 @@ namespace TestURLS.UrlLogic
                 att.Value = _settingsUrl.GetValidUrl(att.Value, mainPartOfUrl);
                 //part of existing pages doesn`t interesting
 
-                if (att.Value.Contains(mainPartOfUrl)
-                    && !att.Value.Contains("#"))
+                if (att.Value.Contains(mainPartOfUrl))
                 {
+                    var getLinkWithoutSymbols = RemoveSymbols(att.Value);
 
                     if (IsUrl(att.Value))
                     {
-                        matches.Add(att.Value);
+                        matches.Add(getLinkWithoutSymbols);
                     }
                 }
             }
             return matches;
+        }
+
+        protected virtual UrlWithScanPage AddLinkToClass(string url)
+        {
+            return new UrlWithScanPage { Link = url, FoundAt = "web" };
+        }
+
+        protected virtual string RemoveSymbols(string link)
+        {
+            if(link.Contains("#"))
+            {
+                int indexOfSymbol = link.IndexOf("#");
+                link = link.Substring(0, indexOfSymbol);
+            }
+            return link;
         }
     }
 }
