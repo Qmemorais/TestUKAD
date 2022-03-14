@@ -31,33 +31,15 @@ namespace TestURLS.UrlLogic
 
         public virtual List<string> GetExistLists(List<UrlWithScanPage> allLinksFromAllScan, string whatWeWant)
         {
-            var htmlToScan = new List<string>();
-            var htmlToMove = new List<string>();
+            var htmlToScan = allLinksFromAllScan
+                .Where(found => found.FoundAt == whatWeWant)
+                .Select(links => links.Link)
+                .ToList();
+            var htmlToMove = allLinksFromAllScan
+                .Where(found => found.FoundAt != whatWeWant)
+                .Select(links => links.Link)
+                .ToList();
             var listToReturn = new List<string>();
-
-            if (whatWeWant == "InWeb")
-            {
-                htmlToScan = allLinksFromAllScan
-                    .Where(found => found.FoundAt == "web")
-                    .Select(links => links.Link)
-                    .ToList();
-                htmlToMove = allLinksFromAllScan
-                    .Where(found => found.FoundAt == "sitemap")
-                    .Select(links => links.Link)
-                    .ToList();
-            }
-            else
-            {
-                htmlToScan = allLinksFromAllScan
-                    .Where(found => found.FoundAt == "sitemap")
-                    .Select(links => links.Link)
-                    .ToList();
-                htmlToMove = allLinksFromAllScan
-                    .Where(found => found.FoundAt == "web")
-                    .Select(links => links.Link)
-                    .ToList();
-
-            }
 
             foreach (string url in htmlToScan)
             {// find any url like this. this foreach better then remove http/https
@@ -72,7 +54,7 @@ namespace TestURLS.UrlLogic
 
         public virtual List<UrlTimeModel> GetUrlsWithTimeResponse(List<string> htmlToGetTime)
         {
-            List<UrlTimeModel> values = _getTime.GetLinksWithTime(htmlToGetTime);
+            var values = _getTime.GetLinksWithTime(htmlToGetTime);
 
             return values;
         }
