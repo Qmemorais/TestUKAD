@@ -26,10 +26,9 @@ namespace TestURLS.ConsoleApp
             _consoleInOut.Write("Enter URL: ");
             string urlToScan = _consoleInOut.Read();
 
-            _logic.GetResults(urlToScan);
+            var results = _logic.GetResults(urlToScan);
 
-            _outputToConsole.Write(_logic.HtmlGetUrlFromSitemap,
-                _logic.HtmlGetUrlFromWeb);
+            _outputToConsole.Write(results[0], results[1]);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();
