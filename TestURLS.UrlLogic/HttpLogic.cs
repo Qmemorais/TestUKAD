@@ -22,7 +22,7 @@ namespace TestURLS.UrlLogic
 
                 response.Close();
             }
-            catch
+            catch(WebException ex)
             {
                 //TODO: Add logger here
             }
