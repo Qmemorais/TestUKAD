@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class Time
+    public class TimeTracker
     {
-        public virtual List<UrlTimeModel> GetLinksWithTime(List<string> html)
+        public virtual List<UrlTimeModel> GetLinksWithTime(List<string> linksToGetTime)
         {
             List<UrlTimeModel> urlWithTime = new List<UrlTimeModel>();
 
-            foreach (string url in html)
+            foreach (string url in linksToGetTime)
             {
                 //get time of request
                 Stopwatch timeToResponse = Stopwatch.StartNew();
