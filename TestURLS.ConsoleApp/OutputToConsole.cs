@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TestURLS.UrlLogic;
 
@@ -23,7 +22,7 @@ namespace TestURLS.ConsoleApp
             if (UrlsFromSitemap.Count == 0)
             {
                 OutputTime(UrlFromWeb);
-                _consoleInOut.Write("Urls(html documents) found after crawling a website: " + UrlFromWeb.Count);
+                _consoleInOut.Write($"Urls(html documents) found after crawling a website: {UrlFromWeb.Count}");
             }
             else
             {
@@ -39,8 +38,8 @@ namespace TestURLS.ConsoleApp
                     .Union(_logic.GetExistLists(UrlsFromSitemap, UrlFromWeb))
                     .ToList());
 
-                _consoleInOut.Write("Urls(html documents) found after crawling a website: " + UrlFromWeb.Count);
-                _consoleInOut.Write("Urls found in sitemap: " + UrlsFromSitemap.Count);
+                _consoleInOut.Write($"Urls(html documents) found after crawling a website: {UrlFromWeb.Count}");
+                _consoleInOut.Write($"Urls found in sitemap: {UrlsFromSitemap.Count}");
             }
 
         }
@@ -49,17 +48,20 @@ namespace TestURLS.ConsoleApp
         {
             var urlWithTime = _logic.GetUrlsWithTimeResponse(html);
 
-            urlWithTime = urlWithTime.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            urlWithTime = urlWithTime.OrderBy(value => value.TimeOfResponse).ToList();
 
             var lengthURL = html.Max(x => x.Length) + 4;
 
             _consoleInOut.Write(new string('_', lengthURL + 14));
-            _consoleInOut.Write(String.Format("{0}{1}|{2,-12}{3}", "|", "URL".PadRight(lengthURL, ' '), "Timing (ms)", "|"));
+
+            _consoleInOut.Write(string.Format($"|{"URL".PadRight(lengthURL, ' ')}|{"Timing (ms)",-12}|"));
+
             _consoleInOut.Write(new string('_', lengthURL + 14));
 
             for (int i = 0; i < urlWithTime.Count; i++)
             {
-                _consoleInOut.Write(String.Format("{0}{1}|{2,-12}{3}", "|", ((i + 1) + ") " + urlWithTime.ElementAt(i).Key).PadRight(lengthURL, ' '), urlWithTime.ElementAt(i).Value + "ms", "|"));
+                _consoleInOut.Write(string.Format($"|{((i + 1) + ") " + urlWithTime[i].Link).PadRight(lengthURL, ' ')}|{urlWithTime[i].TimeOfResponse + "ms",-12}|"));
+
                 _consoleInOut.Write(new string('_', lengthURL + 14));
             }
         }
@@ -69,12 +71,15 @@ namespace TestURLS.ConsoleApp
             var lengthURL = html.Max(x => x.Length) + 4;
 
             _consoleInOut.Write(new string('_', lengthURL + 2));
-            _consoleInOut.Write(String.Format("{0}{1}{2}", "|", "URL".PadRight(lengthURL, ' '), "|"));
+
+            _consoleInOut.Write(string.Format($"|{"URL".PadRight(lengthURL, ' ')}|"));
+
             _consoleInOut.Write(new string('_', lengthURL + 2));
 
             for (int i = 0; i < html.Count; i++)
             {
-                _consoleInOut.Write(String.Format("{0}{1}|", "|", ((i + 1) + ") " + html[i]).PadRight(lengthURL, ' ')));
+                _consoleInOut.Write(string.Format($"|{((i + 1) + ") " + html[i]).PadRight(lengthURL, ' ')}|"));
+
                 _consoleInOut.Write(new string('_', lengthURL + 2));
             }
         }
