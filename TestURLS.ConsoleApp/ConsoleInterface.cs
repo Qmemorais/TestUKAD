@@ -24,7 +24,7 @@ namespace TestURLS.ConsoleApp
         public void Start()
         {
             _consoleInOut.Write("Enter URL: ");
-            string urlToScan = _consoleInOut.Read();
+            var urlToScan = _consoleInOut.Read();
 
             var results = _logic.GetResults(urlToScan);
 
