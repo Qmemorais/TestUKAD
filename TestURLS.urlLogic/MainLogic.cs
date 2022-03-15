@@ -1,62 +1,65 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TestURLS.Models;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
     public class MainLogic
     {
-        private readonly LogicScanByHTML _scanByHTML = new LogicScanByHTML();
+        private readonly LogicScanByHtml _scanByHtml = new LogicScanByHtml();
         private readonly LogicScanBySitemap _scanBySitemap = new LogicScanBySitemap();
-        private readonly TimeTracker _getTime = new TimeTracker();
+        private readonly UrlSettings _settings = new UrlSettings();
+        private readonly TimeTracker _timeTracker = new TimeTracker();
 
-        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap)
+        public MainLogic(LogicScanByHtml scanByHtml, LogicScanBySitemap scanBySitemap)
         {
-            _scanByHTML = scanByHTML;
+            _scanByHtml = scanByHtml;
             _scanBySitemap = scanBySitemap;
         }
 
         public MainLogic() { }
 
-        public virtual List<UrlWithScanPage> GetResults(string url)
+        public virtual List<UrlModel> GetResults(string url)
         {
-            var allUrls = new List<UrlWithScanPage>();
+            var allUrls = new List<UrlModel>();
             // scan all exist pages on web
-            allUrls.AddRange(_scanByHTML.GetUrlsFromScanPages(url));
+            allUrls.AddRange(_scanByHtml.GetUrlsFromScanPages(url));
             // find sitemap and if yes: scan
-            allUrls.AddRange(_scanBySitemap.VerifyExistStitemap(url));
+            var linksFromSitemap = _scanBySitemap.GetLinksFromSitemapIfExist(url);
+            allUrls = AddLinksFromSitemap(allUrls, linksFromSitemap);
 
             return allUrls;
         }
-
-        public virtual List<string> GetExistLists(List<UrlWithScanPage> allLinksFromAllScan, string whatWeWant)
+        public virtual IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime)
         {
-            var htmlToScan = allLinksFromAllScan
-                .Where(found => found.FoundAt == whatWeWant)
-                .Select(links => links.Link)
-                .ToList();
-            var htmlToMove = allLinksFromAllScan
-                .Where(found => found.FoundAt != whatWeWant)
-                .Select(links => links.Link)
-                .ToList();
-            var listToReturn = new List<string>();
-
-            foreach (string url in htmlToScan)
-            {// find any url like this. this foreach better then remove http/https
-             // and add after distinct method
-                if (!(htmlToMove.Any(web => web.IndexOf(url.Substring("https".Length)) != -1)))
-                {
-                    listToReturn.Add(url);
-                }
-            }
-            return listToReturn;
-        }
-
-        public virtual List<UrlTimeModel> GetUrlsWithTimeResponse(List<string> htmlToGetTime)
-        {
-            var values = _getTime.GetLinksWithTime(htmlToGetTime);
+            var values = _timeTracker.GetLinksWithTime(htmlToGetTime);
 
             return values;
+        }
+
+        protected virtual List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
+        {
+            var firstLink = allUrls.FirstOrDefault().Link;
+            var domenName = _settings.GetDomenName(firstLink);
+
+            foreach (var linkFromSitemap in linksFromSitemap)
+            {
+                var newLinkFromSitemap = _settings.GetUrlLikeFromWeb(linkFromSitemap,domenName);
+                var linkIsAlreadyExist = allUrls.Any(link => link.Link.Equals(newLinkFromSitemap));
+
+                if (linkIsAlreadyExist)
+                {
+                    allUrls
+                        .FindAll(link => link.Link.Equals(newLinkFromSitemap))
+                        .ForEach(link => link.IsSitemap = true);
+                }
+                else
+                {
+                    allUrls.Add(new UrlModel { Link = linkFromSitemap, IsSitemap = true, IsWeb = false });
+                }
+            }
+
+            return allUrls;
         }
     }
 }
