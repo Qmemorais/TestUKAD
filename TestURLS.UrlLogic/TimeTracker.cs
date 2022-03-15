@@ -13,26 +13,21 @@ namespace TestURLS.UrlLogic
 
             foreach (var modelToGetTime in linksToGetTime)
             {
-                var IsFromSitemap = modelToGetTime.IsSitemap;
-                var IsFromWeb = modelToGetTime.IsWeb;
+                //get time of request
+                var timeToResponse = Stopwatch.StartNew();
+                var request = (HttpWebRequest)WebRequest.Create(modelToGetTime.Link);
+                var response = (HttpWebResponse)request.GetResponse();
 
-                if ((IsFromWeb && IsFromSitemap) || (IsFromWeb && !IsFromSitemap))
+                timeToResponse.Stop();
+
+                var time = (int)timeToResponse.ElapsedMilliseconds;
+                var model = new UrlModelWithResponse()
                 {
-                    //get time of request
-                    var timeToResponse = Stopwatch.StartNew();
-                    var request = (HttpWebRequest)WebRequest.Create(modelToGetTime.Link);
-                    var response = (HttpWebResponse)request.GetResponse();
-                    timeToResponse.Stop();
+                    Link = modelToGetTime.Link,
+                    TimeOfResponse = time
+                };
 
-                    var time = (int)timeToResponse.ElapsedMilliseconds;
-                    var model = new UrlModelWithResponse()
-                    {
-                        Link = modelToGetTime.Link,
-                        TimeOfResponse = time
-                    };
-
-                    urlWithTime.Add(model);
-                }
+                urlWithTime.Add(model);
             }
 
             return urlWithTime;
