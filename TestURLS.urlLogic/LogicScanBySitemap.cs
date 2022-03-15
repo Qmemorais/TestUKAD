@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
@@ -18,35 +17,34 @@ namespace TestURLS.UrlLogic
 
         public LogicScanBySitemap() { }
 
-        public virtual List<UrlWithScanPage> VerifyExistStitemap(string url)
+        public virtual IEnumerable<string> GetLinksFromSitemapIfExist(string url)
         {
-            var linksFromSitemap = new List<UrlWithScanPage>();
-            var mainPartOfUrl = _settingsOfUrl.GetMainUrl(url);
+            var linksFromSitemap = new List<string>();
+            var domenName = _settingsOfUrl.GetDomenName(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetBodyFromUrl(mainPartOfUrl + "/sitemap.xml");
+            var isSitemapExist = _getResponse.GetBodyFromUrl(domenName + "/sitemap.xml");
 
             if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                linksFromSitemap = ScanSitemap(mainPartOfUrl + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(domenName + "/sitemap.xml");
             }
 
             return linksFromSitemap;
         }
 
-        private List<UrlWithScanPage> ScanSitemap(string sitemapUrl)
+        protected virtual List<string> ScanSitemap(string sitemapUrl)
         {
             //create value to get xml-document and data from
             var linksFromSitemap = new List<string>();
-            var xDoc = new XmlDocument();
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(sitemapUrl);
 
-            xDoc.Load(sitemapUrl);
+            var xmlElement = xmlDoc.DocumentElement;
 
-            var xRoot = xDoc.DocumentElement;
-
-            foreach (XmlNode xnode in xRoot)
+            foreach (XmlNode xmlNode in xmlElement)
             {
 
-                foreach (XmlNode childnode in xnode.ChildNodes)
+                foreach (XmlNode childnode in xmlNode.ChildNodes)
                 {
 
                     if (childnode.Name == "loc")
@@ -56,23 +54,11 @@ namespace TestURLS.UrlLogic
                 }
             }
 
-            linksFromSitemap = linksFromSitemap.Distinct().ToList();
+            linksFromSitemap = linksFromSitemap
+                .Distinct()
+                .ToList();
 
-            var listFromSitemap = getClassFromLinks(linksFromSitemap);
-
-            return listFromSitemap;
-        }
-
-        protected List<UrlWithScanPage> getClassFromLinks(List<string> links)
-        {
-            List<UrlWithScanPage> finalListOfLinks = new List<UrlWithScanPage>();
-
-            foreach(string link in links)
-            {
-                finalListOfLinks.Add(new UrlWithScanPage { Link = link, FoundAt = "sitemap" });
-            }
-
-            return finalListOfLinks;
+            return linksFromSitemap;
         }
     }
 }

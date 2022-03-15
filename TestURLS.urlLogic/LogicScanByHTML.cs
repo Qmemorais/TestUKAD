@@ -1,40 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
-using TestURLS.Models;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanByHTML
+    public class LogicScanByHtml
     {
         private readonly UrlSettings _settingsUrl = new UrlSettings();
         private readonly HttpLogic _getHttp = new HttpLogic();
 
-        public LogicScanByHTML(UrlSettings settingOfUrl, HttpLogic getResponse)
+        public LogicScanByHtml(UrlSettings settingOfUrl, HttpLogic getResponse)
         {
             _settingsUrl = settingOfUrl;
             _getHttp = getResponse;
         }
 
-        public LogicScanByHTML() { }
+        public LogicScanByHtml() { }
 
-        public virtual List<UrlWithScanPage> GetUrlsFromScanPages(string url)
+        public virtual IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
-            var mainPartOfUrl = _settingsUrl.GetMainUrl(url);
-            var linksWithScanPage = new List<UrlWithScanPage>();
-            var foundAt = "web";
+            var domenName = _settingsUrl.GetDomenName(url);
+            var linksWithScanPage = new List<UrlModel>();
+            linksWithScanPage.Add(new UrlModel { Link = url, IsSitemap = false, IsWeb = true }); ;
 
-            linksWithScanPage.Add(new UrlWithScanPage { Link = url, FoundAt = foundAt });
-
-            if (mainPartOfUrl != url
-                && (url.Length - mainPartOfUrl.Length) != 1)
+            if (domenName != url && (url.Length - domenName.Length) != 1)
             {
-                var newLink = new UrlWithScanPage { Link = mainPartOfUrl, FoundAt = foundAt };
+                var newLink = new UrlModel { Link = url, IsSitemap = false, IsWeb = true };
                 linksWithScanPage.Add(newLink);
             }
 
-            linksWithScanPage = GetScannedUrls(linksWithScanPage, mainPartOfUrl);
+            linksWithScanPage = GetScannedUrls(linksWithScanPage, domenName);
 
             return linksWithScanPage;
         }
@@ -53,14 +50,14 @@ namespace TestURLS.UrlLogic
             {
                 return true;
             }
-            if (url.LastIndexOf("/") == url.Length - 1)
+            if (url[url.Length - 1] == '/')
             {
                 return true;
             }
             return false;
         }
 
-        protected virtual List<UrlWithScanPage> GetScannedUrls(List<UrlWithScanPage> linksWithScanPage, string mainPartOfUrl)
+        protected virtual List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domenName)
         {
             var scannedPages = new List<string>();
             scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
@@ -74,36 +71,36 @@ namespace TestURLS.UrlLogic
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
 
-                    var matches = GetLinksFromPage(htmlDoc, mainPartOfUrl);
-
-                    matches = matches.Except(scannedPages).ToList();
-                    matches.Distinct();
+                    var matches = GetLinksFromPage(htmlDoc, domenName);
+                    //part of existing pages doesn`t interesting
+                    matches = matches
+                        .Except(scannedPages)
+                        .Distinct()
+                        .ToList();
 
                     scannedPages.AddRange(matches);
 
-                    linksWithScanPage = getMatchesFromScanPage(linksWithScanPage, matches);
+                    linksWithScanPage = GetMatchesFromScanPage(linksWithScanPage, matches);
                 }
             }
 
             return linksWithScanPage;
         }
 
-        protected virtual List<string> GetLinksFromPage(HtmlDocument htmlDoc, string mainPartOfUrl)
+        protected virtual List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domenName)
         {
             var matches = new List<string>();
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
             {
-                var att = link.Attributes["href"];
+                var attributeHref = link.Attributes["href"];
+                attributeHref.Value = _settingsUrl.GetValidUrl(attributeHref.Value, domenName);
 
-                att.Value = _settingsUrl.GetValidUrl(att.Value, mainPartOfUrl);
-                //part of existing pages doesn`t interesting
-
-                if (att.Value.Contains(mainPartOfUrl))
+                if (attributeHref.Value.Contains(domenName))
                 {
-                    var getLinkWithoutSymbols = RemoveSymbols(att.Value);
+                    var getLinkWithoutSymbols = RemoveSymbols(attributeHref.Value);
 
-                    if (IsUrl(att.Value))
+                    if (IsUrl(getLinkWithoutSymbols))
                     {
                         matches.Add(getLinkWithoutSymbols);
                     }
@@ -112,9 +109,9 @@ namespace TestURLS.UrlLogic
             return matches;
         }
 
-        protected virtual UrlWithScanPage AddLinkToClass(string url)
+        protected virtual UrlModel AddLinkToClass(string url)
         {
-            return new UrlWithScanPage { Link = url, FoundAt = "web" };
+            return new UrlModel { Link = url, IsSitemap = false, IsWeb = true };
         }
 
         protected virtual string RemoveSymbols(string link)
@@ -127,13 +124,14 @@ namespace TestURLS.UrlLogic
             return link;
         }
 
-        protected virtual List<UrlWithScanPage> getMatchesFromScanPage(List<UrlWithScanPage> linksWithScanPage, List<string> matches)
+        protected virtual List<UrlModel> GetMatchesFromScanPage(List<UrlModel> linksWithScanPage, List<string> matches)
         {
             if (matches.Count != 0)
             {
                 foreach (string link in matches)
                 {
-                    linksWithScanPage.Add(AddLinkToClass(link));
+                    var newLink = AddLinkToClass(link);
+                    linksWithScanPage.Add(newLink);
                 }
             }
 
