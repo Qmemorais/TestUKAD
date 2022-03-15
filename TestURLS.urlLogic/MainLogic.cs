@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
@@ -8,53 +8,55 @@ namespace TestURLS.UrlLogic
     {
         private readonly LogicScanByHTML _scanByHTML = new LogicScanByHTML();
         private readonly LogicScanBySitemap _scanBySitemap = new LogicScanBySitemap();
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
-        private readonly OutputList _outputList = new OutputList();
+        private readonly TimeTracker _getTime = new TimeTracker();
 
-        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap,
-            GetResponseFromURL getResponse, OutputList outputList)
+        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap)
         {
             _scanByHTML = scanByHTML;
             _scanBySitemap = scanBySitemap;
-            _getResponse = getResponse;
-            _outputList = outputList;
         }
 
         public MainLogic() { }
 
-        public virtual IEnumerable<string> GetResults(string url)
+        public virtual List<UrlWithScanPage> GetResults(string url)
         {
-            //values to work
-            var htmlScan = new List<string>();
-            var htmlSitemap = new List<string>();
-            IEnumerable<string> stringToType = htmlScan;
+            var allUrls = new List<UrlWithScanPage>();
+            // scan all exist pages on web
+            allUrls.AddRange(_scanByHTML.GetUrlsFromScanPages(url));
+            // find sitemap and if yes: scan
+            allUrls.AddRange(_scanBySitemap.VerifyExistStitemap(url));
 
-            try
-            {
-                //try open url
-                var response = _getResponse.GetResponse(url);
-                //if OK add this url to list and work
-                htmlScan.Add(url);
-                //scan all exist pages on web
-                htmlScan = _scanByHTML.ScanWebPages(htmlScan);
-                //find sitemap and if yes: scan
-                htmlSitemap = _scanBySitemap.ScanExistSitemap(url, htmlSitemap);
-                //
-                stringToType = _outputList.OutputTables(htmlScan, htmlSitemap);
-            }
-            catch (WebException e)
-            {
-                //catch 403 and 404 errorsdf
-                WebExceptionStatus status = e.Status;
+            return allUrls;
+        }
 
-                if (status == WebExceptionStatus.ProtocolError)
+        public virtual List<string> GetExistLists(List<UrlWithScanPage> allLinksFromAllScan, string whatWeWant)
+        {
+            var htmlToScan = allLinksFromAllScan
+                .Where(found => found.FoundAt == whatWeWant)
+                .Select(links => links.Link)
+                .ToList();
+            var htmlToMove = allLinksFromAllScan
+                .Where(found => found.FoundAt != whatWeWant)
+                .Select(links => links.Link)
+                .ToList();
+            var listToReturn = new List<string>();
+
+            foreach (string url in htmlToScan)
+            {// find any url like this. this foreach better then remove http/https
+             // and add after distinct method
+                if (!(htmlToMove.Any(web => web.IndexOf(url.Substring("https".Length)) != -1)))
                 {
-                    HttpWebResponse httpResponse = (HttpWebResponse)e.Response;
-                    stringToType = 
-                        (IEnumerable<string>)(IEnumerable)$"{(int)httpResponse.StatusCode} - {httpResponse.StatusCode}";
+                    listToReturn.Add(url);
                 }
             }
-                return stringToType;
+            return listToReturn;
+        }
+
+        public virtual List<UrlTimeModel> GetUrlsWithTimeResponse(List<string> htmlToGetTime)
+        {
+            var values = _getTime.GetLinksWithTime(htmlToGetTime);
+
+            return values;
         }
     }
 }

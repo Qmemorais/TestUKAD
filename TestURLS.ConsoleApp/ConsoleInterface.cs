@@ -1,5 +1,4 @@
-﻿using System;
-using TestURLS.UrlLogic;
+﻿using TestURLS.UrlLogic;
 
 namespace TestURLS.ConsoleApp
 {
@@ -7,11 +6,14 @@ namespace TestURLS.ConsoleApp
     {
         private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
         private readonly MainLogic _logic = new MainLogic();
+        private readonly OutputToConsole _outputToConsole = new OutputToConsole();
 
-        public ConsoleInterface(IConsoleInOut consoleInOut, MainLogic logic)
+        public ConsoleInterface(IConsoleInOut consoleInOut, MainLogic logic,
+            OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
             _logic = logic;
+            _outputToConsole = outputToConsole;
         }
 
         public ConsoleInterface()
@@ -21,22 +23,12 @@ namespace TestURLS.ConsoleApp
 
         public void Start()
         {
-            try
-            {
-                _consoleInOut.Write("Enter URL: ");
-                string urlToScan = _consoleInOut.Read();
+            _consoleInOut.Write("Enter URL: ");
+            var urlToScan = _consoleInOut.Read();
 
-                var resultList = _logic.GetResults(urlToScan);
+            var results = _logic.GetResults(urlToScan);
 
-                foreach (string s in resultList)
-                {
-                    _consoleInOut.Write(s);
-                }
-            }
-            catch(Exception ex)
-            {
-                _consoleInOut.Write(ex.Message);
-            }
+            _outputToConsole.Write(results);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();

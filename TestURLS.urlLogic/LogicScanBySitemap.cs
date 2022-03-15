@@ -1,70 +1,78 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
+using TestURLS.Models;
 
 namespace TestURLS.UrlLogic
 {
     public class LogicScanBySitemap
     {
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
-        private readonly GetSettingFromURL _settingsOfURL = new GetSettingFromURL();
+        private readonly HttpLogic _getResponse = new HttpLogic();
+        private readonly UrlSettings _settingsOfUrl = new UrlSettings();
 
-        public LogicScanBySitemap(GetResponseFromURL getResponse, GetSettingFromURL settingsOfURL)
+        public LogicScanBySitemap(HttpLogic getResponse, UrlSettings settingsOfUrl)
         {
             _getResponse = getResponse;
-            _settingsOfURL = settingsOfURL;
+            _settingsOfUrl = settingsOfUrl;
         }
 
         public LogicScanBySitemap() { }
 
-        public virtual List<string> ScanExistSitemap(string url, List<string> htmlSitemap)
+        public virtual List<UrlWithScanPage> VerifyExistStitemap(string url)
         {
-            var firstUrl = _settingsOfURL.GetMainURL(url);
-            try
+            var linksFromSitemap = new List<UrlWithScanPage>();
+            var mainPartOfUrl = _settingsOfUrl.GetMainUrl(url);
+            //try open page/sitemap.xml
+            var isSitemapExist = _getResponse.GetBodyFromUrl(mainPartOfUrl + "/sitemap.xml");
+
+            if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                //try open page/sitemap.xml
-                var isSitemapExist = _settingsOfURL.IsPageHTML(firstUrl + "/sitemap.xml");
-                htmlSitemap = ScanSitemap(firstUrl + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(mainPartOfUrl + "/sitemap.xml");
             }
-            catch
-            {
-                //if it doesn`t exist try to find url of sitemap
-                var response = _getResponse.GetResponse(firstUrl + "/robots.txt");
-                var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(1251));
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line.IndexOf("Sitemap: ") != -1)
-                    {
-                        htmlSitemap = ScanSitemap(line[9..]);
-                    }
-                }
-                response.Close();
-            }
-            return htmlSitemap;
+
+            return linksFromSitemap;
         }
 
-        private List<string> ScanSitemap(string sitemapURL)
+        private List<UrlWithScanPage> ScanSitemap(string sitemapUrl)
         {
-            var htmlSitemap = new List<string>();
             //create value to get xml-document and data from
+            var linksFromSitemap = new List<string>();
             var xDoc = new XmlDocument();
-            try
+
+            xDoc.Load(sitemapUrl);
+
+            var xRoot = xDoc.DocumentElement;
+
+            foreach (XmlNode xnode in xRoot)
             {
-                xDoc.Load(sitemapURL);
-                XmlElement xRoot = xDoc.DocumentElement;
-                foreach (XmlNode xnode in xRoot)
-                    foreach (XmlNode childnode in xnode.ChildNodes)
-                        if (childnode.Name == "loc")
-                            htmlSitemap.Add(childnode.InnerText);
-                htmlSitemap = htmlSitemap.Distinct().ToList();
+
+                foreach (XmlNode childnode in xnode.ChildNodes)
+                {
+
+                    if (childnode.Name == "loc")
+                    {
+                        linksFromSitemap.Add(childnode.InnerText);
+                    }    
+                }
             }
-            catch
+
+            linksFromSitemap = linksFromSitemap.Distinct().ToList();
+
+            var listFromSitemap = getClassFromLinks(linksFromSitemap);
+
+            return listFromSitemap;
+        }
+
+        protected List<UrlWithScanPage> getClassFromLinks(List<string> links)
+        {
+            List<UrlWithScanPage> finalListOfLinks = new List<UrlWithScanPage>();
+
+            foreach(string link in links)
             {
+                finalListOfLinks.Add(new UrlWithScanPage { Link = link, FoundAt = "sitemap" });
             }
-            return htmlSitemap;
+
+            return finalListOfLinks;
         }
     }
 }
