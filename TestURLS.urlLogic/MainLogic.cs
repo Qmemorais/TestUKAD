@@ -40,7 +40,7 @@ namespace TestURLS.UrlLogic
         protected virtual List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
         {
             var firstLink = allUrls.FirstOrDefault().Link;
-            var domenName = _settings.GetDomenName(firstLink);
+            var domenName = _settings.GetDomainName(firstLink);
 
             foreach (var linkFromSitemap in linksFromSitemap)
             {

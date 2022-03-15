@@ -21,17 +21,18 @@ namespace TestURLS.UrlLogic
         public virtual IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
-            var domenName = _settingsUrl.GetDomenName(url);
+            var domainName = _settingsUrl.GetDomainName(url);
             var linksWithScanPage = new List<UrlModel>();
-            linksWithScanPage.Add(new UrlModel { Link = url, IsSitemap = false, IsWeb = true }); ;
 
-            if (domenName != url && (url.Length - domenName.Length) != 1)
+            linksWithScanPage.Add(new UrlModel { Link = url, IsWeb = true });
+
+            if (domainName != url && (url.Length - domainName.Length) != 1)
             {
-                var newLink = new UrlModel { Link = url, IsSitemap = false, IsWeb = true };
+                var newLink = new UrlModel { Link = url, IsWeb = true };
                 linksWithScanPage.Add(newLink);
             }
 
-            linksWithScanPage = GetScannedUrls(linksWithScanPage, domenName);
+            linksWithScanPage = GetScannedUrls(linksWithScanPage, domainName);
 
             return linksWithScanPage;
         }
@@ -57,7 +58,7 @@ namespace TestURLS.UrlLogic
             return false;
         }
 
-        protected virtual List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domenName)
+        protected virtual List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domainName)
         {
             var scannedPages = new List<string>();
             scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
@@ -71,7 +72,7 @@ namespace TestURLS.UrlLogic
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
 
-                    var matches = GetLinksFromPage(htmlDoc, domenName);
+                    var matches = GetLinksFromPage(htmlDoc, domainName);
                     //part of existing pages doesn`t interesting
                     matches = matches
                         .Except(scannedPages)
@@ -111,7 +112,7 @@ namespace TestURLS.UrlLogic
 
         protected virtual UrlModel AddLinkToClass(string url)
         {
-            return new UrlModel { Link = url, IsSitemap = false, IsWeb = true };
+            return new UrlModel { Link = url, IsWeb = true };
         }
 
         protected virtual string RemoveSymbols(string link)

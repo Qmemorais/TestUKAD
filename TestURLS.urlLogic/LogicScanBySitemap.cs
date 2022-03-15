@@ -20,13 +20,13 @@ namespace TestURLS.UrlLogic
         public virtual IEnumerable<string> GetLinksFromSitemapIfExist(string url)
         {
             var linksFromSitemap = new List<string>();
-            var domenName = _settingsOfUrl.GetDomenName(url);
+            var domainName = _settingsOfUrl.GetDomainName(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetBodyFromUrl(domenName + "/sitemap.xml");
+            var isSitemapExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
 
             if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                linksFromSitemap = ScanSitemap(domenName + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(domainName + "/sitemap.xml");
             }
 
             return linksFromSitemap;
