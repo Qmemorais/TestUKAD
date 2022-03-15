@@ -19,10 +19,10 @@ namespace TestURLS.ConsoleApp
         public virtual void WriteLinksWithoutTime(List<UrlModel> allLinksFromSitemapAndScan)
         {
             _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
-            OutputURLS(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsWeb == false).ToList());
+            OutputUrls(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsWeb == false).ToList());
 
             _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
-            OutputURLS(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsSitemap == false).ToList());
+            OutputUrls(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsSitemap == false).ToList());
         }
 
         public virtual void WriteLinksWithTime(List<UrlModelWithResponse> linksWithResponseTime)
@@ -69,7 +69,7 @@ namespace TestURLS.ConsoleApp
             _consoleInOut.Write(stringToWrite.ToString());
         }
 
-        protected virtual void OutputURLS(List<UrlModel> linksToOutput)
+        protected virtual void OutputUrls(List<UrlModel> linksToOutput)
         {
             var stringToWrite = new StringBuilder();
             var lengthURL = linksToOutput.Max(link => link.Link.Length) + 4;
