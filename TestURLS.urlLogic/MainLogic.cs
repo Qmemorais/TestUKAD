@@ -45,12 +45,12 @@ namespace TestURLS.UrlLogic
             foreach (var linkFromSitemap in linksFromSitemap)
             {
                 var newLinkFromSitemap = _settings.GetUrlLikeFromWeb(linkFromSitemap,domenName);
-                var linkIsAlreadyExist = allUrls.Any(link => link.Link.Equals(newLinkFromSitemap));
+                var linkIsAlreadyExist = allUrls.Any(link => string.Equals(link.Link, newLinkFromSitemap));
 
                 if (linkIsAlreadyExist)
                 {
                     allUrls
-                        .FindAll(link => link.Link.Equals(newLinkFromSitemap))
+                        .FindAll(link => string.Equals(link.Link, newLinkFromSitemap))
                         .ForEach(link => link.IsSitemap = true);
                 }
                 else
