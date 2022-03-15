@@ -1,92 +1,98 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TestURLS.UrlLogic;
-using TestURLS.Models;
+using System.Text;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.ConsoleApp
 {
     public class OutputToConsole
     {
-        private readonly MainLogic _logic = new MainLogic();
         private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
 
-        public OutputToConsole(IConsoleInOut consoleInOut, MainLogic logic)
+        public OutputToConsole(IConsoleInOut consoleInOut)
         {
             _consoleInOut = consoleInOut;
-            _logic = logic;
         }
 
         public OutputToConsole() { }
 
-        public virtual void Write(List<UrlWithScanPage> allLinksFromSitemapAndScan)
+        public virtual void WriteLinksWithoutTime(List<UrlModel> allLinksFromSitemapAndScan)
         {
-            if (!allLinksFromSitemapAndScan.Any(link => link.FoundAt == "sitemap"))
-            {
-                OutputTime(allLinksFromSitemapAndScan.Select(links => links.Link).ToList());
-                _consoleInOut.Write($"Urls(html documents) found after crawling a website: {allLinksFromSitemapAndScan.Count}");
-            }
-            else
-            {
+            _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
+            OutputURLS(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsWeb == false).ToList());
 
-                _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
-                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan, "sitemap"));
-
-                _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
-                OutputURLS(_logic.GetExistLists(allLinksFromSitemapAndScan, "web"));
-
-                _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
-
-                var getLinksFromWeb = allLinksFromSitemapAndScan
-                    .Where(link => link.FoundAt == "web")
-                    .Select(links => links.Link)
-                    .ToList();
-                var getlinksToDistinct = _logic.GetExistLists(allLinksFromSitemapAndScan, "sitemap");
-                OutputTime(getLinksFromWeb.Union(getlinksToDistinct).ToList());
-
-                _consoleInOut.Write($"Urls(html documents) found after crawling a website: {allLinksFromSitemapAndScan.Count(link => link.FoundAt == "web")}");
-                _consoleInOut.Write($"Urls found in sitemap: {allLinksFromSitemapAndScan.Count(link => link.FoundAt == "sitemap")}");
-            }
-
+            _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml");
+            OutputURLS(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsSitemap == false).ToList());
         }
 
-        protected virtual void OutputTime(List<string> linkToOutput)
+        public virtual void WriteLinksWithTime(List<UrlModelWithResponse> linksWithResponseTime)
         {
-            var urlWithTime = _logic.GetUrlsWithTimeResponse(linkToOutput);
-
-            urlWithTime = urlWithTime.OrderBy(value => value.TimeOfResponse).ToList();
-
-            var lengthURL = linkToOutput.Max(x => x.Length) + 4;
-
-            _consoleInOut.Write(new string('_', lengthURL + 14));
-
-            _consoleInOut.Write($"|{"URL".PadRight(lengthURL, ' ')}|{"Timing (ms)",-12}|");
-
-            _consoleInOut.Write(new string('_', lengthURL + 14));
-
-            for (int i = 0; i < urlWithTime.Count; i++)
-            {
-                _consoleInOut.Write($"|{((i + 1) + ") " + urlWithTime[i].Link).PadRight(lengthURL, ' ')}|{urlWithTime[i].TimeOfResponse + "ms",-12}|");
-
-                _consoleInOut.Write(new string('_', lengthURL + 14));
-            }
+            _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
+            OutputTime(linksWithResponseTime);
         }
 
-        protected virtual void OutputURLS(List<string> linksToOutput)
+        public virtual void WriteCountLinks(List<UrlModel> allLinksFromSitemapAndScan)
         {
-            var lengthURL = linksToOutput.Max(link => link.Length) + 4;
+            _consoleInOut.Write($"Urls(html documents) found after crawling a website: {allLinksFromSitemapAndScan.Count(link => link.IsWeb == true)}");
+            _consoleInOut.Write($"Urls found in sitemap: {allLinksFromSitemapAndScan.Count(link => link.IsSitemap == true)}");
+        }
 
-            _consoleInOut.Write(new string('_', lengthURL + 2));
+        protected virtual void OutputTime(List<UrlModelWithResponse> linksToOutput)
+        {
+            var stringToWrite = new StringBuilder();
+            linksToOutput = linksToOutput.OrderBy(value => value.TimeOfResponse).ToList();
 
-            _consoleInOut.Write($"|{"URL".PadRight(lengthURL, ' ')}|");
+            var lengthURL = linksToOutput.Max(link => link.Link.Length) + 4;
+            var stringWithSymbols = new string('_', lengthURL + 14);
 
-            _consoleInOut.Write(new string('_', lengthURL + 2));
+            stringToWrite.AppendLine(stringWithSymbols);
 
-            for (int i = 0; i < linksToOutput.Count; i++)
+            stringToWrite.Append($"|{"URL".PadRight(lengthURL, ' ')}")
+                .AppendLine($"|{ "Timing (ms)",-12}|");
+
+            stringToWrite.AppendLine(stringWithSymbols);
+
+            var numberOfLink = 1;
+
+            foreach(var modelWitTime in linksToOutput)
             {
-                _consoleInOut.Write($"|{((i + 1) + ") " + linksToOutput[i]).PadRight(lengthURL, ' ')}|");
+                var linkToWrite = $"{numberOfLink}) {modelWitTime.Link}";
+                var timeToWrite = $"{modelWitTime.TimeOfResponse}ms";
+                stringToWrite
+                    .Append($"|{linkToWrite.PadRight(lengthURL, ' ')}")
+                    .AppendLine($"|{timeToWrite,-12}|");
 
-                _consoleInOut.Write(new string('_', lengthURL + 2));
+                stringToWrite.AppendLine(stringWithSymbols);
+                numberOfLink++;
             }
+
+            _consoleInOut.Write(stringToWrite.ToString());
+        }
+
+        protected virtual void OutputURLS(List<UrlModel> linksToOutput)
+        {
+            var stringToWrite = new StringBuilder();
+            var lengthURL = linksToOutput.Max(link => link.Link.Length) + 4;
+            var stringWithSymbols = new string('_', lengthURL + 2);
+
+            stringToWrite.AppendLine(stringWithSymbols);
+
+            stringToWrite.AppendLine($"|{"URL".PadRight(lengthURL, ' ')}|");
+
+            stringToWrite.AppendLine(stringWithSymbols);
+
+            var numberOfLink = 1;
+
+            foreach (var modelWitTime in linksToOutput)
+            {
+                var linkToWrite = $"{numberOfLink}) {modelWitTime.Link}";
+                stringToWrite.AppendLine($"|{linkToWrite.PadRight(lengthURL, ' ')}|");
+                stringToWrite.AppendLine(stringWithSymbols);
+
+                numberOfLink++;
+            }
+
+            _consoleInOut.Write(stringToWrite.ToString());
         }
 
     }
