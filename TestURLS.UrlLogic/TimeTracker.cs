@@ -1,34 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using TestURLS.Models;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
     public class TimeTracker
     {
-        public virtual List<UrlTimeModel> GetLinksWithTime(List<string> linksToGetTime)
+        public virtual IEnumerable<UrlModelWithResponse> GetLinksWithTime(List<UrlModel> linksToGetTime)
         {
-            List<UrlTimeModel> urlWithTime = new List<UrlTimeModel>();
+            List<UrlModelWithResponse> urlWithTime = new List<UrlModelWithResponse>();
 
-            foreach (string url in linksToGetTime)
+            foreach (var modelToGetTime in linksToGetTime)
             {
-                //get time of request
-                var timeToResponse = Stopwatch.StartNew();
+                var IsFromSitemap = modelToGetTime.IsSitemap;
+                var IsFromWeb = modelToGetTime.IsWeb;
 
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                var response = (HttpWebResponse)request.GetResponse();
-
-                timeToResponse.Stop();
-
-                var time = timeToResponse.ElapsedMilliseconds;
-                var model = new UrlTimeModel()
+                if ((IsFromWeb && IsFromSitemap) || (IsFromWeb && !IsFromSitemap))
                 {
-                    Link = url,
-                    TimeOfResponse = time
-                };
+                    //get time of request
+                    var timeToResponse = Stopwatch.StartNew();
+                    var request = (HttpWebRequest)WebRequest.Create(modelToGetTime.Link);
+                    var response = (HttpWebResponse)request.GetResponse();
+                    timeToResponse.Stop();
 
-                urlWithTime.Add(model);
+                    var time = (int)timeToResponse.ElapsedMilliseconds;
+                    var model = new UrlModelWithResponse()
+                    {
+                        Link = modelToGetTime.Link,
+                        TimeOfResponse = time
+                    };
+
+                    urlWithTime.Add(model);
+                }
             }
 
             return urlWithTime;
