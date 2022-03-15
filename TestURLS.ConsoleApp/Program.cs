@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            ConsoleInterface consoleInterface = new ConsoleInterface();
+            LogicToConsole consoleInterface = new LogicToConsole();
 
             consoleInterface.Start();
         }
