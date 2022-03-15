@@ -6,10 +6,10 @@ namespace TestURLS.UrlLogic
 {
     public class HttpLogic
     {
-
         public virtual string GetBodyFromUrl(string url)
         {
             string bodyTxt;
+
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(url);
@@ -26,6 +26,7 @@ namespace TestURLS.UrlLogic
                 throw;
                 //TODO: Add logger here
             }
+
             return bodyTxt;
         }
     }
