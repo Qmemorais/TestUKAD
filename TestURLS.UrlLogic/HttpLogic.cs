@@ -9,8 +9,7 @@ namespace TestURLS.UrlLogic
 
         public virtual string GetBodyFromUrl(string url)
         {
-            var bodyTxt = string.Empty;
-
+            string bodyTxt;
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(url);
@@ -22,8 +21,9 @@ namespace TestURLS.UrlLogic
 
                 response.Close();
             }
-            catch(WebException ex)
+            catch (WebException)
             {
+                throw;
                 //TODO: Add logger here
             }
             return bodyTxt;

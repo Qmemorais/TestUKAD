@@ -2,7 +2,7 @@
 {
     public interface IConsoleInOut
     {
-        public void Write(string s);
+        public void Write(string stringToOutput);
 
         public string Read();
     }
