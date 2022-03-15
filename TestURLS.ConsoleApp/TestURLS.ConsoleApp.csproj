@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\TestURLS.UrlLogic\TestURLS.UrlLogic.csproj" />
   </ItemGroup>
 
