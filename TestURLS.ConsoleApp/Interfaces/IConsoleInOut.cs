@@ -1,4 +1,4 @@
-﻿namespace TestURLS.ConsoleApp
+﻿namespace TestURLS.ConsoleApp.Interfaces
 {
     public interface IConsoleInOut
     {
