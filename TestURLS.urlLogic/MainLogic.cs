@@ -1,25 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class MainLogic
+    public class MainLogic : IMainLogic
     {
-        private readonly LogicScanByHtml _scanByHtml = new LogicScanByHtml();
-        private readonly LogicScanBySitemap _scanBySitemap = new LogicScanBySitemap();
-        private readonly UrlSettings _settings = new UrlSettings();
-        private readonly TimeTracker _timeTracker = new TimeTracker();
+        private readonly ILogicScanByHtml _scanByHtml;
+        private readonly ILogicScanBySitemap _scanBySitemap;
+        private readonly IUrlSettings _settings;
+        private readonly ITimeTracker _timeTracker;
 
-        public MainLogic(LogicScanByHtml scanByHtml, LogicScanBySitemap scanBySitemap)
+        public MainLogic(
+            ILogicScanByHtml scanByHtml, 
+            ILogicScanBySitemap scanBySitemap,
+            IUrlSettings settings,
+            ITimeTracker timeTracker)
         {
             _scanByHtml = scanByHtml;
             _scanBySitemap = scanBySitemap;
+            _settings = settings;
+            _timeTracker = timeTracker;
         }
-
-        public MainLogic() { }
-
-        public virtual List<UrlModel> GetResults(string url)
+        public List<UrlModel> GetResults(string url)
         {
             var allUrls = new List<UrlModel>();
             // scan all exist pages on web
@@ -30,7 +34,8 @@ namespace TestURLS.UrlLogic
 
             return allUrls;
         }
-        public virtual IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime)
+
+        public IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime)
         {
             var values = _timeTracker.GetLinksWithTime(htmlToGetTime);
 

@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanBySitemap
+    public class LogicScanBySitemap: ILogicScanBySitemap
     {
-        private readonly HttpLogic _getResponse = new HttpLogic();
-        private readonly UrlSettings _settingsOfUrl = new UrlSettings();
+        private readonly IHttpLogic _getResponse;
+        private readonly IUrlSettings _settingsOfUrl;
 
-        public LogicScanBySitemap(HttpLogic getResponse, UrlSettings settingsOfUrl)
+        public LogicScanBySitemap(IHttpLogic getResponse, IUrlSettings settingsOfUrl)
         {
             _getResponse = getResponse;
             _settingsOfUrl = settingsOfUrl;
         }
 
-        public LogicScanBySitemap() { }
-
-        public virtual IEnumerable<string> GetLinksFromSitemapIfExist(string url)
+        public IEnumerable<string> GetLinksFromSitemapIfExist(string url)
         {
             var linksFromSitemap = new List<string>();
             var domainName = _settingsOfUrl.GetDomainName(url);

@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TestURLS.ConsoleApp.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.ConsoleApp
 {
-    public class OutputToConsole
+    public class OutputToConsole : IOutputToConsole
     {
-        private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
+        private readonly IConsoleInOut _consoleInOut;
 
         public OutputToConsole(IConsoleInOut consoleInOut)
         {
             _consoleInOut = consoleInOut;
         }
-
-        public OutputToConsole() { }
 
         public virtual void WriteLinksWithoutTime(List<UrlModel> allLinksFromSitemapAndScan)
         {

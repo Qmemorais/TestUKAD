@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class UrlSettings
+    public class UrlSettings : IUrlSettings
     {
-        public virtual string GetDomainName(string url)
+        public string GetDomainName(string url)
         {
             var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
             var getPartAfterHttp = url.Split("://").LastOrDefault();
@@ -21,7 +22,7 @@ namespace TestURLS.UrlLogic
             return url;
         }
 
-        public virtual string GetValidUrl(string url, string domainName)
+        public string GetValidUrl(string url, string domainName)
         {
             if (!url.Contains("http"))
             {
@@ -42,7 +43,7 @@ namespace TestURLS.UrlLogic
             return url;
         }
 
-        public virtual string GetUrlLikeFromWeb(string url, string domainName)
+        public string GetUrlLikeFromWeb(string url, string domainName)
         {
             if (url.Contains(domainName))
             {

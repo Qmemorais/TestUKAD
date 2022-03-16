@@ -1,4 +1,5 @@
 ﻿using System;
+using TestURLS.ConsoleApp.Interfaces;
 
 namespace TestURLS.ConsoleApp
 {

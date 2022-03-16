@@ -1,27 +1,23 @@
 ﻿using System.Linq;
-using TestURLS.UrlLogic;
+using TestURLS.ConsoleApp.Interfaces;
+using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.ConsoleApp
 {
-    public class LogicToConsole
+    public class LogicToConsole : ILogicToConsole
     {
-        private readonly IConsoleInOut _consoleInOut = new ConsoleInOut();
-        private readonly MainLogic _logic = new MainLogic();
-        private readonly OutputToConsole _outputToConsole = new OutputToConsole();
+        private readonly IConsoleInOut _consoleInOut;
+        private readonly IMainLogic _logic;
+        private readonly IOutputToConsole _outputToConsole;
 
         public LogicToConsole(
             IConsoleInOut consoleInOut,
-            MainLogic logic,
-            OutputToConsole outputToConsole)
+            IMainLogic logic,
+            IOutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
             _logic = logic;
             _outputToConsole = outputToConsole;
-        }
-
-        public LogicToConsole()
-        {
-
         }
 
         public void Start()

@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
+using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanByHtml
+    public class LogicScanByHtml: ILogicScanByHtml
     {
-        private readonly UrlSettings _settingsUrl = new UrlSettings();
-        private readonly HttpLogic _getHttp = new HttpLogic();
+        private readonly IUrlSettings _settingsUrl;
+        private readonly IHttpLogic _getHttp;
 
-        public LogicScanByHtml(UrlSettings settingOfUrl, HttpLogic getResponse)
+        public LogicScanByHtml(IUrlSettings settingOfUrl, IHttpLogic getResponse)
         {
             _settingsUrl = settingOfUrl;
             _getHttp = getResponse;
@@ -18,7 +19,7 @@ namespace TestURLS.UrlLogic
 
         public LogicScanByHtml() { }
 
-        public virtual IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
+        public IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
             var domainName = _settingsUrl.GetDomainName(url);
