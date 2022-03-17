@@ -31,7 +31,7 @@ namespace TestURLS.UrlLogic
             return linksFromSitemap;
         }
 
-        protected virtual List<string> ScanSitemap(string sitemapUrl)
+        private List<string> ScanSitemap(string sitemapUrl)
         {
             //create value to get xml-document and data from
             var linksFromSitemap = new List<string>();

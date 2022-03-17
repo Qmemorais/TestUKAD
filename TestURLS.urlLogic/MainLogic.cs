@@ -9,7 +9,7 @@ namespace TestURLS.UrlLogic
     {
         private readonly ILogicScanByHtml _scanByHtml;
         private readonly ILogicScanBySitemap _scanBySitemap;
-        private readonly IUrlSettings _settings;
+        private readonly IUrlSettings _urlSettings;
         private readonly ITimeTracker _timeTracker;
 
         public MainLogic(
@@ -20,7 +20,7 @@ namespace TestURLS.UrlLogic
         {
             _scanByHtml = scanByHtml;
             _scanBySitemap = scanBySitemap;
-            _settings = settings;
+            _urlSettings = settings;
             _timeTracker = timeTracker;
         }
         public List<UrlModel> GetResults(string url)
@@ -42,14 +42,14 @@ namespace TestURLS.UrlLogic
             return values;
         }
 
-        protected virtual List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
+        private List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
         {
             var firstLink = allUrls.FirstOrDefault().Link;
-            var domenName = _settings.GetDomainName(firstLink);
+            var domainName = _urlSettings.GetDomainName(firstLink);
 
             foreach (var linkFromSitemap in linksFromSitemap)
             {
-                var newLinkFromSitemap = _settings.GetUrlLikeFromWeb(linkFromSitemap,domenName);
+                var newLinkFromSitemap = _urlSettings.GetUrlLikeFromWeb(linkFromSitemap,domainName);
                 var linkIsAlreadyExist = allUrls.Any(link => string.Equals(link.Link, newLinkFromSitemap));
 
                 if (linkIsAlreadyExist)

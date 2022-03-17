@@ -33,7 +33,7 @@ namespace TestURLS.UrlLogic
             return url;
         }
 
-        protected virtual string AddSlashAfterMainPartIfNoExist(string url, string domainName)
+        private string AddSlashAfterMainPartIfNoExist(string url, string domainName)
         {
             if (!url.Contains(domainName + "/"))
             {
@@ -56,7 +56,7 @@ namespace TestURLS.UrlLogic
             }
         }
 
-        protected virtual string GetUrlFromSitemapToWeb(string url, string domainName)
+        private string GetUrlFromSitemapToWeb(string url, string domainName)
         {
             var getIndexOfFirstDotFromWeb = domainName.IndexOf(".");
             var getIndexOfFirstDotFromSitemap = url.IndexOf(".");

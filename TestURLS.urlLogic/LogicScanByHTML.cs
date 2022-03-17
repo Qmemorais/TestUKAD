@@ -59,7 +59,7 @@ namespace TestURLS.UrlLogic
             return false;
         }
 
-        protected virtual List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domainName)
+        private List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domainName)
         {
             var scannedPages = new List<string>();
             scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
@@ -89,7 +89,7 @@ namespace TestURLS.UrlLogic
             return linksWithScanPage;
         }
 
-        protected virtual List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domenName)
+        private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domenName)
         {
             var matches = new List<string>();
 
@@ -111,12 +111,12 @@ namespace TestURLS.UrlLogic
             return matches;
         }
 
-        protected virtual UrlModel AddLinkToClass(string url)
+        private UrlModel AddLinkToClass(string url)
         {
             return new UrlModel { Link = url, IsWeb = true };
         }
 
-        protected virtual string RemoveSymbols(string link)
+        private string RemoveSymbols(string link)
         {
             if(link.Contains("#"))
             {
@@ -126,7 +126,7 @@ namespace TestURLS.UrlLogic
             return link;
         }
 
-        protected virtual List<UrlModel> GetMatchesFromScanPage(List<UrlModel> linksWithScanPage, List<string> matches)
+        private List<UrlModel> GetMatchesFromScanPage(List<UrlModel> linksWithScanPage, List<string> matches)
         {
             if (matches.Count != 0)
             {
