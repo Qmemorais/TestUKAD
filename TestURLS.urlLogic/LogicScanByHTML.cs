@@ -16,9 +16,6 @@ namespace TestURLS.UrlLogic
             _settingsUrl = settingOfUrl;
             _getHttp = getResponse;
         }
-
-        public LogicScanByHtml() { }
-
         public IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
@@ -38,7 +35,7 @@ namespace TestURLS.UrlLogic
             return linksWithScanPage;
         }
 
-        protected virtual bool IsUrl(string url)
+        private bool IsUrl(string url)
         {
             if (url.Contains(".html"))
             {
@@ -89,16 +86,16 @@ namespace TestURLS.UrlLogic
             return linksWithScanPage;
         }
 
-        private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domenName)
+        private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domainName)
         {
             var matches = new List<string>();
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
             {
                 var attributeHref = link.Attributes["href"];
-                attributeHref.Value = _settingsUrl.GetValidUrl(attributeHref.Value, domenName);
+                attributeHref.Value = _settingsUrl.GetValidUrl(attributeHref.Value, domainName);
 
-                if (attributeHref.Value.Contains(domenName))
+                if (attributeHref.Value.Contains(domainName))
                 {
                     var getLinkWithoutSymbols = RemoveSymbols(attributeHref.Value);
 
