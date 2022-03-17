@@ -25,7 +25,7 @@ namespace TestURLS.UrlLogic
 
             if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                linksFromSitemap = ScanSitemap(domainName + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(isSitemapExist);
             }
 
             return linksFromSitemap;
@@ -36,16 +36,14 @@ namespace TestURLS.UrlLogic
             //create value to get xml-document and data from
             var linksFromSitemap = new List<string>();
             var xmlDoc = new XmlDocument();
-            xmlDoc.Load(sitemapUrl);
+            xmlDoc.LoadXml(sitemapUrl);
 
             var xmlElement = xmlDoc.DocumentElement;
 
             foreach (XmlNode xmlNode in xmlElement)
             {
-
                 foreach (XmlNode childnode in xmlNode.ChildNodes)
                 {
-
                     if (childnode.Name == "loc")
                     {
                         linksFromSitemap.Add(childnode.InnerText);
