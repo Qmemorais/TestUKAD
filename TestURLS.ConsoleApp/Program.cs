@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TestURLS.ConsoleApp.Interfaces;
-using TestURLS.UrlLogic;
-using TestURLS.UrlLogic.Interfaces;
+using TestURLS.ConsoleApp.ServiceAddScoped;
+using TestURLS.UrlLogic.ServiceAddScoped;
 
 namespace TestURLS.ConsoleApp
 {
@@ -19,18 +18,12 @@ namespace TestURLS.ConsoleApp
 
         private static IServiceCollection ConfigureServices()
         {
+            var servicesFromConsole = new ConfigurationConsoleService();
+            var servicesFromLogic = new ConfigurationToServices();
             var services = new ServiceCollection();
-            services
-                    .AddScoped<IConsoleInOut, ConsoleInOut>()
-                    .AddScoped<LogicToConsole>()
-                    .AddScoped<IOutputToConsole, OutputToConsole>()
 
-                    .AddScoped<IHttpLogic, HttpLogic>()
-                    .AddScoped<ILogicScanByHtml, LogicScanByHtml>()
-                    .AddScoped<ILogicScanBySitemap, LogicScanBySitemap>()
-                    .AddScoped<IMainLogic, MainLogic>()
-                    .AddScoped<ITimeTracker, TimeTracker>()
-                    .AddScoped<IUrlSettings, UrlSettings>();
+            services = servicesFromConsole.AddServicesFromConsole(services);
+            services = servicesFromLogic.AddServicesFromLogic(services);
 
             return services;
         }
