@@ -4,7 +4,7 @@ using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.ConsoleApp
 {
-    public class LogicToConsole : ILogicToConsole
+    public class LogicToConsole
     {
         private readonly IConsoleInOut _consoleInOut;
         private readonly IMainLogic _logic;
