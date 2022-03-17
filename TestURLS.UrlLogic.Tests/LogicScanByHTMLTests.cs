@@ -26,7 +26,7 @@ namespace TestURLS.UrlLogic.Tests
         }
 
         [Test]
-        public void GetUrlsFromScanPages_InvalidString_WebExceptionMeaasge()
+        public void GetUrlsFromScanPages_InvalidString_WebExceptionMessage()
         {
             //arrange
             var invalidUrl = "hahahah";
