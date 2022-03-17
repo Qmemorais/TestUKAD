@@ -42,7 +42,8 @@ namespace TestURLS.ConsoleApp.Tests
                 .Setup(x => x.GetResults(""))
                 .Throws(new WebException(writeLineRes));
             //assert
-            Assert.Throws<WebException>(() => _consoleInterface.Start()).Message.Equals(writeLineRes);
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
