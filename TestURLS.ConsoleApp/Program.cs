@@ -18,12 +18,10 @@ namespace TestURLS.ConsoleApp
 
         private static IServiceCollection ConfigureServices()
         {
-            var servicesFromConsole = new ConfigurationConsoleService();
-            var servicesFromLogic = new ConfigurationToServices();
             var services = new ServiceCollection();
 
-            services = servicesFromConsole.AddServicesFromConsole(services);
-            services = servicesFromLogic.AddServicesFromLogic(services);
+            services = (ServiceCollection)ConfigurationConsoleService.AddServicesFromConsole(services);
+            services = (ServiceCollection)ConfigurationToServices.AddServicesFromLogic(services);
 
             return services;
         }

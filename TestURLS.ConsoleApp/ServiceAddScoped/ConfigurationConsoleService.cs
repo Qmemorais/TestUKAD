@@ -3,14 +3,14 @@ using TestURLS.ConsoleApp.Interfaces;
 
 namespace TestURLS.ConsoleApp.ServiceAddScoped
 {
-    public class ConfigurationConsoleService
+    public static class ConfigurationConsoleService
     {
-        public ServiceCollection AddServicesFromConsole(ServiceCollection services)
+        public static IServiceCollection AddServicesFromConsole(this IServiceCollection services)
         {
             services
                 .AddScoped<IConsoleInOut, ConsoleInOut>()
                 .AddScoped<LogicToConsole>()
-                .AddScoped<OutputToConsole>();
+                .AddScoped<IOutputToConsole, OutputToConsole>();
 
             return services;
         }

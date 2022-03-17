@@ -3,14 +3,14 @@ using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic.ServiceAddScoped
 {
-    public class ConfigurationToServices
+    public static class ConfigurationToServices
     {
-        public ServiceCollection AddServicesFromLogic(ServiceCollection services)
+        public static IServiceCollection AddServicesFromLogic(this IServiceCollection services)
         {
             services.AddScoped<IHttpLogic, HttpLogic>()
-                    .AddScoped<LogicScanByHtml>()
-                    .AddScoped<LogicScanBySitemap>()
-                    .AddScoped<MainLogic>()
+                    .AddScoped<ILogicScanByHtml,LogicScanByHtml>()
+                    .AddScoped<ILogicScanBySitemap,LogicScanBySitemap>()
+                    .AddScoped<IMainLogic, MainLogic>()
                     .AddScoped<ITimeTracker, TimeTracker>()
                     .AddScoped<IUrlSettings, UrlSettings>();
 
