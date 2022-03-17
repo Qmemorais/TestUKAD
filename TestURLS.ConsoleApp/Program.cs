@@ -20,8 +20,8 @@ namespace TestURLS.ConsoleApp
         {
             var services = new ServiceCollection();
 
-            services = (ServiceCollection)ConfigurationConsoleService.AddServicesFromConsole(services);
-            services = (ServiceCollection)ConfigurationToServices.AddServicesFromLogic(services);
+            ConfigurationConsoleService.AddServicesFromConsole(services);
+            ConfigurationToServices.AddServicesFromLogic(services);
 
             return services;
         }

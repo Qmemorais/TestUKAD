@@ -5,7 +5,7 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
 {
     public static class ConfigurationToServices
     {
-        public static IServiceCollection AddServicesFromLogic(this IServiceCollection services)
+        public static void AddServicesFromLogic(this IServiceCollection services)
         {
             services.AddScoped<IHttpLogic, HttpLogic>()
                     .AddScoped<ILogicScanByHtml,LogicScanByHtml>()
@@ -13,8 +13,6 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
                     .AddScoped<IMainLogic, MainLogic>()
                     .AddScoped<ITimeTracker, TimeTracker>()
                     .AddScoped<IUrlSettings, UrlSettings>();
-
-            return services;
         }
     }
 }
