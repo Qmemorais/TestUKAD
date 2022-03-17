@@ -9,14 +9,14 @@ namespace TestURLS.UrlLogic
     {
         private readonly ILogicScanByHtml _scanByHtml;
         private readonly ILogicScanBySitemap _scanBySitemap;
-        private readonly IUrlSettings _urlSettings;
-        private readonly ITimeTracker _timeTracker;
+        private readonly UrlSettings _urlSettings;
+        private readonly TimeTracker _timeTracker;
 
         public MainLogic(
             ILogicScanByHtml scanByHtml, 
             ILogicScanBySitemap scanBySitemap,
-            IUrlSettings settings,
-            ITimeTracker timeTracker)
+            UrlSettings settings,
+            TimeTracker timeTracker)
         {
             _scanByHtml = scanByHtml;
             _scanBySitemap = scanBySitemap;

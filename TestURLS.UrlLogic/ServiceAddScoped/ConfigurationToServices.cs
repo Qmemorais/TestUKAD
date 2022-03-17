@@ -7,12 +7,12 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
     {
         public static void AddServicesFromLogic(this IServiceCollection services)
         {
-            services.AddScoped<IHttpLogic, HttpLogic>()
+            services.AddScoped<HttpLogic>()
                     .AddScoped<ILogicScanByHtml,LogicScanByHtml>()
                     .AddScoped<ILogicScanBySitemap,LogicScanBySitemap>()
                     .AddScoped<IMainLogic, MainLogic>()
-                    .AddScoped<ITimeTracker, TimeTracker>()
-                    .AddScoped<IUrlSettings, UrlSettings>();
+                    .AddScoped<TimeTracker>()
+                    .AddScoped<UrlSettings>();
         }
     }
 }

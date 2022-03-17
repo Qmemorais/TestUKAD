@@ -10,14 +10,14 @@ namespace TestURLS.UrlLogic.Tests
     public class LogicScanBySitemapTests
     {
         private LogicScanBySitemap _logicSitemap;
-        private Mock<IUrlSettings> _urlSettings;
-        private Mock<IHttpLogic> _getHttp;
+        private Mock<UrlSettings> _urlSettings;
+        private Mock<HttpLogic> _getHttp;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<IUrlSettings>();
-            _getHttp = new Mock<IHttpLogic>();
+            _urlSettings = new Mock<UrlSettings>();
+            _getHttp = new Mock<HttpLogic>();
 
             _logicSitemap = new LogicScanBySitemap(
                 _getHttp.Object,

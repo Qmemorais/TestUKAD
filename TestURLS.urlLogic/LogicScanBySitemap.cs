@@ -7,10 +7,10 @@ namespace TestURLS.UrlLogic
 {
     public class LogicScanBySitemap: ILogicScanBySitemap
     {
-        private readonly IHttpLogic _getResponse;
-        private readonly IUrlSettings _settingsOfUrl;
+        private readonly HttpLogic _getResponse;
+        private readonly UrlSettings _settingsOfUrl;
 
-        public LogicScanBySitemap(IHttpLogic getResponse, IUrlSettings settingsOfUrl)
+        public LogicScanBySitemap(HttpLogic getResponse, UrlSettings settingsOfUrl)
         {
             _getResponse = getResponse;
             _settingsOfUrl = settingsOfUrl;

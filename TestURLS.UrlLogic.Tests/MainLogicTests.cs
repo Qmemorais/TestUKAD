@@ -12,16 +12,16 @@ namespace TestURLS.UrlLogic.Tests
         private MainLogic _mainLogic;
         private Mock<ILogicScanByHtml> _scanByHtml;
         private Mock<ILogicScanBySitemap> _scanBySitemap;
-        private Mock<IUrlSettings> _urlSettings;
-        private Mock<ITimeTracker> _timeTracker;
+        private Mock<UrlSettings> _urlSettings;
+        private Mock<TimeTracker> _timeTracker;
 
         [SetUp]
         public void Setup()
         {
             _scanByHtml = new Mock<ILogicScanByHtml>();
             _scanBySitemap = new Mock<ILogicScanBySitemap>();
-            _urlSettings = new Mock<IUrlSettings>();
-            _timeTracker = new Mock<ITimeTracker>();
+            _urlSettings = new Mock<UrlSettings>();
+            _timeTracker = new Mock<TimeTracker>();
 
             _mainLogic = new MainLogic(
                 _scanByHtml.Object,

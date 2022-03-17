@@ -8,10 +8,10 @@ namespace TestURLS.UrlLogic
 {
     public class LogicScanByHtml: ILogicScanByHtml
     {
-        private readonly IUrlSettings _settingsUrl;
-        private readonly IHttpLogic _getHttp;
+        private readonly UrlSettings _settingsUrl;
+        private readonly HttpLogic _getHttp;
 
-        public LogicScanByHtml(IUrlSettings settingOfUrl, IHttpLogic getResponse)
+        public LogicScanByHtml(UrlSettings settingOfUrl, HttpLogic getResponse)
         {
             _settingsUrl = settingOfUrl;
             _getHttp = getResponse;
