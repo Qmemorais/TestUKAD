@@ -15,9 +15,6 @@ namespace TestURLS.UrlLogic.Tests
         private Mock<IUrlSettings> _urlSettings;
         private Mock<ITimeTracker> _timeTracker;
 
-        /*string fakeHTML = @"<a href=""https://test.crawler.com/Info"">Link1</a>
-                            <a href=""https://test.crawler.com/main.html"">Link2</a>";*/
-
         [SetUp]
         public void Setup()
         {
@@ -27,7 +24,7 @@ namespace TestURLS.UrlLogic.Tests
             _timeTracker = new Mock<ITimeTracker>();
 
             _mainLogic = new MainLogic(
-                _scanByHtml.Object, 
+                _scanByHtml.Object,
                 _scanBySitemap.Object,
                 _urlSettings.Object,
                 _timeTracker.Object);
@@ -37,8 +34,8 @@ namespace TestURLS.UrlLogic.Tests
         public void GetResults_OnlyScanWeb_LinksFromWeb()
         {
             //arrange
-            var fakeUrl = "http://test.crawler.com/";
-            var domainName = "http://test.crawler.com";
+            var fakeUrl = "https://test.crawler.com/";
+            var domainName = "https://test.crawler.com";
             var expectedLinks = GetStartDataModel();
 
             _scanByHtml
@@ -60,11 +57,17 @@ namespace TestURLS.UrlLogic.Tests
         public void GetResults_LinksFromScanAndWeb_LinksWithScanAndWeb()
         {
             //arrange
-            var fakeUrl = "http://test.crawler.com/";
-            var domainName = "http://test.crawler.com";
+            var fakeUrl = "https://test.crawler.com/";
+            var domainName = "https://test.crawler.com";
             var linksFromWeb = GetStartDataModel();
-            var linksFromSitemap = GetDataFromSitemap();
-            var linksFromWebWithSitemap = GetLinksExistBothScan();
+            var linksFromSitemap = new List<string>()
+            {
+                "https://test.crawler.com/Info"
+            };
+            var linksFromWebWithSitemap = new List<UrlModel>()
+            {
+                new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
+            };
 
             _scanByHtml
                 .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
@@ -84,31 +87,31 @@ namespace TestURLS.UrlLogic.Tests
             Assert.AreEqual(linksFromWebWithSitemap.Count, result.Count);
         }
 
+        [Test]
+        public void GetUrlsWithTimeResponse_NotNullList_NewListWithResponse()
+        {
+            //assert
+            var modelToGetTime = GetStartDataModel();
+            var modelWithTime = new List<UrlModelWithResponse>()
+            {
+                new UrlModelWithResponse{Link="https://test.crawler.com/Info", TimeOfResponse=14  }
+            };
+
+            _timeTracker
+                .Setup(getTime => getTime.GetLinksWithTime(modelToGetTime))
+                .Returns(modelWithTime);
+            //
+            var results = _mainLogic.GetUrlsWithTimeResponse(modelToGetTime);
+            //
+            Assert.AreEqual(modelWithTime, results);
+
+        }
+
         private List<UrlModel> GetStartDataModel()
         {
             var expectedLinks = new List<UrlModel>()
             {
                 new UrlModel{Link="https://test.crawler.com/Info", IsWeb=true }
-            };
-
-            return expectedLinks;
-        }
-
-        private List<string> GetDataFromSitemap()
-        {
-            var expectedLinks = new List<string>()
-            {
-                "https://test.crawler.com/Info"
-            };
-
-            return expectedLinks;
-        }
-
-        private List<UrlModel> GetLinksExistBothScan()
-        {
-            var expectedLinks = new List<UrlModel>()
-            {
-                new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
             };
 
             return expectedLinks;
