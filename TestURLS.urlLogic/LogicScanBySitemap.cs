@@ -21,11 +21,11 @@ namespace TestURLS.UrlLogic
             var linksFromSitemap = new List<string>();
             var domainName = _settingsOfUrl.GetDomainName(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
+            var getBodyFromSitemapIfExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
 
-            if (!string.IsNullOrEmpty(isSitemapExist))
+            if (!string.IsNullOrEmpty(getBodyFromSitemapIfExist))
             {
-                linksFromSitemap = ScanSitemap(isSitemapExist);
+                linksFromSitemap = ScanSitemap(getBodyFromSitemapIfExist);
             }
 
             return linksFromSitemap;

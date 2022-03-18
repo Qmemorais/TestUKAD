@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using Moq;
 using NUnit.Framework;
-using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Tests
@@ -56,6 +55,7 @@ namespace TestURLS.UrlLogic.Tests
                 new UrlModel{ Link="https://test.crawler.com/", IsWeb=true},
                 new UrlModel{ Link="https://test.crawler.com/Info/", IsWeb=true}
             };
+            var urlToGetValidUrl = "https://test.crawler.com/Info/";
 
             _getHttp
                 .Setup(getBody => getBody.GetBodyFromUrl(validUrl))
@@ -64,8 +64,8 @@ namespace TestURLS.UrlLogic.Tests
                 .Setup(getDomain => getDomain.GetDomainName(validUrl))
                 .Returns(domainName);
             _urlSettings
-                .Setup(getValid => getValid.GetValidUrl("https://test.crawler.com/Info/", domainName))
-                .Returns("https://test.crawler.com/Info/");
+                .Setup(getValid => getValid.GetValidUrl(urlToGetValidUrl, domainName))
+                .Returns(urlToGetValidUrl);
             //
             var actualResult = _logicHtml.GetUrlsFromScanPages(validUrl);
             //assert

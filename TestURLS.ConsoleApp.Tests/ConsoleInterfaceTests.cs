@@ -84,7 +84,7 @@ namespace TestURLS.ConsoleApp.Tests
         public void Start_InputCorrectUrl_ReturnCorectCountWriteLine()
         {
             //arrange
-            var fakeURL = "https://example.com/";
+            var fakeUrl = "https://example.com/";
             var expectedUrl = new List<UrlModel>()
             {
                 new UrlModel{Link ="https://test.crawler.com/Info",IsWeb=true},
@@ -98,9 +98,9 @@ namespace TestURLS.ConsoleApp.Tests
 
             _consoleInOut
                 .Setup(x => x.Read())
-                .Returns(fakeURL);
+                .Returns(fakeUrl);
             _mainLogic
-                .Setup(x => x.GetResults(fakeURL))
+                .Setup(x => x.GetResults(fakeUrl))
                 .Returns(expectedUrl);
             _mainLogic
                 .Setup(x => x.GetUrlsWithTimeResponse(expectedUrl))

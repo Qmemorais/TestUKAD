@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Moq;
 using NUnit.Framework;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic.Tests
 {
@@ -55,17 +53,17 @@ namespace TestURLS.UrlLogic.Tests
             {
                 "https://test.crawler.com/Info/"
             };
-            var fakeXml = new StringBuilder();
-            fakeXml.Append("<urlset>");
-            fakeXml.Append("<url>");
-            fakeXml.Append("<loc>https://test.crawler.com/Info/</loc>");
-            fakeXml.Append("<lastmod> 2022 - 01 - 19T16: 03:22 + 01:00 </lastmod>");
-            fakeXml.Append("</url>");
-            fakeXml.Append("</urlset>");
+            var fakeXml = @"
+                <urlset>
+                    <url>
+                        <loc>https://test.crawler.com/Info/</loc>
+                        <lastmod></lastmod>
+                    </url>
+                </urlset>";
 
             _getHttp
                 .Setup(getBody => getBody.GetBodyFromUrl(validUrl))
-                .Returns(fakeXml.ToString());
+                .Returns(fakeXml);
             _urlSettings
                 .Setup(getDomain => getDomain.GetDomainName(validUrl))
                 .Returns(domainName);

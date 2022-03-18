@@ -73,7 +73,7 @@ namespace TestURLS.UrlLogic.Tests
         }
 
         [Test]
-        public void GetUrlLikeWeb_CorrectUrl_ExisttUrl()
+        public void GetUrlLikeWeb_CorrectUrl_ExistUrl()
         {
             //
             var url = "https://test.crawler.com/Info/";

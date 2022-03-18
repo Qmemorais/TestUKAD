@@ -8,7 +8,7 @@ namespace TestURLS.UrlLogic
     {
         public virtual string GetBodyFromUrl(string url)
         {
-            string bodyTxt;
+            var bodyTxt = string.Empty;
 
             try
             {
@@ -23,7 +23,7 @@ namespace TestURLS.UrlLogic
             }
             catch (WebException)
             {
-                throw;
+
             }
 
             return bodyTxt;
