@@ -18,6 +18,5 @@
 
 /Models/bin/
 /Models/obj/
-.vs/TestURLS/v17/.suo
-.vs/TestURLS/v17/TestStore/0/003.testlog
-.vs/TestURLS/v17/TestStore/0/testlog.manifest
+
+.vs/
