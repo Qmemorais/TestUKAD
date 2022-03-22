@@ -2,7 +2,7 @@
 
 namespace TestURLS.UrlLogic
 {
-    public class UrlSettings
+    public class ChangesAboveLink
     {
         public virtual string GetDomainName(string url)
         {
@@ -57,16 +57,17 @@ namespace TestURLS.UrlLogic
 
         private string GetUrlFromSitemapToWeb(string url, string domainName)
         {
-            var getIndexOfFirstDotFromWeb = domainName.IndexOf(".");
-            var getIndexOfFirstDotFromSitemap = url.IndexOf(".");
+            var indexOfFirstDotFromWeb = domainName.IndexOf(".");
+            var indexOfFirstDotFromSitemap = url.IndexOf(".");
 
-            if (getIndexOfFirstDotFromWeb != getIndexOfFirstDotFromSitemap)
+            if (indexOfFirstDotFromWeb != indexOfFirstDotFromSitemap)
             {
-                url = url.Substring(getIndexOfFirstDotFromSitemap);
+                url = url.Substring(indexOfFirstDotFromSitemap);
                 var indexOfSlash = url.IndexOf("/");
                 url = url.Substring(indexOfSlash);
                 url = domainName + url;
             }
+
             return url;
         }
     }

@@ -5,12 +5,12 @@ using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanBySitemap: ILogicScanBySitemap
+    public class LogicToGetLinksFromSitemap: ILogicToGetLinksFromSitemap
     {
         private readonly HttpLogic _getResponse;
-        private readonly UrlSettings _settingsOfUrl;
+        private readonly ChangesAboveLink _settingsOfUrl;
 
-        public LogicScanBySitemap(HttpLogic getResponse, UrlSettings settingsOfUrl)
+        public LogicToGetLinksFromSitemap(HttpLogic getResponse, ChangesAboveLink settingsOfUrl)
         {
             _getResponse = getResponse;
             _settingsOfUrl = settingsOfUrl;

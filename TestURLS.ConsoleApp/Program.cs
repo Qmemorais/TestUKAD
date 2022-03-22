@@ -8,11 +8,10 @@ namespace TestURLS.ConsoleApp
     {
         static void Main(string[] args)
         {
-            LogicToConsole logicToConsole;
             var services = ConfigureServices();
             var serviceProvider = services.BuildServiceProvider();
 
-            logicToConsole = serviceProvider.GetService<LogicToConsole>();
+            var logicToConsole = serviceProvider.GetService<LogicToConsole>();
             logicToConsole.Start();
         }
 
@@ -20,8 +19,8 @@ namespace TestURLS.ConsoleApp
         {
             var services = new ServiceCollection();
 
-            ConfigurationConsoleService.AddServicesFromConsole(services);
-            ConfigurationToServices.AddServicesFromLogic(services);
+            services.AddServicesFromConsole();
+            services.AddServicesFromLogic();
 
             return services;
         }

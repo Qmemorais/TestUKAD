@@ -9,17 +9,17 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class LogicScanByHtmlTests
     {
-        private LogicScanByHtml _logicHtml;
-        private Mock<UrlSettings> _urlSettings;
+        private LogicToGetLinksFromScanWeb _logicHtml;
+        private Mock<ChangesAboveLink> _urlSettings;
         private Mock<HttpLogic> _getHttp;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<UrlSettings>();
+            _urlSettings = new Mock<ChangesAboveLink>();
             _getHttp = new Mock<HttpLogic>();
 
-            _logicHtml = new LogicScanByHtml(
+            _logicHtml = new LogicToGetLinksFromScanWeb(
                 _urlSettings.Object,
                 _getHttp.Object);
         }

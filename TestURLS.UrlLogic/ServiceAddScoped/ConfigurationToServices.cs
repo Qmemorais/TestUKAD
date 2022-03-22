@@ -8,11 +8,11 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
         public static void AddServicesFromLogic(this IServiceCollection services)
         {
             services.AddScoped<HttpLogic>()
-                    .AddScoped<ILogicScanByHtml,LogicScanByHtml>()
-                    .AddScoped<ILogicScanBySitemap,LogicScanBySitemap>()
+                    .AddScoped<ILogicToGetLinksFromScanWeb,LogicToGetLinksFromScanWeb>()
+                    .AddScoped<ILogicToGetLinksFromSitemap,LogicToGetLinksFromSitemap>()
                     .AddScoped<IMainLogic, MainLogic>()
-                    .AddScoped<TimeTracker>()
-                    .AddScoped<UrlSettings>();
+                    .AddScoped<ResponseTimeOfUrl>()
+                    .AddScoped<ChangesAboveLink>();
         }
     }
 }

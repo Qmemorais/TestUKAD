@@ -2,7 +2,7 @@
 
 namespace TestURLS.UrlLogic.Interfaces
 {
-    public interface ILogicScanBySitemap
+    public interface ILogicToGetLinksFromSitemap
     {
         IEnumerable<string> GetLinksFromSitemapIfExist(string url);
     }

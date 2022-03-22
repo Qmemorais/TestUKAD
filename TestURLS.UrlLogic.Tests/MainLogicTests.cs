@@ -10,18 +10,18 @@ namespace TestURLS.UrlLogic.Tests
     public class MainLogicTests
     {
         private MainLogic _mainLogic;
-        private Mock<ILogicScanByHtml> _scanByHtml;
-        private Mock<ILogicScanBySitemap> _scanBySitemap;
-        private Mock<UrlSettings> _urlSettings;
-        private Mock<TimeTracker> _timeTracker;
+        private Mock<ILogicToGetLinksFromScanWeb> _scanByHtml;
+        private Mock<ILogicToGetLinksFromSitemap> _scanBySitemap;
+        private Mock<ChangesAboveLink> _urlSettings;
+        private Mock<ResponseTimeOfUrl> _timeTracker;
 
         [SetUp]
         public void Setup()
         {
-            _scanByHtml = new Mock<ILogicScanByHtml>();
-            _scanBySitemap = new Mock<ILogicScanBySitemap>();
-            _urlSettings = new Mock<UrlSettings>();
-            _timeTracker = new Mock<TimeTracker>();
+            _scanByHtml = new Mock<ILogicToGetLinksFromScanWeb>();
+            _scanBySitemap = new Mock<ILogicToGetLinksFromSitemap>();
+            _urlSettings = new Mock<ChangesAboveLink>();
+            _timeTracker = new Mock<ResponseTimeOfUrl>();
 
             _mainLogic = new MainLogic(
                 _scanByHtml.Object,
