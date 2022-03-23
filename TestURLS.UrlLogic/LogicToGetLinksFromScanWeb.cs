@@ -8,12 +8,12 @@ namespace TestURLS.UrlLogic
     public class LogicToGetLinksFromScanWeb: ILogicToGetLinksFromScanWeb
     {
         private readonly ChangesAboveLink _settingsUrl;
-        private readonly HttpLogic _getHttp;
+        private readonly HttpLogic _httpResponse;
 
         public LogicToGetLinksFromScanWeb(ChangesAboveLink settingOfUrl, HttpLogic getResponse)
         {
             _settingsUrl = settingOfUrl;
-            _getHttp = getResponse;
+            _httpResponse = getResponse;
         }
 
         public IEnumerable<string> GetUrlsFromScanPages(string url)
@@ -48,35 +48,36 @@ namespace TestURLS.UrlLogic
 
         private List<string> GetScannedUrls(string url, string domainName)
         {
-            var scannedPages = new List<string>() 
+            var linksToScan = new List<string>() 
             { 
                 url 
             };
-            var linksWithScanPage = new List<string>() 
-            { 
-                url 
+            var linksScannedByPages = new List<string>()
+            {
+                url
             };
 
-            for (int i = 0; i < linksWithScanPage.Count; i++)
+            while (linksToScan.Count > 0)
             {
-                var htmlTxt = _getHttp.GetBodyFromUrl(linksWithScanPage[i]);
+                var link = linksToScan.FirstOrDefault();
+                var htmlTxt = _httpResponse.GetBodyFromUrl(link);
 
                 if (!string.IsNullOrEmpty(htmlTxt))
                 {
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
+                    var notScannedLinks = GetLinksFromPage(htmlDoc, domainName)
+                        .Distinct()
+                        .Except(linksScannedByPages);
 
-                    var linksThatNotScannedYet = GetLinksFromPage(htmlDoc, domainName)
-                                                    .Except(scannedPages)
-                                                    .Distinct()
-                                                    .ToList();
-                    scannedPages.AddRange(linksThatNotScannedYet);
-
-                    linksWithScanPage = GetMatchesFromScanPage(linksWithScanPage, linksThatNotScannedYet).ToList();
+                    linksToScan.AddRange(notScannedLinks);
+                    linksScannedByPages.AddRange(notScannedLinks);
                 }
+
+                linksToScan.Remove(link);
             }
 
-            return linksWithScanPage;
+            return linksScannedByPages;
         }
 
         private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domainName)
@@ -109,18 +110,6 @@ namespace TestURLS.UrlLogic
                 link = link.Substring(0, indexOfSymbol);
             }
             return link;
-        }
-
-        private List<string> GetMatchesFromScanPage(
-            List<string> linksWithScanPage, 
-            List<string> linksThatNotScannedYet)
-        {
-            if (linksThatNotScannedYet.Count != 0)
-            {
-                    linksWithScanPage.AddRange(linksThatNotScannedYet);
-            }
-
-            return linksWithScanPage;
         }
     }
 }

@@ -50,10 +50,10 @@ namespace TestURLS.UrlLogic.Tests
             var validUrl = "https://test.crawler.com/";
             var domainName = "https://test.crawler.com";
             string fakeHtml = @"<a href=""https://test.crawler.com/Info/"">Link1</a>";
-            var expectedResult = new List<UrlModel>
+            var expectedResult = new List<string>
             {
-                new UrlModel{ Link="https://test.crawler.com/", IsWeb=true},
-                new UrlModel{ Link="https://test.crawler.com/Info/", IsWeb=true}
+                "https://test.crawler.com/",
+                "https://test.crawler.com/Info/"
             };
             var urlToGetValidUrl = "https://test.crawler.com/Info/";
 

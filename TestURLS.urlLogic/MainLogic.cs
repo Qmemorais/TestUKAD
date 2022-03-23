@@ -47,6 +47,32 @@ namespace TestURLS.UrlLogic
             IEnumerable<string> linksFromScanSitemap)
         {
             var allLinks = new List<UrlModel>();
+            var linksOnlyFromScanPages = linksFromScanPages.Except(linksFromScanSitemap);
+
+            var modelsFromPages = MakeUrlModelFromScanPages(linksOnlyFromScanPages);
+            var modelsFromSitemap = MakeUrlModelFromSitemap(linksFromScanPages, linksFromScanSitemap);
+            allLinks.AddRange(modelsFromPages);
+            allLinks.AddRange(modelsFromSitemap);
+
+            return allLinks;
+        }
+
+        private List<UrlModel> MakeUrlModelFromScanPages(IEnumerable<string> linksFromScanPages)
+        {
+            var urlModelOfPages = new List<UrlModel>();
+
+            foreach (var linkFromPage in linksFromScanPages)
+            {
+                urlModelOfPages.Add(new UrlModel { Link = linkFromPage, IsWeb = true });
+            }
+
+            return urlModelOfPages;
+        }
+
+        private List<UrlModel> MakeUrlModelFromSitemap(List<string> linksFromScanPages,
+            IEnumerable<string> linksFromScanSitemap)
+        {
+            var urlModelOfSitemap = new List<UrlModel>();
             var firstLink = linksFromScanPages.FirstOrDefault();
             var domainName = _getChanges.GetDomainName(firstLink);
 
@@ -57,21 +83,15 @@ namespace TestURLS.UrlLogic
 
                 if (indexLinkFromList > -1)
                 {
-                    allLinks.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true, IsWeb = true });
-                    linksFromScanPages.RemoveAt(indexLinkFromList);
+                    urlModelOfSitemap.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true, IsWeb = true });
                 }
                 else
                 {
-                    allLinks.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true });
+                    urlModelOfSitemap.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true });
                 }
             }
 
-            foreach(var linkFromPage in linksFromScanPages)
-            {
-                allLinks.Add(new UrlModel { Link = linkFromPage, IsWeb = true });
-            }
-
-            return allLinks;
+            return urlModelOfSitemap;
         }
     }
 }
