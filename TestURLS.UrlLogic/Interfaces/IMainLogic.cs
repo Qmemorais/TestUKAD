@@ -5,7 +5,7 @@ namespace TestURLS.UrlLogic.Interfaces
 {
     public interface IMainLogic
     {
-        List<UrlModel> GetResults(string url);
-        IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime);
+        IEnumerable<UrlModel> GetResults(string url);
+        IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(IEnumerable<UrlModel> htmlToGetTime);
     }
 }
