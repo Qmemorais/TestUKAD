@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Interfaces
 {
     public interface ILogicToGetLinksFromScanWeb
     {
-        IEnumerable<string> GetUrlsFromScanPages(string url);
+        IEnumerable<UrlModel> GetUrlsFromScanPages(string url);
     }
 }

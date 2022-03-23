@@ -36,18 +36,11 @@ namespace TestURLS.UrlLogic.Tests
             //arrange
             var fakeUrl = "https://test.crawler.com/";
             var domainName = "https://test.crawler.com";
-            var linkFromScanPage = new List<string>()
-            {
-                "https://test.crawler.com/Info"
-            };
-            var expectedLinks = new List<UrlModel>()
-            {
-                new UrlModel{Link = "https://test.crawler.com/Info", IsWeb=true}
-            };
+            var expectedLinks = GetStartDataModel();
 
             _scanByHtml
                 .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
-                .Returns(linkFromScanPage);
+                .Returns(expectedLinks);
             _scanBySitemap
                 .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
                 .Returns(new List<string>());
@@ -57,8 +50,7 @@ namespace TestURLS.UrlLogic.Tests
             //act
             var result = _mainLogic.GetResults(fakeUrl);
             //assert
-            Assert.AreEqual(expectedLinks.Count, result.Count());
-            Assert.AreEqual(expectedLinks.FirstOrDefault().IsSitemap, result.FirstOrDefault().IsSitemap);
+            Assert.AreEqual(expectedLinks, result);
         }
 
         [Test]
@@ -67,10 +59,7 @@ namespace TestURLS.UrlLogic.Tests
             //arrange
             var fakeUrl = "https://test.crawler.com/";
             var domainName = "https://test.crawler.com";
-            var linksFromWeb = new List<string>()
-            {
-                "https://test.crawler.com/Info"
-            };
+            var linksFromWeb = GetStartDataModel();
             var linksFromSitemap = new List<string>()
             {
                 "https://test.crawler.com/Info"
@@ -87,7 +76,7 @@ namespace TestURLS.UrlLogic.Tests
                 .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
                 .Returns(linksFromSitemap);
             _urlSettings
-                .Setup(getDomain => getDomain.GetDomainName(linksFromWeb.FirstOrDefault()))
+                .Setup(getDomain => getDomain.GetDomainName(linksFromWeb.FirstOrDefault().Link))
                 .Returns(domainName);
             _urlSettings
                 .Setup(getValid => getValid.GetUrlLikeFromWeb(linksFromSitemap.FirstOrDefault(), domainName))
@@ -95,17 +84,14 @@ namespace TestURLS.UrlLogic.Tests
             //act
             var result = _mainLogic.GetResults(fakeUrl);
             //assert
-            Assert.AreEqual(linksFromWebWithSitemap.Count, result.Count());
+            Assert.AreEqual(linksFromWebWithSitemap.Count, result.Count);
         }
 
         [Test]
         public void GetUrlsWithTimeResponse_NotNullList_NewListWithResponse()
         {
             //assert
-            var modelToGetTime = new List<UrlModel>()
-            {
-                new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
-            };
+            var modelToGetTime = GetStartDataModel();
             var modelWithTime = new List<UrlModelWithResponse>()
             {
                 new UrlModelWithResponse{Link="https://test.crawler.com/Info", TimeOfResponse=14  }
@@ -119,6 +105,16 @@ namespace TestURLS.UrlLogic.Tests
             //
             Assert.AreEqual(modelWithTime, results);
 
+        }
+
+        private List<UrlModel> GetStartDataModel()
+        {
+            var expectedLinks = new List<UrlModel>()
+            {
+                new UrlModel{Link="https://test.crawler.com/Info", IsWeb=true }
+            };
+
+            return expectedLinks;
         }
     }
 }

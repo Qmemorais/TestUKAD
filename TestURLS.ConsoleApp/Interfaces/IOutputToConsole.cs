@@ -5,8 +5,8 @@ namespace TestURLS.ConsoleApp.Interfaces
 {
     public interface IOutputToConsole
     {
-        void WriteLinksWithoutTime(IEnumerable<UrlModel> allLinksFromSitemapAndScan);
-        void WriteLinksWithTime(IEnumerable<UrlModelWithResponse> linksWithResponseTime);
-        void WriteCountLinks(IEnumerable<UrlModel> allLinksFromSitemapAndScan);
+        void WriteLinksWithoutTime(List<UrlModel> allLinksFromSitemapAndScan);
+        void WriteLinksWithTime(List<UrlModelWithResponse> linksWithResponseTime);
+        void WriteCountLinks(List<UrlModel> allLinksFromSitemapAndScan);
     }
 }
