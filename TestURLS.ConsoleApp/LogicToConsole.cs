@@ -33,7 +33,7 @@ namespace TestURLS.ConsoleApp
             }
 
             var getTime = _logic.GetUrlsWithTimeResponse(results);
-            _outputToConsole.WriteLinksWithTime(getTime.ToList());
+            _outputToConsole.WriteLinksWithTime(getTime);
 
             _outputToConsole.WriteCountLinks(results);
 

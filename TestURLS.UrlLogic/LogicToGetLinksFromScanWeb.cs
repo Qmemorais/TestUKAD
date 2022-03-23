@@ -2,7 +2,6 @@
 using System.Linq;
 using HtmlAgilityPack;
 using TestURLS.UrlLogic.Interfaces;
-using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
@@ -17,23 +16,13 @@ namespace TestURLS.UrlLogic
             _getHttp = getResponse;
         }
 
-        public IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
+        public IEnumerable<string> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
             var domainName = _settingsUrl.GetDomainName(url);
-            var linksWithScanPage = new List<UrlModel>();
+            var linksFromScanPage = GetScannedUrls(url, domainName);
 
-            linksWithScanPage.Add(new UrlModel { Link = url, IsWeb = true });
-
-            if (domainName != url && (url.Length - domainName.Length) != 1)
-            {
-                var newLink = new UrlModel { Link = url, IsWeb = true };
-                linksWithScanPage.Add(newLink);
-            }
-
-            linksWithScanPage = GetScannedUrls(linksWithScanPage, domainName);
-
-            return linksWithScanPage;
+            return linksFromScanPage;
         }
 
         private bool IsUrl(string url)
@@ -57,30 +46,33 @@ namespace TestURLS.UrlLogic
             return false;
         }
 
-        private List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domainName)
+        private List<string> GetScannedUrls(string url, string domainName)
         {
-            var scannedPages = new List<string>();
-            scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
+            var scannedPages = new List<string>() 
+            { 
+                url 
+            };
+            var linksWithScanPage = new List<string>() 
+            { 
+                url 
+            };
 
             for (int i = 0; i < linksWithScanPage.Count; i++)
             {
-                var htmlTxt = _getHttp.GetBodyFromUrl(linksWithScanPage[i].Link);
+                var htmlTxt = _getHttp.GetBodyFromUrl(linksWithScanPage[i]);
 
                 if (!string.IsNullOrEmpty(htmlTxt))
                 {
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
 
-                    var matches = GetLinksFromPage(htmlDoc, domainName);
-                    //part of existing pages doesn`t interesting
-                    matches = matches
-                        .Except(scannedPages)
-                        .Distinct()
-                        .ToList();
+                    var linksThatNotScannedYet = GetLinksFromPage(htmlDoc, domainName)
+                                                    .Except(scannedPages)
+                                                    .Distinct()
+                                                    .ToList();
+                    scannedPages.AddRange(linksThatNotScannedYet);
 
-                    scannedPages.AddRange(matches);
-
-                    linksWithScanPage = GetMatchesFromScanPage(linksWithScanPage, matches);
+                    linksWithScanPage = GetMatchesFromScanPage(linksWithScanPage, linksThatNotScannedYet).ToList();
                 }
             }
 
@@ -109,11 +101,6 @@ namespace TestURLS.UrlLogic
             return matches;
         }
 
-        private UrlModel AddLinkToClass(string url)
-        {
-            return new UrlModel { Link = url, IsWeb = true };
-        }
-
         private string RemoveSymbols(string link)
         {
             if(link.Contains("#"))
@@ -124,15 +111,13 @@ namespace TestURLS.UrlLogic
             return link;
         }
 
-        private List<UrlModel> GetMatchesFromScanPage(List<UrlModel> linksWithScanPage, List<string> matches)
+        private List<string> GetMatchesFromScanPage(
+            List<string> linksWithScanPage, 
+            List<string> linksThatNotScannedYet)
         {
-            if (matches.Count != 0)
+            if (linksThatNotScannedYet.Count != 0)
             {
-                foreach (string link in matches)
-                {
-                    var newLink = AddLinkToClass(link);
-                    linksWithScanPage.Add(newLink);
-                }
+                    linksWithScanPage.AddRange(linksThatNotScannedYet);
             }
 
             return linksWithScanPage;
