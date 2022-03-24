@@ -57,7 +57,7 @@ namespace TestURLS.UrlLogic
                 url
             };
 
-            while (linksToScan.Count > 0)
+            while (linksToScan.Any())
             {
                 var link = linksToScan.FirstOrDefault();
                 var htmlTxt = _httpResponse.GetBodyFromUrl(link);
@@ -66,12 +66,11 @@ namespace TestURLS.UrlLogic
                 {
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(htmlTxt);
-                    var notScannedLinks = GetLinksFromPage(htmlDoc, domainName)
-                        .Distinct()
+                    var foundedLinks = GetLinksFromPage(htmlDoc, domainName)
                         .Except(linksScannedByPages);
 
-                    linksToScan.AddRange(notScannedLinks);
-                    linksScannedByPages.AddRange(notScannedLinks);
+                    linksToScan.AddRange(foundedLinks);
+                    linksScannedByPages.AddRange(foundedLinks);
                 }
 
                 linksToScan.Remove(link);
@@ -99,7 +98,9 @@ namespace TestURLS.UrlLogic
                     }
                 }
             }
-            return matches;
+            return matches
+                .Distinct()
+                .ToList();
         }
 
         private string RemoveSymbols(string link)
