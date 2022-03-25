@@ -10,6 +10,10 @@
 /TestURLS.UrlLogic/obj/
 /TestURLS.UrlLogic/bin/
 
+/TestURLS.EntityFramework/.vs/
+/TestURLS.EntityFramework/obj/
+/TestURLS.EntityFramework/bin/
+
 /TestURLS.ConsoleApp.Tests/bin/
 /TestURLS.ConsoleApp.Tests/obj/
 
