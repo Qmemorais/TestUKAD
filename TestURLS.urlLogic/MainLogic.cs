@@ -44,7 +44,10 @@ namespace TestURLS.UrlLogic
 
         public IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(IEnumerable<UrlModel> htmlToGetTime)
         {
-            var values = _getResponseTime.GetLinksWithTime(htmlToGetTime);
+            var values = _getResponseTime
+                .GetLinksWithTime(htmlToGetTime)
+                .OrderBy(value => value.TimeOfResponse)
+                .ToList();
 
             return values;
         }

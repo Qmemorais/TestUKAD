@@ -39,7 +39,6 @@ namespace TestURLS.ConsoleApp
         protected void OutputTime(IEnumerable<UrlModelWithResponse> linksToOutput)
         {
             var stringToWrite = new StringBuilder();
-            linksToOutput = linksToOutput.OrderBy(value => value.TimeOfResponse).ToList();
 
             var lengthURL = linksToOutput.Max(link => link.Link.Length) + 4;
             var stringWithSymbols = new string('_', lengthURL + 14);
