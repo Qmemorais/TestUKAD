@@ -9,13 +9,15 @@ namespace TestUrls.EntityFramework
         public DbSet<DbUrlModelResponse> UrlResponseModels { get; set; }
 
         public UrlDbContext(DbContextOptions<UrlDbContext> options)
-    : base(options)
-        { }
+            : base(options)
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=UrlModelsdb;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=UrlModelsdb;Trusted_Connection=True;");
         }
     }
 }

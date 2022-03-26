@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TestUrls.EntityFramework.ServiceAddScoped;
 using TestURLS.ConsoleApp.ServiceAddScoped;
 using TestURLS.UrlLogic.ServiceAddScoped;
 
@@ -21,6 +22,7 @@ namespace TestURLS.ConsoleApp
 
             services.AddServicesFromConsole();
             services.AddServicesFromLogic();
+            services.AddServicesFromEF();
 
             return services;
         }
