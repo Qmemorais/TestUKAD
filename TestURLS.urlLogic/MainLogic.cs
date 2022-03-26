@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using TestUrls.EntityFramework.Models;
+using TestUrls.EntityFramework.UnitOfWorkPatern;
 using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
+using TestURLS.UrlLogic.SourceMappingProfiles;
 
 namespace TestURLS.UrlLogic
 {
@@ -9,17 +13,20 @@ namespace TestURLS.UrlLogic
     {
         private readonly ILogicToGetLinksFromScanWeb _getLinksFromScanWeb;
         private readonly ILogicToGetLinksFromSitemap _getLinksFromScanSitemap;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ChangesAboveLink _getChanges;
         private readonly ResponseTimeOfUrl _getResponseTime;
 
         public MainLogic(
             ILogicToGetLinksFromScanWeb scanByHtml, 
             ILogicToGetLinksFromSitemap scanBySitemap,
+            IUnitOfWork unitOfWork,
             ChangesAboveLink settings,
             ResponseTimeOfUrl timeTracker)
         {
             _getLinksFromScanWeb = scanByHtml;
             _getLinksFromScanSitemap = scanBySitemap;
+            _unitOfWork = unitOfWork;
             _getChanges = settings;
             _getResponseTime = timeTracker;
         }
@@ -92,6 +99,32 @@ namespace TestURLS.UrlLogic
             }
 
             return urlModelOfSitemap;
+        }
+
+        public void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        {
+            var mapper = GetConfigurationForMapper();
+            var mappedUrlModel = mapper
+            .Map<IEnumerable<UrlModel>, IEnumerable<DbUrlModel>>(urlModels);
+            var mappedUrlModelResponse = mapper
+                .Map<IEnumerable<UrlModelWithResponse>, IEnumerable<DbUrlModelResponse>>(urlResponseModels);
+
+            _unitOfWork.UrlModels.AddRange(mappedUrlModel);
+            _unitOfWork.Save();
+            _unitOfWork.UrlResponseModels.AddRange(mappedUrlModelResponse);
+            _unitOfWork.Save();
+        }
+
+        private Mapper GetConfigurationForMapper()
+        {
+            var config = new MapperConfiguration(
+                config =>
+                {
+                    config.AddProfile<SourceMappingUrlModelProfile>();
+                    config.AddProfile<SourceMappingUrlResponseModelProfile>();
+                });
+            var mapper = new Mapper(config);
+            return mapper;
         }
     }
 }

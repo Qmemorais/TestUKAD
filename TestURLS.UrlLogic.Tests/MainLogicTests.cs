@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Moq;
 using NUnit.Framework;
+using TestUrls.EntityFramework.UnitOfWorkPatern;
 using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
@@ -12,6 +14,7 @@ namespace TestURLS.UrlLogic.Tests
         private MainLogic _mainLogic;
         private Mock<ILogicToGetLinksFromScanWeb> _scanByHtml;
         private Mock<ILogicToGetLinksFromSitemap> _scanBySitemap;
+        private Mock<IUnitOfWork> _unitOfWork;
         private Mock<ChangesAboveLink> _urlSettings;
         private Mock<ResponseTimeOfUrl> _timeTracker;
 
@@ -20,12 +23,14 @@ namespace TestURLS.UrlLogic.Tests
         {
             _scanByHtml = new Mock<ILogicToGetLinksFromScanWeb>();
             _scanBySitemap = new Mock<ILogicToGetLinksFromSitemap>();
+            _unitOfWork = new Mock<IUnitOfWork>();
             _urlSettings = new Mock<ChangesAboveLink>();
             _timeTracker = new Mock<ResponseTimeOfUrl>();
 
             _mainLogic = new MainLogic(
                 _scanByHtml.Object,
                 _scanBySitemap.Object,
+                _unitOfWork.Object,
                 _urlSettings.Object,
                 _timeTracker.Object);
         }

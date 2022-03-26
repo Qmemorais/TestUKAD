@@ -7,5 +7,6 @@ namespace TestURLS.UrlLogic.Interfaces
     {
         IEnumerable<UrlModel> GetResults(string url);
         IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(IEnumerable<UrlModel> htmlToGetTime);
+        void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels);
     }
 }
