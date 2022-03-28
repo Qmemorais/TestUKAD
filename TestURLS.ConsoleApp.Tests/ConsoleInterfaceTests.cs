@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using Moq;
 using NUnit.Framework;
+using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
 
@@ -11,6 +13,12 @@ namespace TestURLS.ConsoleApp.Tests
     {
         private Mock<ConsoleInOut> _consoleInOut;
         private Mock<MainService> _mainLogic;
+        private Mock<WebService> _webService;
+        private Mock<SitemapService> _sitemapService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
+        private Mock<ResponseService> _responseService;
+        private Mock<IRepository<GeneralInfoEntity>> _generalInfoEntities;
         private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
         private readonly string _writeLineOutput = "Press <Enter>";
@@ -19,7 +27,15 @@ namespace TestURLS.ConsoleApp.Tests
         public void Setup()
         {
             _consoleInOut = new Mock<ConsoleInOut>();
-            _mainLogic = new Mock<MainService>();
+            _httpService = new Mock<HttpService>();
+            _generalInfoEntities = new Mock<IRepository<GeneralInfoEntity>>();
+            _stringService = new Mock<StringService>();
+            _responseService = new Mock<ResponseService>();
+            _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
+            _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
+
+            _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
+                _responseService.Object,_generalInfoEntities.Object);
             _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
             _consoleInterface = new LogicToConsole(
                 _consoleInOut.Object,

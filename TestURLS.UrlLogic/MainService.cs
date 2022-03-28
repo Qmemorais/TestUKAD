@@ -12,7 +12,7 @@ namespace TestURLS.UrlLogic
         private readonly SitemapService _sitemapService;
         private readonly StringService _stringService;
         private readonly ResponseService _responseService;
-        private readonly IRepository<GeneralInfoEntity> GeneralInfoEntities;
+        private readonly IRepository<GeneralInfoEntity> _generalInfoEntities;
 
         public MainService(
             WebService webService,
@@ -25,7 +25,7 @@ namespace TestURLS.UrlLogic
             _sitemapService = sitemapService;
             _stringService = stringService;
             _responseService = responseService;
-            GeneralInfoEntities = generalInfoEntities;
+            _generalInfoEntities = generalInfoEntities;
         }
 
         public virtual IEnumerable<UrlModel> GetResults(string url)
@@ -98,9 +98,9 @@ namespace TestURLS.UrlLogic
                     new UrlResponseEntity { Link = entity.Link, TimeOfResponse = entity.TimeOfResponse });
             }
 
-            GeneralInfoEntities.Add(new GeneralInfoEntity 
+            _generalInfoEntities.Add(new GeneralInfoEntity 
                 { Link = generalLink, UrlEntities = urlEntity, UrlResponseEntities = urlResponseEntity });
-            GeneralInfoEntities.SaveChanges();
+            _generalInfoEntities.SaveChanges();
         }
     }
 }
