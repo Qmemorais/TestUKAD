@@ -4,12 +4,12 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class UrlSettingsTests
     {
-        private ChangesAboveLink _urlSettings;
+        private StringService _urlSettings;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new ChangesAboveLink();
+            _urlSettings = new StringService();
         }
 
         [Test]

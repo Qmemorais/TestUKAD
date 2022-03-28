@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicToGetLinksFromScanWeb: ILogicToGetLinksFromScanWeb
+    public class WebService
     {
-        private readonly ChangesAboveLink _settingsUrl;
-        private readonly HttpLogic _httpResponse;
+        private readonly StringService _stringService;
+        private readonly HttpService _httpService;
 
-        public LogicToGetLinksFromScanWeb(ChangesAboveLink settingOfUrl, HttpLogic getResponse)
+        public WebService(StringService stringService, HttpService httpService)
         {
-            _settingsUrl = settingOfUrl;
-            _httpResponse = getResponse;
+            _stringService = stringService;
+            _httpService = httpService;
         }
 
-        public IEnumerable<string> GetUrlsFromScanPages(string url)
+        public virtual IEnumerable<string> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
-            var domainName = _settingsUrl.GetDomainName(url);
+            var domainName = _stringService.GetDomainName(url);
             var linksFromScanPage = GetScannedUrls(url, domainName);
 
             return linksFromScanPage;
@@ -46,7 +45,7 @@ namespace TestURLS.UrlLogic
             return false;
         }
 
-        private List<string> GetScannedUrls(string url, string domainName)
+        private IEnumerable<string> GetScannedUrls(string url, string domainName)
         {
             var linksToScan = new List<string>() 
             { 
@@ -60,7 +59,7 @@ namespace TestURLS.UrlLogic
             while (linksToScan.Any())
             {
                 var link = linksToScan.FirstOrDefault();
-                var htmlTxt = _httpResponse.GetBodyFromUrl(link);
+                var htmlTxt = _httpService.GetBodyFromUrl(link);
 
                 if (!string.IsNullOrEmpty(htmlTxt))
                 {
@@ -79,14 +78,14 @@ namespace TestURLS.UrlLogic
             return linksScannedByPages;
         }
 
-        private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domainName)
+        private IEnumerable<string> GetLinksFromPage(HtmlDocument htmlDoc, string domainName)
         {
             var matches = new List<string>();
 
             foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
             {
                 var attributeHref = link.Attributes["href"];
-                attributeHref.Value = _settingsUrl.GetValidUrl(attributeHref.Value, domainName);
+                attributeHref.Value = _stringService.GetValidUrl(attributeHref.Value, domainName);
 
                 if (attributeHref.Value.Contains(domainName))
                 {
@@ -99,8 +98,7 @@ namespace TestURLS.UrlLogic
                 }
             }
             return matches
-                .Distinct()
-                .ToList();
+                .Distinct();
         }
 
         private string RemoveSymbols(string link)

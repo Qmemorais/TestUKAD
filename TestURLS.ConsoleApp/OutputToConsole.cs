@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TestURLS.ConsoleApp.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.ConsoleApp
 {
-    public class OutputToConsole : IOutputToConsole
+    public class OutputToConsole
     {
-        private readonly IConsoleInOut _consoleInOut;
+        private readonly ConsoleInOut _consoleInOut;
 
-        public OutputToConsole(IConsoleInOut consoleInOut)
+        public OutputToConsole(ConsoleInOut consoleInOut)
         {
             _consoleInOut = consoleInOut;
         }
 
-        public void WriteLinksWithoutTime(IEnumerable<UrlModel> allLinksFromSitemapAndScan)
+        public virtual void WriteLinksWithoutTime(IEnumerable<UrlModel> allLinksFromSitemapAndScan)
         {
             _consoleInOut.Write("Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site");
             OutputUrls(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsWeb == false).ToList());
@@ -24,19 +23,19 @@ namespace TestURLS.ConsoleApp
             OutputUrls(allLinksFromSitemapAndScan.Where(linkFromWeb => linkFromWeb.IsSitemap == false).ToList());
         }
 
-        public void WriteLinksWithTime(IEnumerable<UrlModelWithResponse> linksWithResponseTime)
+        public virtual void WriteLinksWithTime(IEnumerable<UrlModelWithResponse> linksWithResponseTime)
         {
             _consoleInOut.Write("Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML");
             OutputTime(linksWithResponseTime);
         }
 
-        public void WriteCountLinks(IEnumerable<UrlModel> allLinksFromSitemapAndScan)
+        public virtual void WriteCountLinks(IEnumerable<UrlModel> allLinksFromSitemapAndScan)
         {
             _consoleInOut.Write($"Urls(html documents) found after crawling a website: {allLinksFromSitemapAndScan.Count(link => link.IsWeb == true)}");
             _consoleInOut.Write($"Urls found in sitemap: {allLinksFromSitemapAndScan.Count(link => link.IsSitemap == true)}");
         }
 
-        protected void OutputTime(IEnumerable<UrlModelWithResponse> linksToOutput)
+        private void OutputTime(IEnumerable<UrlModelWithResponse> linksToOutput)
         {
             var stringToWrite = new StringBuilder();
 
@@ -67,7 +66,7 @@ namespace TestURLS.ConsoleApp
             _consoleInOut.Write(stringToWrite.ToString());
         }
 
-        protected void OutputUrls(IEnumerable<UrlModel> linksToOutput)
+        private void OutputUrls(IEnumerable<UrlModel> linksToOutput)
         {
             var stringToWrite = new StringBuilder();
             var lengthURL = linksToOutput.Max(link => link.Link.Length) + 4;

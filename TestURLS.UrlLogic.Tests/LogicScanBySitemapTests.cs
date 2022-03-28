@@ -7,17 +7,17 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class LogicScanBySitemapTests
     {
-        private LogicToGetLinksFromSitemap _logicSitemap;
-        private Mock<ChangesAboveLink> _urlSettings;
-        private Mock<HttpLogic> _getHttp;
+        private SitemapService _logicSitemap;
+        private Mock<StringService> _urlSettings;
+        private Mock<HttpService> _getHttp;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<ChangesAboveLink>();
-            _getHttp = new Mock<HttpLogic>();
+            _urlSettings = new Mock<StringService>();
+            _getHttp = new Mock<HttpService>();
 
-            _logicSitemap = new LogicToGetLinksFromSitemap(
+            _logicSitemap = new SitemapService(
                 _getHttp.Object,
                 _urlSettings.Object);
         }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic.ServiceAddScoped
 {
@@ -7,12 +6,12 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
     {
         public static void AddServicesFromLogic(this IServiceCollection services)
         {
-            services.AddScoped<HttpLogic>()
-                    .AddScoped<ILogicToGetLinksFromScanWeb,LogicToGetLinksFromScanWeb>()
-                    .AddScoped<ILogicToGetLinksFromSitemap,LogicToGetLinksFromSitemap>()
-                    .AddScoped<IMainLogic, MainLogic>()
-                    .AddScoped<ResponseTimeOfUrl>()
-                    .AddScoped<ChangesAboveLink>();
+            services.AddScoped<HttpService>()
+                    .AddScoped<WebService>()
+                    .AddScoped<SitemapService>()
+                    .AddScoped<MainService>()
+                    .AddScoped<ResponseService>()
+                    .AddScoped<StringService>();
         }
     }
 }

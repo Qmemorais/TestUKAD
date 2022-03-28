@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TestURLS.ConsoleApp.Interfaces;
 
 namespace TestURLS.ConsoleApp.ServiceAddScoped
 {
@@ -8,9 +7,9 @@ namespace TestURLS.ConsoleApp.ServiceAddScoped
         public static void AddServicesFromConsole(this IServiceCollection services)
         {
             services
-                .AddScoped<IConsoleInOut, ConsoleInOut>()
+                .AddScoped<ConsoleInOut>()
                 .AddScoped<LogicToConsole>()
-                .AddScoped<IOutputToConsole, OutputToConsole>();
+                .AddScoped<OutputToConsole>();
         }
     }
 }

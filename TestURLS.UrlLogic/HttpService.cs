@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TestURLS.UrlLogic
 {
-    public class HttpLogic
+    public class HttpService
     {
         public virtual string GetBodyFromUrl(string url)
         {

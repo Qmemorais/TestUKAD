@@ -1,0 +1,12 @@
+﻿namespace TestUrls.EntityFramework.Entities
+{
+    public class UrlEntity
+    {
+        public int Id { get; set; }
+        public string Link { get; set; }
+        public bool IsSitemap { get; set; }
+        public bool IsWeb { get; set; }
+        public int InfoEntityId { get; set; }
+        public GeneralInfoEntity InfoEntity { get; set; }
+    }
+}

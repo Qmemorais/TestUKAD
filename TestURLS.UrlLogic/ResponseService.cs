@@ -5,7 +5,7 @@ using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class ResponseTimeOfUrl
+    public class ResponseService
     {
         public virtual IEnumerable<UrlModelWithResponse> GetLinksWithTime(IEnumerable<UrlModel> linksToGetTime)
         {
