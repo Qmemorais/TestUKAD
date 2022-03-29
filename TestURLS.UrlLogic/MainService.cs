@@ -80,11 +80,10 @@ namespace TestURLS.UrlLogic
             return allLinks;
         }
 
-        public virtual void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        /*public virtual void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
         {
             var generalLink = urlModels.FirstOrDefault().Link;
             var urlEntity = new List<UrlEntity>();
-            var urlResponseEntity = new List<UrlResponseEntity>();
 
             foreach (var entity in urlModels)
             {
@@ -101,6 +100,6 @@ namespace TestURLS.UrlLogic
             _generalInfoEntities.Add(new GeneralInfoEntity 
                 { Link = generalLink, UrlEntities = urlEntity, UrlResponseEntities = urlResponseEntity });
             _generalInfoEntities.SaveChanges();
-        }
+        }*/
     }
 }

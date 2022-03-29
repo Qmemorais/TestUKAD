@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TestUrls.EntityFramework.Entities;
+using TestUrls.EntityFramework.FluentAPI;
 
 namespace TestUrls.EntityFramework
 {
@@ -9,7 +10,6 @@ namespace TestUrls.EntityFramework
     {
         public DbSet<GeneralInfoEntity> InfoEntities { get; set; }
         public DbSet<UrlEntity> UrlEntities { get; set; }
-        public DbSet<UrlResponseEntity> UrlResponseEntities { get; set; }
 
         public UrlContext() { }
 
@@ -32,20 +32,8 @@ namespace TestUrls.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // использование Fluent API
-            modelBuilder.Entity<GeneralInfoEntity>()
-                .Property(info => info.CreateAt)
-                .HasDefaultValueSql("GETDATE()");
-
-            modelBuilder.Entity<UrlEntity>()
-            .HasOne(url => url.InfoEntity)
-            .WithMany(info => info.UrlEntities)
-            .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<UrlResponseEntity>()
-            .HasOne(url => url.InfoEntity)
-            .WithMany(info => info.UrlResponseEntities)
-            .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ApplyConfiguration(new GeneralInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new UrlEntityConfiguration());
         }
     }
 }

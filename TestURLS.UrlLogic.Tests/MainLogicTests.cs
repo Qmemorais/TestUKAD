@@ -14,16 +14,18 @@ namespace TestURLS.UrlLogic.Tests
         private Mock<WebService> _webService;
         private Mock<SitemapService> _sitemapService;
         private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
         private Mock<ResponseService> _responseServer;
         private Mock<IRepository<GeneralInfoEntity>> _general;
 
         [SetUp]
         public void Setup()
         {
-            _webService = new Mock<WebService>();
-            _sitemapService = new Mock<SitemapService>();
             _stringService = new Mock<StringService>();
+            _httpService = new Mock<HttpService>();
             _responseServer = new Mock<ResponseService>();
+            _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
+            _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
             _general = new Mock<IRepository<GeneralInfoEntity>>();
 
             _mainLogic = new MainService(

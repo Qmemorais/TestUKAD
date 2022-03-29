@@ -36,8 +36,6 @@ namespace TestURLS.ConsoleApp
 
             _outputToConsole.WriteCountLinks(results);
 
-            _logic.DownloadToDatabase(results, getTime);
-
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();
         }
