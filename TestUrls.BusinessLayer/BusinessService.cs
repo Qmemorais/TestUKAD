@@ -5,7 +5,7 @@ using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
 
-namespace TestUrls.BusinessLayer
+namespace TestUrls.BusinessLogic
 {
     public class BusinessService
     {

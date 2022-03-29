@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.UrlLogic.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrls.EntityFramework", "TestUrls.EntityFramework\TestUrls.EntityFramework.csproj", "{1678CC88-5C7F-4F48-A3E3-B49703BCC0A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUrls.BusinessLayer", "TestUrls.BusinessLayer\TestUrls.BusinessLayer.csproj", "{B59CF7C3-03A6-4C4B-87AE-B593A5CCAD74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrls.BusinessLogic", "TestUrls.BusinessLayer\TestUrls.BusinessLogic.csproj", "{B59CF7C3-03A6-4C4B-87AE-B593A5CCAD74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TestUrls.BusinessLayer.ServiceAddScoped;
+using TestUrls.BusinessLogic.ServiceAddScoped;
 using TestUrls.EntityFramework;
 using TestURLS.ConsoleApp.ServiceAddScoped;
 using TestURLS.UrlLogic.ServiceAddScoped;

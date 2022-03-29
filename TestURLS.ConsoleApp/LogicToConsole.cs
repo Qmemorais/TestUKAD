@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using TestUrls.BusinessLayer;
+using TestUrls.BusinessLogic;
 
 namespace TestURLS.ConsoleApp
 {
