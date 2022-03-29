@@ -6,16 +6,16 @@ namespace TestURLS.ConsoleApp
     public class LogicToConsole
     {
         private readonly ConsoleInOut _consoleInOut;
-        private readonly BusinesService _businesService;
+        private readonly BusinessService _businessService;
         private readonly OutputToConsole _outputToConsole;
 
         public LogicToConsole(
             ConsoleInOut consoleInOut,
-            BusinesService businesService,
+            BusinessService businessService,
             OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
-            _businesService = businesService;
+            _businessService = businessService;
             _outputToConsole = outputToConsole;
         }
 
@@ -23,7 +23,7 @@ namespace TestURLS.ConsoleApp
         {
             _consoleInOut.Write("Enter URL: ");
             var urlToScan = _consoleInOut.Read();
-            var results = _businesService.GetLinksFromCrowler(urlToScan);
+            var results = _businessService.GetLinksFromCrawler(urlToScan);
             var isSitemapWasFound = results.Any(link => link.IsSitemap);
 
             if (isSitemapWasFound)
@@ -31,10 +31,12 @@ namespace TestURLS.ConsoleApp
                 _outputToConsole.WriteLinksWithoutTime(results);
             }
 
-            var getTime = _businesService.GetLinksFromCrowlerWithResponse(results);
+            var getTime = _businessService.GetLinksFromCrawlerWithResponse(results);
             _outputToConsole.WriteLinksWithTime(getTime);
 
             _outputToConsole.WriteCountLinks(results);
+
+            _businessService.DownloadToDatabase(results, getTime);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();

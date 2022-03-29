@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TestUrls.EntityFramework.Entities
 {
-    public class GeneralInfoEntity
+    public class SiteTestEntity
     {
         public int Id { get; set; }
         public string Link { get; set; }

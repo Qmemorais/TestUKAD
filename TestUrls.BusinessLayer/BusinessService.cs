@@ -7,17 +7,17 @@ using TestURLS.UrlLogic.Models;
 
 namespace TestUrls.BusinessLayer
 {
-    public class BusinesService
+    public class BusinessService
     {
-        private IRepository<GeneralInfoEntity> _generalInfoEntities;
-        private MainService _mainService;
+        private readonly IRepository<SiteTestEntity> _testEntities;
+        private readonly MainService _mainService;
 
-        public BusinesService(
+        public BusinessService(
             MainService mainService,
-            IRepository<GeneralInfoEntity> generalInfoEntities)
+            IRepository<SiteTestEntity> testEntities)
         {
             _mainService = mainService;
-            _generalInfoEntities = generalInfoEntities;
+            _testEntities = testEntities;
         }
 
         public virtual void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
@@ -38,26 +38,19 @@ namespace TestUrls.BusinessLayer
                     .ForEach(link => link.TimeOfResponse = entity.TimeOfResponse);
             }
 
-            _generalInfoEntities.Add(new GeneralInfoEntity
+            _testEntities.Add(new SiteTestEntity
                 { Link = generalLink, UrlWithResponseEntities = urlEntity });
-            _generalInfoEntities.SaveChanges();
+            _testEntities.SaveChanges();
         }
 
-        public virtual IEnumerable<GeneralInfoEntity> GetAllGeneralLinks()
-        {
-            var urlWithResponse = _generalInfoEntities.GetAll();
-
-            return urlWithResponse;
-        }
-
-        public virtual IEnumerable<UrlModel> GetLinksFromCrowler(string url)
+        public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)
         {
             var linksFromCrowler = _mainService.GetResults(url);
 
             return linksFromCrowler;
         }
 
-        public virtual IEnumerable<UrlModelWithResponse> GetLinksFromCrowlerWithResponse(IEnumerable<UrlModel> htmlToGetTime)
+        public virtual IEnumerable<UrlModelWithResponse> GetLinksFromCrawlerWithResponse(IEnumerable<UrlModel> htmlToGetTime)
         {
             var linksWithResponse = _mainService.GetUrlsWithTimeResponse(htmlToGetTime);
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestUrls.EntityFramework;
 
 namespace TestUrls.EntityFramework.Migrations
 {
     [DbContext(typeof(UrlContext))]
-    partial class UrlContextModelSnapshot : ModelSnapshot
+    [Migration("20220329162837_createFluentConfig")]
+    partial class createFluentConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

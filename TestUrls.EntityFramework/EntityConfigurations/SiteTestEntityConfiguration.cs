@@ -2,17 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TestUrls.EntityFramework.Entities;
 
-namespace TestUrls.EntityFramework.FluentAPI
+namespace TestUrls.EntityFramework.EntityConfigurations
 {
-    public class GeneralInfoConfiguration : IEntityTypeConfiguration<GeneralInfoEntity>
+    public class SiteTestEntityConfiguration : IEntityTypeConfiguration<SiteTestEntity>
     {
-        public void Configure(EntityTypeBuilder<GeneralInfoEntity> builder)
+        public void Configure(EntityTypeBuilder<SiteTestEntity> builder)
         {
             builder
                 .HasKey(info => info.Id);
-            builder
-                .Property(info => info.UrlWithResponseEntities)
-                .IsRequired(true);
             builder
                 .Property(info => info.CreateAt)
                 .HasDefaultValueSql("GETDATE()");

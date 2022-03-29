@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TestUrls.EntityFramework.Entities;
 
-namespace TestUrls.EntityFramework.FluentAPI
+namespace TestUrls.EntityFramework.EntityConfigurations
 {
     internal class UrlEntityConfiguration : IEntityTypeConfiguration<UrlWithResponse>
     {
@@ -12,11 +12,7 @@ namespace TestUrls.EntityFramework.FluentAPI
                 .HasKey(entity => entity.Id);
             builder
                 .Property(entity => entity.TimeOfResponse)
-                .IsRequired(true);
-            builder
-                .HasOne(url => url.InfoEntity)
-                .WithMany(info => info.UrlWithResponseEntities)
-                .OnDelete(DeleteBehavior.Cascade);
+                .IsRequired();
         }
     }
 }

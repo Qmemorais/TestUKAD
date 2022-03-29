@@ -19,10 +19,10 @@ namespace TestURLS.ConsoleApp.Tests
         private Mock<StringService> _stringService;
         private Mock<HttpService> _httpService;
         private Mock<ResponseService> _responseService;
-        private Mock<IRepository<GeneralInfoEntity>> _generalInfoEntities;
+        private Mock<IRepository<SiteTestEntity>> _testEntities;
         private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
-        private Mock<BusinesService> _businesService;
+        private Mock<BusinessService> _businessService;
         private readonly string _writeLineOutput = "Press <Enter>";
 
         [SetUp]
@@ -30,7 +30,7 @@ namespace TestURLS.ConsoleApp.Tests
         {
             _consoleInOut = new Mock<ConsoleInOut>();
             _httpService = new Mock<HttpService>();
-            _generalInfoEntities = new Mock<IRepository<GeneralInfoEntity>>();
+            _testEntities = new Mock<IRepository<SiteTestEntity>>();
             _stringService = new Mock<StringService>();
             _responseService = new Mock<ResponseService>();
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
@@ -38,11 +38,11 @@ namespace TestURLS.ConsoleApp.Tests
 
             _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
                 _responseService.Object);
-            _businesService = new Mock<BusinesService>(_mainLogic.Object, _generalInfoEntities.Object);
+            _businessService = new Mock<BusinessService>(_mainLogic.Object, _testEntities.Object);
             _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
             _consoleInterface = new LogicToConsole(
                 _consoleInOut.Object,
-                _businesService.Object,
+                _businessService.Object,
                 _outputToConsole.Object);
         }
 
@@ -56,8 +56,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _businesService
-                .Setup(x => x.GetLinksFromCrowler(""))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(""))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -75,8 +75,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _businesService
-                .Setup(x => x.GetLinksFromCrowler(readLine))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -94,8 +94,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _businesService
-                .Setup(x => x.GetLinksFromCrowler(readLine))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -122,11 +122,11 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(fakeUrl);
-            _businesService
-                .Setup(x => x.GetLinksFromCrowler(fakeUrl))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(fakeUrl))
                 .Returns(expectedUrl);
-            _businesService
-                .Setup(x => x.GetLinksFromCrowlerWithResponse(expectedUrl))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawlerWithResponse(expectedUrl))
                 .Returns(expectedUrlWithTime);
             //act
             _consoleInterface.Start();

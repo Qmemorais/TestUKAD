@@ -1,14 +1,14 @@
 ﻿using System.Data;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TestUrls.EntityFramework.Entities;
-using TestUrls.EntityFramework.FluentAPI;
 
 namespace TestUrls.EntityFramework
 {
     public class UrlContext : DbContext, IEfRepositoryDbContext
     {
-        public DbSet<GeneralInfoEntity> InfoEntities { get; set; }
+        public DbSet<SiteTestEntity> InfoEntities { get; set; }
         public DbSet<UrlWithResponse> UrlWithResponseEntities { get; set; }
 
         public UrlContext() { }
@@ -32,8 +32,7 @@ namespace TestUrls.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new GeneralInfoConfiguration());
-            modelBuilder.ApplyConfiguration(new UrlEntityConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

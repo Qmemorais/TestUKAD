@@ -7,7 +7,7 @@
         public bool IsSitemap { get; set; }
         public bool IsWeb { get; set; }
         public int TimeOfResponse { get; set; }
-        public int InfoEntityId { get; set; }
-        public GeneralInfoEntity InfoEntity { get; set; }
+        public int TestEntityId { get; set; }
+        public SiteTestEntity TestEntity { get; set; }
     }
 }
