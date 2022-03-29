@@ -16,7 +16,6 @@ namespace TestURLS.UrlLogic.Tests
         private Mock<StringService> _stringService;
         private Mock<HttpService> _httpService;
         private Mock<ResponseService> _responseServer;
-        private Mock<IRepository<GeneralInfoEntity>> _general;
 
         [SetUp]
         public void Setup()
@@ -26,14 +25,12 @@ namespace TestURLS.UrlLogic.Tests
             _responseServer = new Mock<ResponseService>();
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
             _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
-            _general = new Mock<IRepository<GeneralInfoEntity>>();
 
             _mainLogic = new MainService(
                 _webService.Object,
                 _sitemapService.Object,
                 _stringService.Object,
-                _responseServer.Object,
-                _general.Object);
+                _responseServer.Object);
         }
 
         [Test]

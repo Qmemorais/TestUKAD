@@ -8,6 +8,6 @@ namespace TestUrls.EntityFramework.Entities
         public int Id { get; set; }
         public string Link { get; set; }
         public DateTime CreateAt { get; set; }
-        public IEnumerable<UrlEntity> UrlEntities { get;set;}
+        public IEnumerable<UrlWithResponse> UrlWithResponseEntities { get;set;}
     }
 }

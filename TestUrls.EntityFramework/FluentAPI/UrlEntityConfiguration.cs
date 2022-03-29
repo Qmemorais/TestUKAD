@@ -4,9 +4,9 @@ using TestUrls.EntityFramework.Entities;
 
 namespace TestUrls.EntityFramework.FluentAPI
 {
-    internal class UrlEntityConfiguration : IEntityTypeConfiguration<UrlEntity>
+    internal class UrlEntityConfiguration : IEntityTypeConfiguration<UrlWithResponse>
     {
-        public void Configure(EntityTypeBuilder<UrlEntity> builder)
+        public void Configure(EntityTypeBuilder<UrlWithResponse> builder)
         {
             builder
                 .HasKey(entity => entity.Id);
@@ -15,7 +15,7 @@ namespace TestUrls.EntityFramework.FluentAPI
                 .IsRequired(true);
             builder
                 .HasOne(url => url.InfoEntity)
-                .WithMany(info => info.UrlEntities)
+                .WithMany(info => info.UrlWithResponseEntities)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -19,8 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestUrls.EntityFramework\TestUrls.EntityFramework.csproj" />
-    <ProjectReference Include="..\TestURLS.UrlLogic\TestURLS.UrlLogic.csproj" />
+    <ProjectReference Include="..\TestUrls.BusinessLayer\TestUrls.BusinessLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

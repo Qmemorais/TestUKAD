@@ -11,7 +11,7 @@ namespace TestUrls.EntityFramework.FluentAPI
             builder
                 .HasKey(info => info.Id);
             builder
-                .Property(info => info.UrlEntities)
+                .Property(info => info.UrlWithResponseEntities)
                 .IsRequired(true);
             builder
                 .Property(info => info.CreateAt)

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
@@ -12,20 +11,17 @@ namespace TestURLS.UrlLogic
         private readonly SitemapService _sitemapService;
         private readonly StringService _stringService;
         private readonly ResponseService _responseService;
-        private readonly IRepository<GeneralInfoEntity> _generalInfoEntities;
 
         public MainService(
             WebService webService,
             SitemapService sitemapService,
             StringService stringService,
-            ResponseService responseService,
-            IRepository<GeneralInfoEntity> generalInfoEntities)
+            ResponseService responseService)
         {
             _webService = webService;
             _sitemapService = sitemapService;
             _stringService = stringService;
             _responseService = responseService;
-            _generalInfoEntities = generalInfoEntities;
         }
 
         public virtual IEnumerable<UrlModel> GetResults(string url)
@@ -79,27 +75,5 @@ namespace TestURLS.UrlLogic
 
             return allLinks;
         }
-
-        /*public virtual void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
-        {
-            var generalLink = urlModels.FirstOrDefault().Link;
-            var urlEntity = new List<UrlEntity>();
-
-            foreach (var entity in urlModels)
-            {
-                urlEntity.Add(
-                    new UrlEntity { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb });
-            }
-
-            foreach (var entity in urlResponseModels)
-            {
-                urlResponseEntity.Add(
-                    new UrlResponseEntity { Link = entity.Link, TimeOfResponse = entity.TimeOfResponse });
-            }
-
-            _generalInfoEntities.Add(new GeneralInfoEntity 
-                { Link = generalLink, UrlEntities = urlEntity, UrlResponseEntities = urlResponseEntity });
-            _generalInfoEntities.SaveChanges();
-        }*/
     }
 }

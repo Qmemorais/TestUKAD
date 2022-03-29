@@ -1,6 +1,6 @@
 ﻿namespace TestUrls.EntityFramework.Entities
 {
-    public class UrlEntity
+    public class UrlWithResponse
     {
         public int Id { get; set; }
         public string Link { get; set; }

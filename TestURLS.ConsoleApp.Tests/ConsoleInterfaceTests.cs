@@ -3,6 +3,7 @@ using System.Data;
 using System.Net;
 using Moq;
 using NUnit.Framework;
+using TestUrls.BusinessLayer;
 using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
@@ -21,6 +22,7 @@ namespace TestURLS.ConsoleApp.Tests
         private Mock<IRepository<GeneralInfoEntity>> _generalInfoEntities;
         private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
+        private Mock<BusinesService> _businesService;
         private readonly string _writeLineOutput = "Press <Enter>";
 
         [SetUp]
@@ -35,11 +37,12 @@ namespace TestURLS.ConsoleApp.Tests
             _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
 
             _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
-                _responseService.Object,_generalInfoEntities.Object);
+                _responseService.Object);
+            _businesService = new Mock<BusinesService>(_mainLogic.Object, _generalInfoEntities.Object);
             _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
             _consoleInterface = new LogicToConsole(
                 _consoleInOut.Object,
-                _mainLogic.Object,
+                _businesService.Object,
                 _outputToConsole.Object);
         }
 
@@ -53,8 +56,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(""))
+            _businesService
+                .Setup(x => x.GetLinksFromCrowler(""))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -72,8 +75,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(readLine))
+            _businesService
+                .Setup(x => x.GetLinksFromCrowler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -91,8 +94,8 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(readLine))
+            _businesService
+                .Setup(x => x.GetLinksFromCrowler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
@@ -119,11 +122,11 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(fakeUrl);
-            _mainLogic
-                .Setup(x => x.GetResults(fakeUrl))
+            _businesService
+                .Setup(x => x.GetLinksFromCrowler(fakeUrl))
                 .Returns(expectedUrl);
-            _mainLogic
-                .Setup(x => x.GetUrlsWithTimeResponse(expectedUrl))
+            _businesService
+                .Setup(x => x.GetLinksFromCrowlerWithResponse(expectedUrl))
                 .Returns(expectedUrlWithTime);
             //act
             _consoleInterface.Start();

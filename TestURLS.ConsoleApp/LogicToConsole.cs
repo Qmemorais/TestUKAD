@@ -1,21 +1,21 @@
 ﻿using System.Linq;
-using TestURLS.UrlLogic;
+using TestUrls.BusinessLayer;
 
 namespace TestURLS.ConsoleApp
 {
     public class LogicToConsole
     {
         private readonly ConsoleInOut _consoleInOut;
-        private readonly MainService _logic;
+        private readonly BusinesService _businesService;
         private readonly OutputToConsole _outputToConsole;
 
         public LogicToConsole(
             ConsoleInOut consoleInOut,
-            MainService logic,
+            BusinesService businesService,
             OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
-            _logic = logic;
+            _businesService = businesService;
             _outputToConsole = outputToConsole;
         }
 
@@ -23,7 +23,7 @@ namespace TestURLS.ConsoleApp
         {
             _consoleInOut.Write("Enter URL: ");
             var urlToScan = _consoleInOut.Read();
-            var results = _logic.GetResults(urlToScan);
+            var results = _businesService.GetLinksFromCrowler(urlToScan);
             var isSitemapWasFound = results.Any(link => link.IsSitemap);
 
             if (isSitemapWasFound)
@@ -31,7 +31,7 @@ namespace TestURLS.ConsoleApp
                 _outputToConsole.WriteLinksWithoutTime(results);
             }
 
-            var getTime = _logic.GetUrlsWithTimeResponse(results);
+            var getTime = _businesService.GetLinksFromCrowlerWithResponse(results);
             _outputToConsole.WriteLinksWithTime(getTime);
 
             _outputToConsole.WriteCountLinks(results);

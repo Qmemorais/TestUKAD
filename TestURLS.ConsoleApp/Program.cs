@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TestUrls.BusinessLayer.ServiceAddScoped;
 using TestUrls.EntityFramework;
 using TestURLS.ConsoleApp.ServiceAddScoped;
 using TestURLS.UrlLogic.ServiceAddScoped;
@@ -26,6 +27,7 @@ namespace TestURLS.ConsoleApp
 
             services.AddServicesFromConsole();
             services.AddServicesFromLogic();
+            services.AddServicesBusinessLayer();
             services.AddEfRepository<UrlContext>(options => options.UseSqlServer(connectionString));
 
             return services;

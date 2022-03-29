@@ -9,7 +9,7 @@ namespace TestUrls.EntityFramework
     public class UrlContext : DbContext, IEfRepositoryDbContext
     {
         public DbSet<GeneralInfoEntity> InfoEntities { get; set; }
-        public DbSet<UrlEntity> UrlEntities { get; set; }
+        public DbSet<UrlWithResponse> UrlWithResponseEntities { get; set; }
 
         public UrlContext() { }
 

@@ -20,6 +20,10 @@
 /TestURLS.UrlLogic.Tests/bin/
 /TestURLS.UrlLogic.Tests/obj/
 
+/TestUrls.BusinessLayer/.vs/
+/TestUrls.BusinessLayer/obj/
+/TestUrls.BusinessLayer/bin/
+
 /Models/bin/
 /Models/obj/
 
