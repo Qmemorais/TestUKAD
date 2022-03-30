@@ -1,0 +1,38 @@
+﻿@using TestUrls.BusinessLogic.BusinessModels
+
+@*
+    create form to get new test
+*@
+<form method="post">
+    <label>Enter Link :</label>
+    <input type="text" name="link" />
+    <input type="submit" value="Test" />
+</form>
+
+
+@model IEnumerable<TestDto>
+
+<table title="Test Results">
+    <thead>
+        <tr>
+            <th>Link</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model)
+        {
+            <tr>
+                <td>@link.Link</td>
+                <td>@link.CreateAt.ToShortDateString()</td>
+                <td href="">View Details</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

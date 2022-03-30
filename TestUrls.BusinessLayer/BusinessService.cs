@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using TestUrls.BusinessLogic.BusinessModels;
 using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
@@ -43,18 +44,32 @@ namespace TestUrls.BusinessLogic
             _testEntities.SaveChanges();
         }
 
-        public virtual IEnumerable<Test> GetTestedLinks()
+        public virtual IEnumerable<TestDto> GetTestedLinks()
         {
+            var testResponse = new List<TestDto>();
             var testedLinks = _testEntities.GetAll();
 
-            return testedLinks;
+            foreach(var link in testedLinks)
+            {
+                testResponse.Add(new TestDto 
+                    { Id = link.Id, Link = link.Link, CreateAt = link.CreateAt });
+            }
+
+            return testResponse;
         }
 
-        public virtual IEnumerable<TestResult> GetTestedData(int id)
+        public virtual IEnumerable<TestResultDto> GetTestedData(int id)
         {
+            var testResultResponse = new List<TestResultDto>();
             var urlModels = _testEntities.GetById(id).UrlWithResponseEntities;
 
-            return urlModels;
+            foreach(var link in urlModels)
+            {
+                testResultResponse.Add(new TestResultDto 
+                    {Link= link.Link, IsSitemap= link.IsSitemap, IsWeb= link.IsWeb, TimeOfResponse= link.TimeOfResponse });
+            }
+
+            return testResultResponse;
         }
 
         public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)
