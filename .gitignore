@@ -5,6 +5,7 @@
 /TestURLS.ConsoleApp/.vs/
 /TestURLS.ConsoleApp/obj/
 /TestURLS.ConsoleApp/bin/
+TestURLS.ConsoleApp/appsettings.json
 
 /TestURLS.UrlLogic/.vs/
 /TestURLS.UrlLogic/obj/
@@ -23,6 +24,12 @@
 /TestUrls.BusinessLayer/.vs/
 /TestUrls.BusinessLayer/obj/
 /TestUrls.BusinessLayer/bin/
+
+/TestUrl.MvcApp/.vs/
+/TestUrl.MvcApp/obj/
+/TestUrl.MvcApp/bin/
+TestUrl.MvcApp/appsettings.json
+TestUrl.MvcApp/appsettings.Development.json
 
 /Models/bin/
 /Models/obj/

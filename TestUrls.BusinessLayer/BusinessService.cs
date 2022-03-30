@@ -9,26 +9,26 @@ namespace TestUrls.BusinessLogic
 {
     public class BusinessService
     {
-        private readonly IRepository<SiteTestEntity> _testEntities;
+        private readonly IRepository<Test> _testEntities;
         private readonly MainService _mainService;
 
         public BusinessService(
             MainService mainService,
-            IRepository<SiteTestEntity> testEntities)
+            IRepository<Test> testEntities)
         {
             _mainService = mainService;
             _testEntities = testEntities;
         }
 
-        public virtual void DownloadToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        public virtual void SaveToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
         {
             var generalLink = urlModels.FirstOrDefault().Link;
-            var urlEntity = new List<UrlWithResponse>();
+            var urlEntity = new List<TestResult>();
 
             foreach (var entity in urlModels)
             {
                 urlEntity.Add(
-                    new UrlWithResponse { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb });
+                    new TestResult { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb });
             }
 
             foreach (var entity in urlResponseModels)
@@ -38,9 +38,23 @@ namespace TestUrls.BusinessLogic
                     .ForEach(link => link.TimeOfResponse = entity.TimeOfResponse);
             }
 
-            _testEntities.Add(new SiteTestEntity
+            _testEntities.Add(new Test
                 { Link = generalLink, UrlWithResponseEntities = urlEntity });
             _testEntities.SaveChanges();
+        }
+
+        public virtual IEnumerable<Test> GetTestedLinks()
+        {
+            var testedLinks = _testEntities.GetAll();
+
+            return testedLinks;
+        }
+
+        public virtual IEnumerable<TestResult> GetTestedData(int id)
+        {
+            var urlModels = _testEntities.GetById(id).UrlWithResponseEntities;
+
+            return urlModels;
         }
 
         public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)

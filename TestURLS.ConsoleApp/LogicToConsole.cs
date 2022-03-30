@@ -36,7 +36,7 @@ namespace TestURLS.ConsoleApp
 
             _outputToConsole.WriteCountLinks(results);
 
-            _businessService.DownloadToDatabase(results, getTime);
+            _businessService.SaveToDatabase(results, getTime);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();

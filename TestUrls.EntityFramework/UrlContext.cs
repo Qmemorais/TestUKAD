@@ -8,8 +8,8 @@ namespace TestUrls.EntityFramework
 {
     public class UrlContext : DbContext, IEfRepositoryDbContext
     {
-        public DbSet<SiteTestEntity> InfoEntities { get; set; }
-        public DbSet<UrlWithResponse> UrlWithResponseEntities { get; set; }
+        public DbSet<Test> InfoEntities { get; set; }
+        public DbSet<TestResult> UrlWithResponseEntities { get; set; }
 
         public UrlContext() { }
 

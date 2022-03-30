@@ -19,7 +19,7 @@ namespace TestURLS.ConsoleApp.Tests
         private Mock<StringService> _stringService;
         private Mock<HttpService> _httpService;
         private Mock<ResponseService> _responseService;
-        private Mock<IRepository<SiteTestEntity>> _testEntities;
+        private Mock<IRepository<Test>> _testEntities;
         private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
         private Mock<BusinessService> _businessService;
@@ -30,7 +30,7 @@ namespace TestURLS.ConsoleApp.Tests
         {
             _consoleInOut = new Mock<ConsoleInOut>();
             _httpService = new Mock<HttpService>();
-            _testEntities = new Mock<IRepository<SiteTestEntity>>();
+            _testEntities = new Mock<IRepository<Test>>();
             _stringService = new Mock<StringService>();
             _responseService = new Mock<ResponseService>();
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
