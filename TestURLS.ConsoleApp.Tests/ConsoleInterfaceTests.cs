@@ -1,25 +1,49 @@
-using NUnit.Framework;
-using Moq;
-using TestURLS.UrlLogic;
-using System.Net;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using System.Net;
+using Moq;
+using NUnit.Framework;
+using TestUrls.BusinessLogic;
+using TestUrls.EntityFramework.Entities;
+using TestURLS.UrlLogic;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.ConsoleApp.Tests
 {
-    public class Tests
+    public class LogicToConsoleTests
     {
-        private Mock<IConsoleInOut> _consoleInOut;
-        private Mock<MainLogic> _mainLogic;
-        private ConsoleInterface _consoleInterface;
+        private Mock<ConsoleInOut> _consoleInOut;
+        private Mock<MainService> _mainLogic;
+        private Mock<WebService> _webService;
+        private Mock<SitemapService> _sitemapService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
+        private Mock<ResponseService> _responseService;
+        private Mock<IRepository<SiteTestEntity>> _testEntities;
+        private Mock<OutputToConsole> _outputToConsole;
+        private LogicToConsole _consoleInterface;
+        private Mock<BusinessService> _businessService;
         private readonly string _writeLineOutput = "Press <Enter>";
 
         [SetUp]
         public void Setup()
         {
-            _consoleInOut = new Mock<IConsoleInOut>();
-            _mainLogic = new Mock<MainLogic>();
-            _consoleInterface = new ConsoleInterface(_consoleInOut.Object,_mainLogic.Object);
+            _consoleInOut = new Mock<ConsoleInOut>();
+            _httpService = new Mock<HttpService>();
+            _testEntities = new Mock<IRepository<SiteTestEntity>>();
+            _stringService = new Mock<StringService>();
+            _responseService = new Mock<ResponseService>();
+            _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
+            _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
+
+            _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
+                _responseService.Object);
+            _businessService = new Mock<BusinessService>(_mainLogic.Object, _testEntities.Object);
+            _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
+            _consoleInterface = new LogicToConsole(
+                _consoleInOut.Object,
+                _businessService.Object,
+                _outputToConsole.Object);
         }
 
         [Test]
@@ -32,80 +56,83 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(""))
-                .Throws(new WebException("Invalid URI: The URI is empty."));
-            //act
-            _consoleInterface.Start();
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(""))
+                .Throws(new WebException(writeLineRes));
             //assert
-            _consoleInOut.Verify(x => x.Write(writeLineRes), Times.Once);
-            _consoleInOut.Verify(x => x.Write(_writeLineOutput), Times.Once);
-            _consoleInOut.Verify(x => x.Read(), Times.Exactly(2));
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
-        public void Start_InputCorrectURL_ReturnExceptionMessageForbiden()
+        public void Start_InputCorrectUrl_ReturnExceptionMessageForbiden()
         {
             //arrange
-            var readLine = "";
+            var readLine = "https://example.com/";
             var writeLineRes = "403 - Forbidden";
 
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(""))
-                .Throws(new WebException("403 - Forbidden"));
-            //act
-            _consoleInterface.Start();
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
+                .Throws(new WebException(writeLineRes));
             //assert
-            _consoleInOut.Verify(x => x.Write(writeLineRes), Times.Once);
-            _consoleInOut.Verify(x => x.Write(_writeLineOutput), Times.Once);
-            _consoleInOut.Verify(x => x.Read(), Times.Exactly(2));
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
-        public void Start_InputCorrectURL_ReturnExceptionMessageNotFound()
+        public void Start_InputCorrectUrl_ReturnExceptionMessageNotFound()
         {
             //arrange
-            var readLine = "";
+            var readLine = "https://example.com/";
             var writeLineRes = "404 - NotFound";
 
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(""))
-                .Throws(new WebException("404 - NotFound"));
-            //act
-            _consoleInterface.Start();
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
+                .Throws(new WebException(writeLineRes));
             //assert
-            _consoleInOut.Verify(x => x.Write(writeLineRes), Times.Once);
-            _consoleInOut.Verify(x => x.Write(_writeLineOutput), Times.Once);
-            _consoleInOut.Verify(x => x.Read(), Times.Exactly(2));
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
-        public void Start_InputCorrectURL_ReturnCorectCountWriteLine()
+        public void Start_InputCorrectUrl_ReturnCorectCountWriteLine()
         {
             //arrange
-            var fakeURL = "https://example.com/";
-            var expectedURL = new List<string>()
+            var fakeUrl = "https://example.com/";
+            var expectedUrl = new List<UrlModel>()
             {
-                "https://test.crawler.com/Info",
-                "https://test.crawler.com/main.html"
+                new UrlModel{Link ="https://test.crawler.com/Info",IsWeb=true},
+                new UrlModel{Link ="https://test.crawler.com/main.html",IsSitemap=true}
+            };
+            var expectedUrlWithTime = new List<UrlModelWithResponse>()
+            {
+                new UrlModelWithResponse{Link ="https://test.crawler.com/Info", TimeOfResponse=12},
+                new UrlModelWithResponse{Link ="https://test.crawler.com/main.html",TimeOfResponse=4}
             };
 
             _consoleInOut
                 .Setup(x => x.Read())
-                .Returns(fakeURL);
-            _mainLogic
-                .Setup(x => x.GetResults(fakeURL))
-                .Returns(expectedURL);
+                .Returns(fakeUrl);
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(fakeUrl))
+                .Returns(expectedUrl);
+            _businessService
+                .Setup(x => x.GetLinksFromCrawlerWithResponse(expectedUrl))
+                .Returns(expectedUrlWithTime);
             //act
             _consoleInterface.Start();
             //assert
-            _consoleInOut.Verify(x => x.Write(expectedURL.First()), Times.Once);
+            _outputToConsole.Verify(x => x.WriteLinksWithoutTime(expectedUrl), Times.Once);
+            _outputToConsole.Verify(x => x.WriteLinksWithTime(expectedUrlWithTime), Times.Once);
             _consoleInOut.Verify(x => x.Write(_writeLineOutput), Times.Once);
         }
     }
