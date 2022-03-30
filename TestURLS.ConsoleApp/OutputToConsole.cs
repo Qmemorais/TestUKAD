@@ -91,6 +91,5 @@ namespace TestURLS.ConsoleApp
 
             _consoleInOut.Write(stringToWrite.ToString());
         }
-
     }
 }

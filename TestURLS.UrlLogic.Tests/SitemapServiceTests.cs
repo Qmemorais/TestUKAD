@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace TestURLS.UrlLogic.Tests
 {
-    public class LogicScanBySitemapTests
+    public class SitemapServiceTests
     {
         private SitemapService _logicSitemap;
         private Mock<StringService> _urlSettings;
@@ -26,8 +26,8 @@ namespace TestURLS.UrlLogic.Tests
         public void GetLinksFromSitemap_InvalidUrl_EmptyList()
         {
             //arrange
-            var invalidUrl = "hahahah";
-            var domainName = "hahahah";
+            var invalidUrl = "test.crawler";
+            var domainName = "test.crawler";
             var expectedLinks = new List<string>();
 
             _getHttp

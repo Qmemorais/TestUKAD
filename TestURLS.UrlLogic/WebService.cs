@@ -97,6 +97,7 @@ namespace TestURLS.UrlLogic
                     }
                 }
             }
+
             return matches
                 .Distinct();
         }
@@ -108,6 +109,7 @@ namespace TestURLS.UrlLogic
                 var indexOfSymbol = link.IndexOf("#");
                 link = link.Substring(0, indexOfSymbol);
             }
+
             return link;
         }
     }

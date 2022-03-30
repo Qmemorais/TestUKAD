@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Tests
 {
-    public class MainLogicTests
+    public class MainServiceTests
     {
         private MainService _mainLogic;
         private Mock<WebService> _webService;
@@ -104,7 +102,7 @@ namespace TestURLS.UrlLogic.Tests
         [Test]
         public void GetUrlsWithTimeResponse_NotNullList_NewListWithResponse()
         {
-            //assert
+            //arrange
             var modelToGetTime = new List<UrlModel>()
             {
                 new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
@@ -119,9 +117,8 @@ namespace TestURLS.UrlLogic.Tests
                 .Returns(modelWithTime);
             //
             var results = _mainLogic.GetUrlsWithTimeResponse(modelToGetTime);
-            //
+            //assert
             Assert.AreEqual(modelWithTime, results);
-
         }
     }
 }

@@ -3,11 +3,10 @@ using System.Linq;
 using System.Net;
 using Moq;
 using NUnit.Framework;
-using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Tests
 {
-    public class LogicScanByHtmlTests
+    public class WebServiceTests
     {
         private WebService _logicHtml;
         private Mock<StringService> _urlSettings;
