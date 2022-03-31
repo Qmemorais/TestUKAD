@@ -28,15 +28,12 @@ namespace TestUrls.BusinessLogic
 
             foreach (var entity in urlModels)
             {
+                var timeResponse = urlResponseModels
+                    .First(link => string.Equals(link.Link, entity.Link))
+                    .TimeOfResponse;
                 urlEntity.Add(
-                    new TestResult { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb });
-            }
-
-            foreach (var entity in urlResponseModels)
-            {
-                urlEntity
-                    .FindAll(url => url.Link == entity.Link)
-                    .ForEach(link => link.TimeOfResponse = entity.TimeOfResponse);
+                    new TestResult
+                    { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb, TimeOfResponse = timeResponse });
             }
 
             _testEntities.Add(new Test
@@ -58,18 +55,43 @@ namespace TestUrls.BusinessLogic
             return testResponse;
         }
 
+        public virtual IEnumerable<TestResultDto> MappedTestedLinks(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        {
+            var testResultResponse = new List<TestResultDto>();
+
+            foreach (var entity in urlModels)
+            {
+                var timeResponse = urlResponseModels
+                    .First(link => string.Equals(link.Link, entity.Link))
+                    .TimeOfResponse;
+                testResultResponse.Add(
+                    new TestResultDto
+                    { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb, TimeOfResponse = timeResponse });
+            }
+
+            testResultResponse = testResultResponse
+                .OrderBy(link => link.TimeOfResponse)
+                .ToList();
+
+            return testResultResponse;
+        }
+
         public virtual IEnumerable<TestResultDto> GetTestedData(int id)
         {
             var testResultResponse = new List<TestResultDto>();
-            var urlModels = _testEntities.GetById(id).UrlWithResponseEntities;
+            var testedLink = _testEntities
+                .Include(link => link.UrlWithResponseEntities)
+                .FirstOrDefault(link => link.Id == id);
 
-            foreach(var link in urlModels)
+            foreach(var link in testedLink.UrlWithResponseEntities)
             {
                 testResultResponse.Add(new TestResultDto 
                     {Link= link.Link, IsSitemap= link.IsSitemap, IsWeb= link.IsWeb, TimeOfResponse= link.TimeOfResponse });
             }
 
-            return testResultResponse;
+            return testResultResponse
+                .OrderBy(link => link.TimeOfResponse)
+                .ToList(); ;
         }
 
         public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)

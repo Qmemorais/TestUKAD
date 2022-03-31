@@ -17,13 +17,13 @@ namespace TestUrl.MvcApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var testLinks = _businessServer.GetTestedLinks();
+            var testedLinks = _businessServer.GetTestedLinks();
 
-            return View(testLinks);
+            return View(testedLinks);
         }
 
         [HttpPost]
-        public IActionResult Index(string link)
+        public IActionResult Index([FromBody] string link)
         {
             return Content(link);
         }

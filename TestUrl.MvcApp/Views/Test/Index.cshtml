@@ -1,0 +1,75 @@
+﻿@using TestUrls.BusinessLogic.BusinessModels
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model IEnumerable<TestResultDto>
+
+<form method="get" action="~/Home">
+    <input type="submit" value="Return" />
+</form>
+
+<p>@Model.FirstOrDefault().Link</p>
+<p>Urls(html documents) found after crawling a website @Model.Count(link=>link.IsWeb)</p>
+<p>Urls found in sitemap @Model.Count(link=>link.IsSitemap)</p>
+
+<table class="countLines">
+    <caption>Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site</caption>
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model.Where(link=>link.IsSitemap==true && link.IsWeb==false))
+        {
+            <tr>
+                <td></td>
+                <td>@link.Link</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p/>
+<table class="countLines">
+    <caption>Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml</caption>
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model.Where(link=>link.IsSitemap==false && link.IsWeb==true))
+        {
+            <tr>
+                <td></td>
+                <td>@link.Link</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p/>
+<table class="countLines"> 
+    <caption>Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML</caption>
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Link</th>
+            <th>Time, ms</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model)
+        {
+            <tr>
+                <td></td>
+                <td>@link.Link</td>
+                <td>@link.TimeOfResponse ms</td>
+            </tr>
+        }
+    </tbody>
+</table>
