@@ -25,6 +25,7 @@ namespace TestUrl.MvcApp.Helpers
 
                 result.Append(tag.ToString());
             }
+
             return new HtmlString(result.ToString());
         }
     }
