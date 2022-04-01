@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using TestUrl.MvcApp.Models;
 using TestUrls.BusinessLogic;
 
 namespace TestUrl.MvcApp.Controllers
@@ -15,11 +17,22 @@ namespace TestUrl.MvcApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
-            var testedLinks = _businessServer.GetTestedLinks();
+            var testedLinks = _businessServer.GetTestedLinks().ToList();
+            var pageInfo = new PageInfo()
+            {
+                PageNumber = page,
+                TotalItems = testedLinks.Count
+            };
+            var linksOnPage = testedLinks.Skip((page - 1) * pageInfo.PageSize).Take(pageInfo.PageSize);
+            var pageView = new PageView()
+            {
+                PageInfo = pageInfo,
+                TestedLinks = linksOnPage
+            };
 
-            return View(testedLinks);
+            return View(pageView);
         }
 
         [HttpPost]

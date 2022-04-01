@@ -1,9 +1,11 @@
-﻿@using TestUrls.BusinessLogic.BusinessModels
+﻿@using TestUrl.MvcApp.Models
+@using TestUrl.MvcApp.Helpers
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model IEnumerable<TestDto>
+@model PageView
 
 <form method="post" action="~/Test">
     <label>Enter Link :</label>
@@ -24,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var link in Model)
+        @foreach(var link in Model.TestedLinks)
         {
             <tr>
                 <td></td>
@@ -35,3 +37,9 @@
         }
     </tbody>
 </table>
+
+<p></p>
+
+<div class="pagination">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("Index",new { page = x}))
+</div>
