@@ -7,30 +7,25 @@ namespace TestUrl.MvcApp.Controllers
     [Route("Test")]
     public class TestController : Controller
     {
-        private readonly BusinessService _businessServer;
+        private readonly BusinessService _businessService;
 
-        public TestController(BusinessService businessServer)
+        public TestController(BusinessService businessService)
         {
-            _businessServer = businessServer;
+            _businessService = businessService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult Index([FromRoute] int id)
+        public IActionResult RunTestLink([FromRoute] int id)
         {
-            var testedLinks = _businessServer.GetTestedData(id);
+            var testedLinks = _businessService.GetTestedData(id);
 
             return View(testedLinks);
         }
 
         [HttpPost]
-        public IActionResult Index([FromForm]string link)
+        public IActionResult RunTestLink([FromForm]string link)
         {
-            var testedLinks = _businessServer.GetLinksFromCrawler(link);
-            var testedLinkWithResponse = _businessServer.GetLinksFromCrawlerWithResponse(testedLinks);
-
-            _businessServer.SaveToDatabase(testedLinks, testedLinkWithResponse);
-
-            var mappedTestedLinks = _businessServer.MappedTestedLinks(testedLinks, testedLinkWithResponse);
+            var mappedTestedLinks = _businessService.MappedTestedLinks(link);
 
             return View(mappedTestedLinks);
         }

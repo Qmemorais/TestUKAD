@@ -9,17 +9,17 @@ namespace TestUrl.MvcApp.Controllers
     [Route("Home")]
     public class HomeController : Controller
     {
-        private readonly BusinessService _businessServer;
+        private readonly BusinessService _businessService;
 
-        public HomeController(BusinessService businessServer)
+        public HomeController(BusinessService businessService)
         {
-            _businessServer = businessServer;
+            _businessService = businessService;
         }
 
         [HttpGet]
-        public IActionResult Index(int page = 1)
+        public IActionResult RunCrawler(int page)
         {
-            var testedLinks = _businessServer.GetTestedLinks().ToList();
+            var testedLinks = _businessService.GetTestedLinks(page).ToList();
             var pageInfo = new PageInfo()
             {
                 PageNumber = page,
@@ -36,7 +36,7 @@ namespace TestUrl.MvcApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([FromBody] string link)
+        public IActionResult RunCrawler([FromBody] string link)
         {
             return Content(link);
         }

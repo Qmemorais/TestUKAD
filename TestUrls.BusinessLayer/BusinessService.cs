@@ -41,12 +41,15 @@ namespace TestUrls.BusinessLogic
             _testEntities.SaveChanges();
         }
 
-        public virtual IEnumerable<TestDto> GetTestedLinks()
+        public virtual IEnumerable<TestDto> GetTestedLinks(int pageNumber, int pageSize)
         {
             var testResponse = new List<TestDto>();
-            var testedLinks = _testEntities.GetAll();
+            var testedLinks = _testEntities
+                .GetAll()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
 
-            foreach(var link in testedLinks)
+            foreach (var link in testedLinks)
             {
                 testResponse.Add(new TestDto 
                     { Id = link.Id, Link = link.Link, CreateAt = link.CreateAt });
@@ -55,13 +58,17 @@ namespace TestUrls.BusinessLogic
             return testResponse;
         }
 
-        public virtual IEnumerable<TestResultDto> MappedTestedLinks(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        public virtual IEnumerable<TestResultDto> MappedTestedLinks(string link)
         {
+            var testedLinks = GetLinksFromCrawler(link);
+            var testedLinkWithResponse = GetLinksFromCrawlerWithResponse(testedLinks);
+
+            SaveToDatabase(testedLinks, testedLinkWithResponse);
             var testResultResponse = new List<TestResultDto>();
 
-            foreach (var entity in urlModels)
+            foreach (var entity in testedLinks)
             {
-                var timeResponse = urlResponseModels
+                var timeResponse = testedLinkWithResponse
                     .First(link => string.Equals(link.Link, entity.Link))
                     .TimeOfResponse;
                 testResultResponse.Add(
