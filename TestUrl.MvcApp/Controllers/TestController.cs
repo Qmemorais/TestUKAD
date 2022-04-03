@@ -19,7 +19,7 @@ namespace TestUrl.MvcApp.Controllers
         {
             var testedLinks = _businessService.GetTestedData(id);
 
-            return View(testedLinks);
+            return View("Index", testedLinks);
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace TestUrl.MvcApp.Controllers
         {
             var mappedTestedLinks = _businessService.MappedTestedLinks(link);
 
-            return View(mappedTestedLinks);
+            return View("Index", mappedTestedLinks);
         }
     }
 }

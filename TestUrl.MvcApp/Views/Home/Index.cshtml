@@ -41,5 +41,5 @@
 <p></p>
 
 <div class="pagination">
-    @Html.PageLinks(Model.PageInfo, x => Url.Action("Index",new { page = x}))
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("RunCrawler",new { page = x}))
 </div>

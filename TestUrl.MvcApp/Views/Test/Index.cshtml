@@ -1,4 +1,5 @@
 ﻿@using TestUrls.BusinessLogic.BusinessModels
+@using TestUrl.MvcApp.Helpers
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -13,44 +14,13 @@
 <p>Urls(html documents) found after crawling a website @Model.Count(link=>link.IsWeb)</p>
 <p>Urls found in sitemap @Model.Count(link=>link.IsSitemap)</p>
 
-<table class="countLines">
-    <caption>Urls FOUNDED IN SITEMAP.XML but not founded after crawling a web site</caption>
-    <thead>
-        <tr>
-            <th>Count</th>
-            <th>Link</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var link in Model.Where(link=>link.IsSitemap==true && link.IsWeb==false))
-        {
-            <tr>
-                <td></td>
-                <td>@link.Link</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<p/>
+
+@Html.TableLinks(Model.ToList(),"Urls FOUNDED BY CRAWLING THE WEBSITE AND NOT IN SITEMAP", function=>function.IsWeb&&!function.IsSitemap)
 
 <p/>
-<table class="countLines">
-    <caption>Urls FOUNDED BY CRAWLING THE WEBSITE but not in sitemap.xml</caption>
-    <thead>
-        <tr>
-            <th>Count</th>
-            <th>Link</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var link in Model.Where(link=>link.IsSitemap==false && link.IsWeb==true))
-        {
-            <tr>
-                <td></td>
-                <td>@link.Link</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+@Html.TableLinks(Model.ToList(),"Urls FOUNDED IN SITEMAP AND NOT BY CRAWLING THE WEBSITE", function=>function.IsSitemap&&!function.IsWeb)
 
 <p/>
 <table class="countLines"> 

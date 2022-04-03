@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TestUrl.MvcApp.Models;
 using TestUrls.BusinessLogic;
 
@@ -17,28 +16,28 @@ namespace TestUrl.MvcApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult RunCrawler(int page)
+        public IActionResult RunCrawler(int page = 1)
         {
-            var testedLinks = _businessService.GetTestedLinks(page).ToList();
+            var totalItems = _businessService.GetTotalCount();
             var pageInfo = new PageInfo()
             {
                 PageNumber = page,
-                TotalItems = testedLinks.Count
+                TotalItems = totalItems
             };
-            var linksOnPage = testedLinks.Skip((page - 1) * pageInfo.PageSize).Take(pageInfo.PageSize);
+            var linksOnPage = _businessService.GetTestedLinks(page, pageInfo.PageSize);
             var pageView = new PageView()
             {
                 PageInfo = pageInfo,
                 TestedLinks = linksOnPage
             };
 
-            return View(pageView);
+            return View("Index", pageView);
         }
 
         [HttpPost]
         public IActionResult RunCrawler([FromBody] string link)
         {
-            return Content(link);
+            return Content("Index", link);
         }
     }
 }

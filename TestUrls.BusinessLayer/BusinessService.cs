@@ -46,6 +46,7 @@ namespace TestUrls.BusinessLogic
             var testResponse = new List<TestDto>();
             var testedLinks = _testEntities
                 .GetAll()
+                .OrderBy(link => link.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
 
@@ -56,6 +57,11 @@ namespace TestUrls.BusinessLogic
             }
 
             return testResponse;
+        }
+
+        public int GetTotalCount()
+        {
+            return _testEntities.GetAll().Count();
         }
 
         public virtual IEnumerable<TestResultDto> MappedTestedLinks(string link)
