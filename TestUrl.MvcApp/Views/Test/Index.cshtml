@@ -1,10 +1,10 @@
-﻿@using TestUrls.BusinessLogic.BusinessModels
+﻿@using TestUrls.TestResultLogic.BusinessModels
 @using TestUrl.MvcApp.Helpers
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model IEnumerable<TestResultDto>
+@model List<TestResultDto>
 
 <form method="get" action="~/Home">
     <input type="submit" value="Return" />
@@ -14,17 +14,16 @@
 <p>Urls(html documents) found after crawling a website @Model.Count(link=>link.IsWeb)</p>
 <p>Urls found in sitemap @Model.Count(link=>link.IsSitemap)</p>
 
-<p/>
+<p>Urls FOUNDED BY CRAWLING THE WEBSITE AND NOT IN SITEMAP</p>
 
-@Html.TableLinks(Model.ToList(),"Urls FOUNDED BY CRAWLING THE WEBSITE AND NOT IN SITEMAP", function=>function.IsWeb&&!function.IsSitemap)
+@Html.TableLinks(Model.ToList(), function=>function.IsWeb&&!function.IsSitemap)
 
-<p/>
+<p>Urls FOUNDED IN SITEMAP AND NOT BY CRAWLING THE WEBSITE</p>
 
-@Html.TableLinks(Model.ToList(),"Urls FOUNDED IN SITEMAP AND NOT BY CRAWLING THE WEBSITE", function=>function.IsSitemap&&!function.IsWeb)
+@Html.TableLinks(Model.ToList(), function=>function.IsSitemap&&!function.IsWeb)
 
-<p/>
-<table class="countLines"> 
-    <caption>Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML</caption>
+<p>Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML</p>
+<table class="table table-bordered countLines"> 
     <thead>
         <tr>
             <th>Count</th>

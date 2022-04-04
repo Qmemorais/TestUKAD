@@ -20,9 +20,11 @@ namespace TestUrl.MvcApp.Helpers
 
                 if (i == pageInfo.PageNumber)
                 {
-                    tag.AddCssClass("viewedPage");
+                    tag.AddCssClass("selected");
+                    tag.AddCssClass("btn-primary");
                 }
 
+                tag.AddCssClass("btn btn-default");
                 result.Append(tag.ToString());
             }
 

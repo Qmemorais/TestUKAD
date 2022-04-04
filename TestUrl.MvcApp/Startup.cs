@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TestUrls.BusinessLogic.ServiceAddScoped;
+using TestUrls.TestResultLogic.ServiceAddScoped;
 using TestUrls.EntityFramework;
 using TestURLS.UrlLogic.ServiceAddScoped;
 
@@ -34,8 +34,6 @@ namespace TestUrl.MvcApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TestUrlsDbContext _dbContext)
         {
             _dbContext.Database.Migrate();
-
-            app.UseStaticFiles();
 
             if (env.IsDevelopment())
             {

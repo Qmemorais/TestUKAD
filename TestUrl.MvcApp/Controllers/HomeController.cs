@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestUrl.MvcApp.Models;
-using TestUrls.BusinessLogic;
+using TestUrls.TestResultLogic;
 
 namespace TestUrl.MvcApp.Controllers
 {
@@ -9,23 +9,23 @@ namespace TestUrl.MvcApp.Controllers
     [Route("Home")]
     public class HomeController : Controller
     {
-        private readonly TestResultService _businessService;
+        private readonly TestResultService _testResultService;
 
-        public HomeController(TestResultService businessService)
+        public HomeController(TestResultService testResultService)
         {
-            _businessService = businessService;
+            _testResultService = testResultService;
         }
 
         [HttpGet]
-        public IActionResult RunCrawler(int page = 1)
+        public IActionResult StartCrawler(int page = 1)
         {
-            var totalItems = _businessService.GetTotalCount();
+            var totalItems = _testResultService.GetTotalCount();
             var pageInfo = new PageInfo()
             {
                 PageNumber = page,
                 TotalItems = totalItems
             };
-            var linksOnPage = _businessService.GetTestedLinks(page, pageInfo.PageSize);
+            var linksOnPage = _testResultService.GetTestedLinks(page, pageInfo.PageSize);
             var pageView = new PageView()
             {
                 PageInfo = pageInfo,
@@ -33,12 +33,6 @@ namespace TestUrl.MvcApp.Controllers
             };
 
             return View("Index", pageView);
-        }
-
-        [HttpPost]
-        public IActionResult RunCrawler([FromBody] string link)
-        {
-            return Content("Index", link);
         }
     }
 }

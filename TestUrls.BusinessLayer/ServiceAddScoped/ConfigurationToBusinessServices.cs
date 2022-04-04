@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace TestUrls.BusinessLogic.ServiceAddScoped
+namespace TestUrls.TestResultLogic.ServiceAddScoped
 {
     public static class ConfigurationToBusinessServices
     {

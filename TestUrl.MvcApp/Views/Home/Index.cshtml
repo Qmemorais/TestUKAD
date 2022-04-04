@@ -9,14 +9,13 @@
 
 <form method="post" action="~/Test">
     <label>Enter Link :</label>
-    <input type="text" name="link" size=50/>
+    <input type="text" name="link"/>
     <input type="submit" value="Test" />
 </form>
 
-<p></p>
+<p>Test Results</p>
 
-<table class="countLines">
-    <caption>Test Results</caption>
+<table class="table table-bordered countLines">
     <thead>
         <tr>
             <th>Count</th>
@@ -40,6 +39,6 @@
 
 <p></p>
 
-<div class="pagination">
-    @Html.PageLinks(Model.PageInfo, x => Url.Action("RunCrawler",new { page = x}))
+<div class="btn-group">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("StartCrawler",new { page = x}))
 </div>

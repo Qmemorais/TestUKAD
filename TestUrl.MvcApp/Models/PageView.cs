@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TestUrls.BusinessLogic.BusinessModels;
+using TestUrls.TestResultLogic.BusinessModels;
 
 namespace TestUrl.MvcApp.Models
 {

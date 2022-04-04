@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TestUrls.BusinessLogic.BusinessModels;
+using TestUrls.TestResultLogic.BusinessModels;
 
 namespace TestUrl.MvcApp.Helpers
 {
     public static class TableExistNo
     {
         public static HtmlString TableLinks(this IHtmlHelper html, List<TestResultDto> links,
-            string _caption, Func<TestResultDto,bool> function)
+            Func<TestResultDto,bool> function)
         {
             var tag = new TagBuilder("table");
-            tag.AddCssClass("countLines");
-            var caption = new TagBuilder("caption");
-            tag.InnerHtml.AppendHtml(_caption);
+            tag.AddCssClass("table");
+            tag.AddCssClass("table-bordered");
             //head
             var thead = new TagBuilder("thead");
             var tr = new TagBuilder("tr");

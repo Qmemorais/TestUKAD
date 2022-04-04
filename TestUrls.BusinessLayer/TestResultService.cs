@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using TestUrls.BusinessLogic.BusinessModels;
+using TestUrls.TestResultLogic.BusinessModels;
 using TestUrls.EntityFramework.Entities;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
 
-namespace TestUrls.BusinessLogic
+namespace TestUrls.TestResultLogic
 {
     public class TestResultService
     {
@@ -21,7 +21,7 @@ namespace TestUrls.BusinessLogic
             _testEntities = testEntities;
         }
 
-        private void SaveToDatabase(string linkToScan, IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        public void SaveToDatabase(string linkToScan, IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
         {
             var urlEntity = MappedResultLinks(urlModels, urlResponseModels);
 

@@ -3,8 +3,8 @@ using System.Data;
 using System.Net;
 using Moq;
 using NUnit.Framework;
-using TestUrls.BusinessLogic;
 using TestUrls.EntityFramework.Entities;
+using TestUrls.TestResultLogic;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
 

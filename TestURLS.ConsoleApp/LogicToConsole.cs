@@ -1,21 +1,21 @@
 ﻿using System.Linq;
-using TestUrls.BusinessLogic;
+using TestUrls.TestResultLogic;
 
 namespace TestURLS.ConsoleApp
 {
     public class LogicToConsole
     {
         private readonly ConsoleInOut _consoleInOut;
-        private readonly TestResultService _businessService;
+        private readonly TestResultService _testResultService;
         private readonly OutputToConsole _outputToConsole;
 
         public LogicToConsole(
             ConsoleInOut consoleInOut,
-            TestResultService businessService,
+            TestResultService testResultService,
             OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;
-            _businessService = businessService;
+            _testResultService = testResultService;
             _outputToConsole = outputToConsole;
         }
 
@@ -23,7 +23,7 @@ namespace TestURLS.ConsoleApp
         {
             _consoleInOut.Write("Enter URL: ");
             var urlToScan = _consoleInOut.Read();
-            var results = _businessService.GetLinksFromCrawler(urlToScan);
+            var results = _testResultService.GetLinksFromCrawler(urlToScan);
             var isSitemapWasFound = results.Any(link => link.IsSitemap);
 
             if (isSitemapWasFound)
@@ -31,12 +31,12 @@ namespace TestURLS.ConsoleApp
                 _outputToConsole.WriteLinksWithoutTime(results);
             }
 
-            var getTime = _businessService.GetLinksFromCrawlerWithResponse(results);
+            var getTime = _testResultService.GetLinksFromCrawlerWithResponse(results);
             _outputToConsole.WriteLinksWithTime(getTime);
 
             _outputToConsole.WriteCountLinks(results);
 
-            _businessService.SaveToDatabase(results, getTime);
+            _testResultService.SaveToDatabase(urlToScan, results, getTime);
 
             _consoleInOut.Write("Press <Enter>");
             _consoleInOut.Read();

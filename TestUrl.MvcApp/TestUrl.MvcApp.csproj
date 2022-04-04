@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestUrls.BusinessLayer\TestUrls.BusinessLogic.csproj" />
+    <ProjectReference Include="..\TestUrls.BusinessLayer\TestUrls.TestResultLogic.csproj" />
     <ProjectReference Include="..\TestUrls.EntityFramework\TestUrls.EntityFramework.csproj" />
     <ProjectReference Include="..\TestURLS.UrlLogic\TestURLS.UrlLogic.csproj" />
   </ItemGroup>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\style.css" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

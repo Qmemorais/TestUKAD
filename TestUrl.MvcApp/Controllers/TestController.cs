@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TestUrls.BusinessLogic;
+using TestUrls.TestResultLogic;
 
 namespace TestUrl.MvcApp.Controllers
 {
@@ -7,17 +7,17 @@ namespace TestUrl.MvcApp.Controllers
     [Route("Test")]
     public class TestController : Controller
     {
-        private readonly TestResultService _businessService;
+        private readonly TestResultService _testResultService;
 
-        public TestController(TestResultService businessService)
+        public TestController(TestResultService testResultService)
         {
-            _businessService = businessService;
+            _testResultService = testResultService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult RunTestLink([FromRoute] int id)
+        public IActionResult GetTestLink([FromRoute] int id)
         {
-            var testedLinks = _businessService.GetTestedData(id);
+            var testedLinks = _testResultService.GetTestedData(id);
 
             return View("Index", testedLinks);
         }
@@ -25,7 +25,7 @@ namespace TestUrl.MvcApp.Controllers
         [HttpPost]
         public IActionResult RunTestLink([FromForm]string link)
         {
-            var mappedTestedLinks = _businessService.MappedTestedLinks(link);
+            var mappedTestedLinks = _testResultService.MappedTestedLinks(link);
 
             return View("Index", mappedTestedLinks);
         }

@@ -1,4 +1,4 @@
-﻿namespace TestUrls.BusinessLogic.BusinessModels
+﻿namespace TestUrls.TestResultLogic.BusinessModels
 {
     public class TestResultDto
     {
