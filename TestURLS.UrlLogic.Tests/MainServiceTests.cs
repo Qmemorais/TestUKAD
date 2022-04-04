@@ -8,7 +8,7 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class MainServiceTests
     {
-        private MainService _mainLogic;
+        private CrawlerService _mainLogic;
         private Mock<WebService> _webService;
         private Mock<SitemapService> _sitemapService;
         private Mock<StringService> _stringService;
@@ -24,7 +24,7 @@ namespace TestURLS.UrlLogic.Tests
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
             _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
 
-            _mainLogic = new MainService(
+            _mainLogic = new CrawlerService(
                 _webService.Object,
                 _sitemapService.Object,
                 _stringService.Object,

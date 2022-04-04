@@ -6,7 +6,7 @@ namespace TestUrls.BusinessLogic.ServiceAddScoped
     {
         public static void AddServicesBusinessLayer(this IServiceCollection services)
         {
-            services.AddScoped<BusinessService>();
+            services.AddScoped<TestResultService>();
         }
     }
 }

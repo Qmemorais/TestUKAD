@@ -8,53 +8,59 @@ using TestURLS.UrlLogic.Models;
 
 namespace TestUrls.BusinessLogic
 {
-    public class BusinessService
+    public class TestResultService
     {
         private readonly IRepository<Test> _testEntities;
-        private readonly MainService _mainService;
+        private readonly CrawlerService _mainService;
 
-        public BusinessService(
-            MainService mainService,
+        public TestResultService(
+            CrawlerService mainService,
             IRepository<Test> testEntities)
         {
             _mainService = mainService;
             _testEntities = testEntities;
         }
 
-        public virtual void SaveToDatabase(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        private void SaveToDatabase(string linkToScan, IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
         {
-            var generalLink = urlModels.FirstOrDefault().Link;
-            var urlEntity = new List<TestResult>();
+            var urlEntity = MappedResultLinks(urlModels, urlResponseModels);
+
+            _testEntities.Add(new Test
+                { Link = linkToScan, UrlWithResponseEntities = urlEntity });
+            _testEntities.SaveChanges();
+        }
+
+        private ICollection<TestResult> MappedResultLinks(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
+        {
+            var resultLinks = new List<TestResult>();
 
             foreach (var entity in urlModels)
             {
                 var timeResponse = urlResponseModels
                     .First(link => string.Equals(link.Link, entity.Link))
                     .TimeOfResponse;
-                urlEntity.Add(
+                resultLinks.Add(
                     new TestResult
                     { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb, TimeOfResponse = timeResponse });
             }
 
-            _testEntities.Add(new Test
-                { Link = generalLink, UrlWithResponseEntities = urlEntity });
-            _testEntities.SaveChanges();
+            return resultLinks;
         }
 
         public virtual IEnumerable<TestDto> GetTestedLinks(int pageNumber, int pageSize)
         {
-            var testResponse = new List<TestDto>();
             var testedLinks = _testEntities
                 .GetAll()
                 .OrderBy(link => link.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
 
-            foreach (var link in testedLinks)
+            var testResponse = testedLinks.Select(link => new TestDto
             {
-                testResponse.Add(new TestDto 
-                    { Id = link.Id, Link = link.Link, CreateAt = link.CreateAt });
-            }
+                Id = link.Id,
+                Link = link.Link,
+                CreateAt = link.CreateAt
+            });
 
             return testResponse;
         }
@@ -69,7 +75,7 @@ namespace TestUrls.BusinessLogic
             var testedLinks = GetLinksFromCrawler(link);
             var testedLinkWithResponse = GetLinksFromCrawlerWithResponse(testedLinks);
 
-            SaveToDatabase(testedLinks, testedLinkWithResponse);
+            SaveToDatabase(link, testedLinks, testedLinkWithResponse);
             var testResultResponse = new List<TestResultDto>();
 
             foreach (var entity in testedLinks)
@@ -91,16 +97,18 @@ namespace TestUrls.BusinessLogic
 
         public virtual IEnumerable<TestResultDto> GetTestedData(int id)
         {
-            var testResultResponse = new List<TestResultDto>();
             var testedLink = _testEntities
                 .Include(link => link.UrlWithResponseEntities)
                 .FirstOrDefault(link => link.Id == id);
 
-            foreach(var link in testedLink.UrlWithResponseEntities)
-            {
-                testResultResponse.Add(new TestResultDto 
-                    {Link= link.Link, IsSitemap= link.IsSitemap, IsWeb= link.IsWeb, TimeOfResponse= link.TimeOfResponse });
-            }
+            var testResultResponse = testedLink.UrlWithResponseEntities
+                .Select(link => new TestResultDto
+                {
+                    Link = link.Link,
+                    IsSitemap = link.IsSitemap,
+                    IsWeb = link.IsWeb,
+                    TimeOfResponse = link.TimeOfResponse
+                });
 
             return testResultResponse
                 .OrderBy(link => link.TimeOfResponse)

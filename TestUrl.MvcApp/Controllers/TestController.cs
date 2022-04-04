@@ -7,9 +7,9 @@ namespace TestUrl.MvcApp.Controllers
     [Route("Test")]
     public class TestController : Controller
     {
-        private readonly BusinessService _businessService;
+        private readonly TestResultService _businessService;
 
-        public TestController(BusinessService businessService)
+        public TestController(TestResultService businessService)
         {
             _businessService = businessService;
         }

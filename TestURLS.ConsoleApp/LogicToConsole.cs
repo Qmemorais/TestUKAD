@@ -6,12 +6,12 @@ namespace TestURLS.ConsoleApp
     public class LogicToConsole
     {
         private readonly ConsoleInOut _consoleInOut;
-        private readonly BusinessService _businessService;
+        private readonly TestResultService _businessService;
         private readonly OutputToConsole _outputToConsole;
 
         public LogicToConsole(
             ConsoleInOut consoleInOut,
-            BusinessService businessService,
+            TestResultService businessService,
             OutputToConsole outputToConsole)
         {
             _consoleInOut = consoleInOut;

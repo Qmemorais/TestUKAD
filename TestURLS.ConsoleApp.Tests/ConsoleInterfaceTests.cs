@@ -13,7 +13,7 @@ namespace TestURLS.ConsoleApp.Tests
     public class LogicToConsoleTests
     {
         private Mock<ConsoleInOut> _consoleInOut;
-        private Mock<MainService> _mainLogic;
+        private Mock<CrawlerService> _mainLogic;
         private Mock<WebService> _webService;
         private Mock<SitemapService> _sitemapService;
         private Mock<StringService> _stringService;
@@ -22,7 +22,7 @@ namespace TestURLS.ConsoleApp.Tests
         private Mock<IRepository<Test>> _testEntities;
         private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
-        private Mock<BusinessService> _businessService;
+        private Mock<TestResultService> _businessService;
         private readonly string _writeLineOutput = "Press <Enter>";
 
         [SetUp]
@@ -36,9 +36,9 @@ namespace TestURLS.ConsoleApp.Tests
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
             _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
 
-            _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
+            _mainLogic = new Mock<CrawlerService>(_webService.Object,_sitemapService.Object,_stringService.Object,
                 _responseService.Object);
-            _businessService = new Mock<BusinessService>(_mainLogic.Object, _testEntities.Object);
+            _businessService = new Mock<TestResultService>(_mainLogic.Object, _testEntities.Object);
             _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
             _consoleInterface = new LogicToConsole(
                 _consoleInOut.Object,

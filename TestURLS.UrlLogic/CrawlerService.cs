@@ -5,14 +5,14 @@ using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class MainService
+    public class CrawlerService
     {
         private readonly WebService _webService;
         private readonly SitemapService _sitemapService;
         private readonly StringService _stringService;
         private readonly ResponseService _responseService;
 
-        public MainService(
+        public CrawlerService(
             WebService webService,
             SitemapService sitemapService,
             StringService stringService,
