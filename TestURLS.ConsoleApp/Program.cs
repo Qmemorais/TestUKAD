@@ -22,7 +22,7 @@ namespace TestURLS.ConsoleApp
         private static IServiceCollection ConfigureServices()
         {
             var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json");
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json");
             var connectionString = configuration.Build().GetConnectionString("ConnectionUrlDatabase");
 
             services.AddServicesFromConsole();
