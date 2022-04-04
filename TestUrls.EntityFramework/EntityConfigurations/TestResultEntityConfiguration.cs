@@ -4,7 +4,7 @@ using TestUrls.EntityFramework.Entities;
 
 namespace TestUrls.EntityFramework.EntityConfigurations
 {
-    internal class UrlEntityConfiguration : IEntityTypeConfiguration<TestResult>
+    internal class TestResultEntityConfiguration : IEntityTypeConfiguration<TestResult>
     {
         public void Configure(EntityTypeBuilder<TestResult> builder)
         {

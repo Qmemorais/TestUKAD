@@ -27,12 +27,14 @@ namespace TestUrl.MvcApp
             services.AddServicesBusinessLayer();
 
             var connection = Configuration.GetConnectionString("ConnectionUrlDatabase");
-            services.AddEfRepository<UrlContext>(options => options.UseSqlServer(connection));
+            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TestUrlsDbContext _dbContext)
         {
+            _dbContext.Database.Migrate();
+
             app.UseStaticFiles();
 
             if (env.IsDevelopment())

@@ -28,7 +28,7 @@ namespace TestURLS.ConsoleApp
             services.AddServicesFromConsole();
             services.AddServicesFromLogic();
             services.AddServicesBusinessLayer();
-            services.AddEfRepository<UrlContext>(options => options.UseSqlServer(connectionString));
+            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connectionString));
 
             return services;
         }

@@ -5,6 +5,7 @@ using TestUrls.BusinessLogic;
 namespace TestUrl.MvcApp.Controllers
 {
     [ApiController]
+    [Route("")]
     [Route("Home")]
     public class HomeController : Controller
     {
