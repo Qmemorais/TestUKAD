@@ -1,0 +1,21 @@
+﻿@using TestUrls.TestResultLogic.BusinessModels
+
+@model IEnumerable<TestResultDto>
+
+<table class="table table-bordered countLines"> 
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model)
+        {
+            <tr>
+                <td></td>
+                <td>@link.Link</td>
+            </tr>
+        }
+    </tbody>
+</table>
