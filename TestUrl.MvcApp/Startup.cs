@@ -35,6 +35,8 @@ namespace TestUrl.MvcApp
         {
             _dbContext.Database.Migrate();
 
+            app.UseStaticFiles();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

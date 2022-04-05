@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
@@ -24,13 +25,16 @@ namespace TestURLS.UrlLogic
             _responseService = responseService;
         }
 
-        public virtual IEnumerable<UrlModel> GetResults(string url)
+        public virtual async Task<IEnumerable<UrlModel>> GetResults(string url)
         {
             // scan all exist pages on web
-            var linksFromScanPages = _webService.GetUrlsFromScanPages(url);
+            var linksFromScanPages = Task.Run(() => _webService.GetUrlsFromScanPages(url));
             // find sitemap and if yes: scan
-            var linksFromScanSitemap = _sitemapService.GetLinksFromSitemapIfExist(url);
-            var allUrls = GetLinksWithUrlModel(linksFromScanPages.ToList(), linksFromScanSitemap);
+            var linksFromScanSitemap = Task.Run(() => _sitemapService.GetLinksFromSitemapIfExist(url));
+
+            await Task.WhenAll(linksFromScanPages, linksFromScanSitemap);
+
+            var allUrls = GetLinksWithUrlModel(linksFromScanPages.Result.ToList(), linksFromScanSitemap.Result);
 
             return allUrls;
         }
