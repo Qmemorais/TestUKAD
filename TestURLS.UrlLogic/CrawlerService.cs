@@ -25,16 +25,14 @@ namespace TestURLS.UrlLogic
             _responseService = responseService;
         }
 
-        public virtual async Task<IEnumerable<UrlModel>> GetResults(string url)
+        public virtual IEnumerable<UrlModel> GetResults(string url)
         {
             // scan all exist pages on web
-            var linksFromScanPages = Task.Run(() => _webService.GetUrlsFromScanPages(url));
+            var linksFromScanPages = _webService.GetUrlsFromScanPages(url);
             // find sitemap and if yes: scan
-            var linksFromScanSitemap = Task.Run(() => _sitemapService.GetLinksFromSitemapIfExist(url));
+            var linksFromScanSitemap = _sitemapService.GetLinksFromSitemapIfExist(url);
 
-            await Task.WhenAll(linksFromScanPages, linksFromScanSitemap);
-
-            var allUrls = GetLinksWithUrlModel(linksFromScanPages.Result.ToList(), linksFromScanSitemap.Result);
+            var allUrls = GetLinksWithUrlModel(linksFromScanPages.ToList(), linksFromScanSitemap);
 
             return allUrls;
         }

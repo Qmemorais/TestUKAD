@@ -27,7 +27,7 @@ namespace TestUrl.MvcApp.Controllers
         {
             var mappedTestedLinks = _testResultService.MappedTestedLinks(link);
 
-            return View("Index", mappedTestedLinks.Result);
+            return View("Index", mappedTestedLinks);
         }
     }
 }

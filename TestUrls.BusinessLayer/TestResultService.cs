@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using TestUrls.TestResultLogic.BusinessModels;
 using TestUrls.EntityFramework.Entities;
+using TestUrls.TestResultLogic.BusinessModels;
 using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
-using System.Threading.Tasks;
 
 namespace TestUrls.TestResultLogic
 {
@@ -26,9 +25,9 @@ namespace TestUrls.TestResultLogic
         {
             var urlEntity = MappedResultLinks(urlModels, urlResponseModels);
 
-            _testEntities.Add(new Test
+            _testEntities.AddAsync(new Test
                 { Link = linkToScan, UrlWithResponseEntities = urlEntity });
-            _testEntities.SaveChanges();
+            _testEntities.SaveChangesAsync();
         }
 
         private ICollection<TestResult> MappedResultLinks(IEnumerable<UrlModel> urlModels, IEnumerable<UrlModelWithResponse> urlResponseModels)
@@ -71,12 +70,12 @@ namespace TestUrls.TestResultLogic
             return _testEntities.GetAll().Count();
         }
 
-        public virtual async Task<IEnumerable<TestResultDto>> MappedTestedLinks(string link)
+        public virtual IEnumerable<TestResultDto> MappedTestedLinks(string link)
         {
-            var testedLinks = await Task.Run(() => GetLinksFromCrawler(link));
+            var testedLinks = GetLinksFromCrawler(link);
             var testedLinkWithResponse = GetLinksFromCrawlerWithResponse(testedLinks);
 
-            var saveToDb = Task.Run(() => SaveToDatabase(link, testedLinks, testedLinkWithResponse));
+            SaveToDatabase(link, testedLinks, testedLinkWithResponse);
             var testResultResponse = new List<TestResultDto>();
 
             foreach (var entity in testedLinks)
@@ -88,7 +87,6 @@ namespace TestUrls.TestResultLogic
                     new TestResultDto
                     { Link = entity.Link, IsSitemap = entity.IsSitemap, IsWeb = entity.IsWeb, TimeOfResponse = timeResponse });
             }
-            await saveToDb;
 
             testResultResponse = testResultResponse
                 .OrderBy(link => link.TimeOfResponse)
@@ -119,9 +117,9 @@ namespace TestUrls.TestResultLogic
 
         public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)
         {
-            var linksFromCrowler = Task.Run(() => _mainService.GetResults(url));
+            var linksFromCrowler = _mainService.GetResults(url);
 
-            return linksFromCrowler.Result;
+            return linksFromCrowler;
         }
 
         public virtual IEnumerable<UrlModelWithResponse> GetLinksFromCrawlerWithResponse(IEnumerable<UrlModel> htmlToGetTime)
