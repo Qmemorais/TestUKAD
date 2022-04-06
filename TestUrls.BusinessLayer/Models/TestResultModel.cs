@@ -1,6 +1,6 @@
-﻿namespace TestUrls.TestResultLogic.BusinessModels
+﻿namespace TestUrls.TestResultLogic.Models
 {
-    public class TestResultDto
+    public class TestResultModel
     {
         public string Link { get; set; }
         public bool IsSitemap { get; set; }

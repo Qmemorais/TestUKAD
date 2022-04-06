@@ -17,7 +17,7 @@ namespace TestUrl.MvcApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult StartCrawler(int page = 1)
+        public IActionResult GetTests(int page = 1)
         {
             var totalItems = _testResultService.GetTotalCount();
             var pageInfo = new PageInfo()

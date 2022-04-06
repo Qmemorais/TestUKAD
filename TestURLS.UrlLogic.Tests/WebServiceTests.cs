@@ -8,19 +8,19 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class WebServiceTests
     {
-        private WebService _logicHtml;
-        private Mock<StringService> _urlSettings;
-        private Mock<HttpService> _getHttp;
+        private WebService _webService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<StringService>();
-            _getHttp = new Mock<HttpService>();
+            _stringService = new Mock<StringService>();
+            _httpService = new Mock<HttpService>();
 
-            _logicHtml = new WebService(
-                _urlSettings.Object,
-                _getHttp.Object);
+            _webService = new WebService(
+                _stringService.Object,
+                _httpService.Object);
         }
 
         [Test]
@@ -31,14 +31,14 @@ namespace TestURLS.UrlLogic.Tests
             var domainName = "hahahah";
             var writeLineRes = "Invalid URI: The URI is empty.";
 
-            _getHttp
+            _httpService
                 .Setup(getBody => getBody.GetBodyFromUrl(invalidUrl))
                 .Throws(new WebException(writeLineRes));
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(invalidUrl))
                 .Returns(domainName);
             //assert
-            WebException ex = Assert.Throws<WebException>(() => _logicHtml.GetUrlsFromScanPages(invalidUrl));
+            WebException ex = Assert.Throws<WebException>(() => _webService.GetUrlsFromScanPages(invalidUrl));
             Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
@@ -56,17 +56,17 @@ namespace TestURLS.UrlLogic.Tests
             };
             var urlToGetValidUrl = "https://test.crawler.com/Info/";
 
-            _getHttp
+            _httpService
                 .Setup(getBody => getBody.GetBodyFromUrl(validUrl))
                 .Returns(fakeHtml);
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(validUrl))
                 .Returns(domainName);
-            _urlSettings
+            _stringService
                 .Setup(getValid => getValid.GetValidUrl(urlToGetValidUrl, domainName))
                 .Returns(urlToGetValidUrl);
             //
-            var actualResult = _logicHtml.GetUrlsFromScanPages(validUrl);
+            var actualResult = _webService.GetUrlsFromScanPages(validUrl);
             //assert
             Assert.AreEqual(expectedResult.Count, actualResult.Count());
         }

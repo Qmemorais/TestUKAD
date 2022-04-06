@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TestUrls.TestResultLogic.BusinessModels
+namespace TestUrls.TestResultLogic.Models
 {
-    public class TestDto
+    public class TestModel
     {
         public int Id { get; set; }
         public string Link { get; set; }

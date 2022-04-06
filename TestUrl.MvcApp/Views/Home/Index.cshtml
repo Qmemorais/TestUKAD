@@ -40,5 +40,5 @@
 <p></p>
 
 <div class="btn-group">
-    @Html.PageLinks(Model.PageInfo, x => Url.Action("StartCrawler",new { page = x}))
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("GetTests",new { page = x}))
 </div>
