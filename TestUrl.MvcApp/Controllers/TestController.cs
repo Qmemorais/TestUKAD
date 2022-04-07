@@ -25,9 +25,10 @@ namespace TestUrl.MvcApp.Controllers
         [HttpPost]
         public IActionResult RunTestLink([FromForm]string link)
         {
-            var mappedTestedLinks = _testResultService.MappedTestedLinks(link);
+            var idTest = _testResultService.TestLink(link);
+            var testedLinks = _testResultService.GetTestedData(idTest);
 
-            return View("Index", mappedTestedLinks);
+            return View("Index", testedLinks);
         }
     }
 }

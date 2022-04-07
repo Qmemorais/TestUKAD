@@ -3,21 +3,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model IEnumerable<TestResultModel>
+@model TestViewModel
 
 <form method="get" action="~/Home">
     <input type="submit" value="Return" />
 </form>
 
-<p>Tested Link: @Model.FirstOrDefault().Link</p>
-<p>Urls(html documents) found after crawling a website @Model.Count(link=>link.IsWeb)</p>
-<p>Urls found in sitemap @Model.Count(link=>link.IsSitemap)</p>
+<p>Tested Link: @Model.TestedLink</p>
+<p>Urls(html documents) found after crawling a website @Model.ListOfScan.Count(link=>link.IsWeb)</p>
+<p>Urls found in sitemap @Model.ListOfScan.Count(link=>link.IsSitemap)</p>
 
 <p>Urls FOUNDED BY CRAWLING THE WEBSITE AND NOT IN SITEMAP</p>
-@await Html.PartialAsync("ResultTable", Model.Where(link=>link.IsWeb&&!link.IsSitemap))
+@await Html.PartialAsync("ResultTable", Model.ListOfScan.Where(link=>link.IsWeb&&!link.IsSitemap))
 
 <p>Urls FOUNDED IN SITEMAP AND NOT BY CRAWLING THE WEBSITE</p>
-@await Html.PartialAsync("ResultTable", Model.Where(link=>link.IsSitemap&&!link.IsWeb))
+@await Html.PartialAsync("ResultTable", Model.ListOfScan.Where(link=>link.IsSitemap&&!link.IsWeb))
 
 <p>Urls FOUNDED BY CRAWLING THE WEBSITE AND SITEMAP.XML</p>
 <table class="table table-bordered countLines"> 
@@ -29,7 +29,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var link in Model)
+        @foreach(var link in Model.ListOfScan.OrderBy(link => link.TimeOfResponse))
         {
             <tr>
                 <td></td>

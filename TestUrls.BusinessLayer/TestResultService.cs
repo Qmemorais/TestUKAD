@@ -59,35 +59,36 @@ namespace TestUrls.TestResultLogic
             return _testEntities.GetAllAsNoTracking().Count();
         }
 
-        public virtual IEnumerable<TestResultModel> MappedTestedLinks(string link)
+        public virtual int TestLink(string link)
         {
             var testedLinks = GetLinksFromCrawler(link);
             var testedLinkWithResponse = GetLinksFromCrawlerWithResponse(testedLinks);
 
             var idTestResult = SaveToDatabase(link, testedLinks, testedLinkWithResponse);
-            var testResultResponse = GetTestedData(idTestResult);
 
-            return testResultResponse;
+            return idTestResult;
         }
 
-        public virtual IEnumerable<TestResultModel> GetTestedData(int id)
+        public virtual TestViewModel GetTestedData(int id)
         {
             var testedLink = _testEntities
                 .Include(link => link.UrlWithResponseEntities)
                 .FirstOrDefault(link => link.Id == id);
 
-            var testResultResponse = testedLink.UrlWithResponseEntities
-                .Select(link => new TestResultModel
-                {
-                    Link = link.Link,
-                    IsSitemap = link.IsSitemap,
-                    IsWeb = link.IsWeb,
-                    TimeOfResponse = link.TimeOfResponse
-                });
+            var resultModel = new TestViewModel
+            {
+                TestedLink = testedLink.Link,
+                ListOfScan = testedLink.UrlWithResponseEntities
+                    .Select(link=> new TestResultModel() 
+                    { 
+                        Link = link.Link,
+                        IsWeb=link.IsWeb,
+                        IsSitemap=link.IsSitemap,
+                        TimeOfResponse=link.TimeOfResponse
+                    })
+            };
 
-            return testResultResponse
-                .OrderBy(link => link.TimeOfResponse)
-                .ToList(); ;
+            return resultModel;
         }
 
         public virtual IEnumerable<UrlModel> GetLinksFromCrawler(string url)
