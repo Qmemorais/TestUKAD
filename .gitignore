@@ -28,6 +28,10 @@
 /TestUrl.MvcApp/obj/
 /TestUrl.MvcApp/bin/
 
+/TestUrl.WebApi/.vs/
+/TestUrl.WebApi/obj/
+/TestUrl.WebApi/bin/
+
 /Models/bin/
 /Models/obj/
 
