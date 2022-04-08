@@ -27,7 +27,7 @@ namespace TestUrls.TestResultLogic
             var testResult = new Test
             {
                 Link = linkToScan,
-                UrlWithResponseEntities = urlEntity
+                TestResult = urlEntity
             };
 
             _testEntities.AddAsync(testResult);
@@ -72,13 +72,13 @@ namespace TestUrls.TestResultLogic
         public virtual TestViewModel GetTestedData(int id)
         {
             var testedLink = _testEntities
-                .Include(link => link.UrlWithResponseEntities)
+                .Include(link => link.TestResult)
                 .FirstOrDefault(link => link.Id == id);
 
             var resultModel = new TestViewModel
             {
                 TestedLink = testedLink.Link,
-                ListOfScan = testedLink.UrlWithResponseEntities
+                ListOfScan = testedLink.TestResult
                     .Select(link=> new TestResultModel() 
                     { 
                         Link = link.Link,
