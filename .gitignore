@@ -36,3 +36,6 @@
 /Models/obj/
 
 .vs/
+TestUrl.MvcApp/appsettings.json
+TestUrl.WebApi/appsettings.json
+TestURLS.ConsoleApp/appsettings.json
