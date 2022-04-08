@@ -16,6 +16,7 @@ namespace TestUrls.EntityFramework
         public TestUrlsDbContext(DbContextOptions<TestUrlsDbContext> options)
             : base(options)
         {
+            Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -19,42 +19,28 @@ namespace TestUrl.WebApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetTestLink([FromRoute] int id)
         {
-            try
-            {
-                var testedLinks = _testResultService.GetTestedData(id);
+            var testedLinks = _testResultService.GetTestedData(id);
 
-                if (testedLinks == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(testedLinks);
-            }
-            catch(Exception ex)
+            if (testedLinks == null)
             {
-                return StatusCode(500, ex);
+                return NotFound();
             }
+
+            return Ok(testedLinks);
         }
 
         [HttpPost]
         public IActionResult RunTestLink([FromForm] string link)
         {
-            try
+            if (string.IsNullOrEmpty(link))
             {
-                if (string.IsNullOrEmpty(link))
-                {
-                    return BadRequest();
-                }
-
-                var idTest = _testResultService.TestLink(link);
-                var testedLinks = _testResultService.GetTestedData(idTest);
-
-                return Ok(testedLinks);
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
+
+            var idTest = _testResultService.TestLink(link);
+            var testedLinks = _testResultService.GetTestedData(idTest);
+
+            return Ok(testedLinks);
         }
     }
 }

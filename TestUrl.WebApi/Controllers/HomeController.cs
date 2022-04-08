@@ -21,39 +21,32 @@ namespace TestUrl.WebApi.Controllers
         [HttpGet("{page}")]
         public IActionResult GetTests(int page = 1)
         {
-            try
+            var totalItems = _testResultService.GetTotalCount();
+
+            if (totalItems == 0)
             {
-                var totalItems = _testResultService.GetTotalCount();
-
-                if (totalItems == 0)
-                {
-                    return NotFound();
-                }
-
-                var pageInfo = new PageInfo()
-                {
-                    PageNumber = page,
-                    TotalItems = totalItems
-                };
-                var linksOnPage = _testResultService.GetTestedLinks(page, pageInfo.PageSize).ToList();
-
-                if (!linksOnPage.Any())
-                {
-                    return NotFound();
-                }
-
-                var pageView = new PageView()
-                {
-                    PageInfo = pageInfo,
-                    TestedLinks = linksOnPage
-                };
-
-                return Ok(pageView);
+                return NotFound();
             }
-            catch (Exception ex)
+
+            var pageInfo = new PageInfo()
             {
-                return StatusCode(500, ex);
+                PageNumber = page,
+                TotalItems = totalItems
+            };
+            var linksOnPage = _testResultService.GetTestedLinks(page, pageInfo.PageSize).ToList();
+
+            if (!linksOnPage.Any())
+            {
+                return NotFound();
             }
+
+            var pageView = new PageView()
+            {
+                PageInfo = pageInfo,
+                TestedLinks = linksOnPage
+            };
+
+            return Ok(pageView);
         }
     }
 }

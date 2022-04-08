@@ -34,10 +34,8 @@ namespace TestUrl.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TestUrlsDbContext _dbContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _dbContext.Database.Migrate();
-
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
