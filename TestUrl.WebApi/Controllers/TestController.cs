@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TestUrls.TestResultLogic;
 
 namespace TestUrl.WebApi.Controllers

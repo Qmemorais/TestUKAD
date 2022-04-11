@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TestUrl.WebApi.Models;
 using TestUrls.TestResultLogic;
@@ -8,7 +7,6 @@ namespace TestUrl.WebApi.Controllers
 {
     [ApiController]
     [Route("")]
-    [Route("Home")]
     public class HomeController : ControllerBase
     {
         private readonly TestResultService _testResultService;
@@ -46,7 +44,7 @@ namespace TestUrl.WebApi.Controllers
                 TestedLinks = linksOnPage
             };
 
-            return Ok(pageView);
+            return new JsonResult(pageView);
         }
     }
 }

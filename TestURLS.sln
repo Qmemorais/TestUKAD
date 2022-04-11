@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrls.TestResultLogic", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.MvcApp", "TestUrl.MvcApp\TestUrl.MvcApp.csproj", "{D9EF028A-1685-47DD-BED5-3F73E0CD1EDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUrl.WebApi", "TestUrl.WebApi\TestUrl.WebApi.csproj", "{DBCABE70-000B-4127-BF24-D4D79D54C234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.WebApi", "TestUrl.WebApi\TestUrl.WebApi.csproj", "{DBCABE70-000B-4127-BF24-D4D79D54C234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
