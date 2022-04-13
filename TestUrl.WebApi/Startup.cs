@@ -12,6 +12,7 @@ namespace TestUrl.WebApi
 {
     public class Startup
     {
+        string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -31,12 +32,22 @@ namespace TestUrl.WebApi
 
             var connection = Configuration.GetConnectionString("ConnectionUrlDatabase");
             services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connection));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("https://localhost:5002")
+                                                    .AllowAnyHeader()
+                                                    .AllowAnyMethod();
+                                  });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             if (env.IsDevelopment())
@@ -46,6 +57,8 @@ namespace TestUrl.WebApi
             }
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

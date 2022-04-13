@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.MvcApp", "TestUrl.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.WebApi", "TestUrl.WebApi\TestUrl.WebApi.csproj", "{DBCABE70-000B-4127-BF24-D4D79D54C234}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "testurl.vueapi", "TestUrl.VueApi\testurl.vueapi.esproj", "{20D0B68F-3686-4A89-A86D-B48A6260B645}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,12 @@ Global
 		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D0B68F-3686-4A89-A86D-B48A6260B645}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

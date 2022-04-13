@@ -44,7 +44,7 @@ namespace TestUrl.WebApi.Controllers
                 TestedLinks = linksOnPage
             };
 
-            return new JsonResult(pageView);
+            return Ok(pageView);
         }
     }
 }

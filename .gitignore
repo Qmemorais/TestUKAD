@@ -35,6 +35,8 @@
 /Models/bin/
 /Models/obj/
 
+/TestUrl.VueApi/.vs/
+
 .vs/
 TestUrl.MvcApp/appsettings.json
 TestUrl.WebApi/appsettings.json
