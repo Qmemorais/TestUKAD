@@ -23,11 +23,7 @@ namespace TestUrl.MvcApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddServicesFromLogic();
             services.AddServicesBusinessLayer();
-
-            var connection = Configuration.GetConnectionString("ConnectionUrlDatabase");
-            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

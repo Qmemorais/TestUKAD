@@ -22,13 +22,9 @@ namespace TestURLS.ConsoleApp
         private static IServiceCollection ConfigureServices()
         {
             var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-            var connectionString = configuration.Build().GetConnectionString("ConnectionUrlDatabase");
 
             services.AddServicesFromConsole();
-            services.AddServicesFromLogic();
             services.AddServicesBusinessLayer();
-            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connectionString));
 
             return services;
         }

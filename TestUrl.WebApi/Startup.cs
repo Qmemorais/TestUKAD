@@ -28,9 +28,6 @@ namespace TestUrl.WebApi
             services.AddControllers();
             services.AddServicesBusinessLayer();
 
-            var connection = Configuration.GetConnectionString("ConnectionUrlDatabase");
-            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connection));
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
