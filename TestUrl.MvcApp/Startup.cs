@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TestUrls.TestResultLogic.ServiceAddScoped;
 using TestUrls.EntityFramework;
-using TestURLS.UrlLogic.ServiceAddScoped;
+using TestUrls.TestResultLogic.ServiceAddScoped;
 
 namespace TestUrl.MvcApp
 {

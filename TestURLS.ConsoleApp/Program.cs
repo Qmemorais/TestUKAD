@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using TestUrls.EntityFramework;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TestUrls.TestResultLogic.ServiceAddScoped;
 using TestURLS.ConsoleApp.ServiceAddScoped;
-using TestURLS.UrlLogic.ServiceAddScoped;
 
 namespace TestURLS.ConsoleApp
 {
