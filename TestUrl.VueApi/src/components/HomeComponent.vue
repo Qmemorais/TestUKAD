@@ -2,13 +2,11 @@
     <div>
         <label>Enter Link :</label>
         <input type="text" v-model="link">
-        <button v-on:click="createTest(link)">Test</button>
+        <button v-on:click="createTest()">Test</button>
     </div>
-
-    <p>{{ posts }}</p>
-    <p>{{ posts.pageInfo }}</p>
+    <p></p>
     <button v-on:click="getLinks(value)" v-for="value in pageInfo.pageCount" :key="value">page {{value}}</button>
-
+    <p></p>
     <p>Test Results</p>
     <table class="table table-bordered">
         <thead>
@@ -49,8 +47,6 @@
                         this.posts = response.data
                         this.pageInfo = this.posts.pageInfo
                         this.testedLinks = this.posts.testedLinks
-
-                        console.log(typeof this.testedLinks.createAt)
                     });
             },
             getDetails: function (id) {
@@ -58,7 +54,7 @@
                     id: id
                 })
             },
-            createTest: function (link) {
+            createTest: function () {
                 this.$emit('createTest', {
                     link: this.link
                 })

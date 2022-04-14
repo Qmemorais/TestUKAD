@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TestUrls.EntityFramework;
 using TestUrls.TestResultLogic.ServiceAddScoped;
-using TestURLS.UrlLogic.ServiceAddScoped;
 
 namespace TestUrl.WebApi
 {
@@ -27,7 +26,6 @@ namespace TestUrl.WebApi
             services.AddSwaggerGen();
 
             services.AddControllers();
-            services.AddServicesFromLogic();
             services.AddServicesBusinessLayer();
 
             var connection = Configuration.GetConnectionString("ConnectionUrlDatabase");

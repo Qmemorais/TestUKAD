@@ -1,6 +1,6 @@
 <template>
-    <HomeComponent @getDetails="getDetails" @createTest="createTest"/>
-    <TestComponent :link="link" :id="id"/>
+    <HomeComponent v-if="homeComponent" @getDetails="getDetails" @createTest="createTest"/>
+    <TestComponent v-if="testComponent" :link="link" :id="id" @openHomeComponent="openHomeComponent"/>
 </template>
 
 
@@ -14,17 +14,29 @@
         data() {
             return {
                 link: '',
+                homeComponent: true,
+                testComponent: false,
                 id: -1
             }
         },
         methods: {
             getDetails: function (id: number) {
                 this.id = id
-                console.log('child component said login', id)
+                this.openTestComponent()
             },
             createTest: function (link: string) {
                 this.link = link
-                console.log('child component said login', link)
+                this.openTestComponent()
+            },
+            openTestComponent: function () {
+                this.homeComponent = false
+                this.testComponent = true
+            },
+            openHomeComponent: function () {
+                this.homeComponent = true
+                this.testComponent = false
+                this.id = -1
+                this.link = ''
             }
         },
         components: {

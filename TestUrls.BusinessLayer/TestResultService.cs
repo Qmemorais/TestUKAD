@@ -86,6 +86,7 @@ namespace TestUrls.TestResultLogic
                         IsSitemap=link.IsSitemap,
                         TimeOfResponse=link.TimeOfResponse
                     })
+                    .OrderBy(link => link.TimeOfResponse)
             };
 
             return resultModel;
