@@ -28,8 +28,6 @@ namespace TestUrl.MvcApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TestUrlsDbContext _dbContext)
         {
-            _dbContext.Database.Migrate();
-
             app.UseStaticFiles();
 
             if (env.IsDevelopment())
