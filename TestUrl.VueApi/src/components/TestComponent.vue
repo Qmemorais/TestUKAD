@@ -1,7 +1,7 @@
 <template>
     <button v-on:click="openHomeComponent">Return</button>
-    <button v-if="link != ''" v-on:click="createTest">Create new Test</button>
-    <button v-if="id != -1" v-on:click="getExistLinks">Get Exist Test</button>
+    <button :disabled="isDisabled" v-if="link != ''" v-on:click="createTest">Create new Test</button>
+    <button :disabled='isDisabled' v-if="id != -1" v-on:click="getExistLinks">Get Exist Test</button>
 
     <p>Tested Link: {{ testedLink }}</p>
     <p>Urls(html documents) found after crawling a website {{ countExistWeb }}</p>
@@ -67,6 +67,7 @@
         data() {
             return {
                 posts: [],
+                enableButtn: false,
                 countExistWeb: 0,
                 countExistSitemap: 0,
                 testedLink: '',
@@ -78,13 +79,7 @@
         methods: {
             getExistLinks: function () {
                 axios.get('https://localhost:5001/Test/' + this.id.id)
-                    .then((response) => {
-                        this.posts = response.data
-                        this.testedLink = this.posts.testedLink
-                        this.listOfScan = this.posts.listOfScan
-                        this.getCounts()
-                        this.getExistingLinks()
-                    });
+                    .then(response => this.getResponse(response))
             },
             createTest: function () {
                 var bodyFormData = new FormData();
@@ -95,13 +90,18 @@
                     data: bodyFormData,
                     headers: { "Content-Type": "multipart/form-data" },
                 })
-                    .then(response => {
-                        this.posts = response.data
-                        this.testedLink = this.posts.testedLink
-                        this.listOfScan = this.posts.listOfScan
-                        this.getCounts()
-                        this.getExistingLinks()
-                    })
+                    .then(response => this.getResponse(response))
+            },
+            getResponse: function (response) {
+                this.posts = response.data
+                this.testedLink = this.posts.testedLink
+                this.listOfScan = this.posts.listOfScan
+                this.getCounts()
+                this.getExistingLinks()
+                this.getDisabled()
+            },
+            getDisabled: function () {
+                this.enableButtn = !this.enableButtn;
             },
             getCounts: function () {
                 for (var i = 0; i < this.listOfScan.length; i++) {
@@ -127,5 +127,10 @@
                 this.$emit('openHomeComponent')
             }
         },
+        computed: {
+            isDisabled: function () {
+                return this.enableButtn;
+            }
+        }
     }
 </script>

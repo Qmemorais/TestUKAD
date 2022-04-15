@@ -5,7 +5,9 @@
         <button v-on:click="createTest()">Test</button>
     </div>
     <p></p>
-    <button v-on:click="getLinks(value)" v-for="value in pageInfo.pageCount" :key="value">page {{value}}</button>
+    <div class="btn-group" v-for="value in pageInfo.pageCount" :key="value">
+        <button :disabled="isActive[value-1]" v-on:click="getLinks(value)">page {{value}}</button>
+    </div>
     <p></p>
     <p>Test Results</p>
     <table class="table table-bordered">
@@ -31,10 +33,11 @@
 <script>
     import axios from 'axios';
 
-    export default ({
+    export default {
         data() {
             return {
-                link: '',
+                link: null,
+                isActive: [],
                 posts: [],
                 pageInfo: [],
                 testedLinks:[]
@@ -42,6 +45,7 @@
         },
         methods: {
             getLinks: function (page) {
+                this.getEnable(page)
                 axios.get('https://localhost:5001/' + page)
                     .then((response) => {
                         this.posts = response.data
@@ -52,16 +56,28 @@
             getDetails: function (id) {
                 this.$emit('getDetails', {
                     id: id
-                })
+                });
             },
             createTest: function () {
-                this.$emit('createTest', {
-                    link: this.link
-                })
+                if (this.link) {
+                    this.$emit('createTest', {
+                        link: this.link
+                    })
+                }
+            },
+            getEnable: function (id) {
+                this.isActive = []
+                for (var i = 0; i < this.pageInfo.pageCount; i++) {
+                    if (i + 1 == id) {
+                        this.isActive.push(true);
+                    }
+                    else { this.isActive.push(false); }
+                }
+                console.log(this.isActive)
             }
         },
         mounted() {
             this.getLinks(1)
         }
-    })
+    }
 </script>
