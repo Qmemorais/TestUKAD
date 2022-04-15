@@ -1,6 +1,6 @@
 <template>
-    <HomeComponent v-if="homeComponent" @getDetails="getDetails" @createTest="createTest"/>
-    <TestComponent v-if="testComponent" :link="link" :id="id" @openHomeComponent="openHomeComponent"/>
+    <HomeComponent v-if="homeComponent" @getDetails="getDetails" @createTest="createTest" />
+    <TestComponent v-if="testComponent" :link="link" :id="id" @openHomeComponent="openHomeComponent" />
 </template>
 
 
