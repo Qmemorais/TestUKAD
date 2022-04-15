@@ -73,7 +73,6 @@
                     }
                     else { this.isActive.push(false); }
                 }
-                console.log(this.isActive)
             }
         },
         mounted() {
