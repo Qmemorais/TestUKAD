@@ -1,12 +1,36 @@
-﻿namespace TestURLS.ConsoleApp
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using TestUrls.EntityFramework;
+using TestUrls.TestResultLogic.ServiceAddScoped;
+using TestURLS.ConsoleApp.ServiceAddScoped;
+using TestURLS.UrlLogic.ServiceAddScoped;
+
+namespace TestURLS.ConsoleApp
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            ConsoleInterface consoleInterface = new ConsoleInterface();
+            var services = ConfigureServices();
+            var serviceProvider = services.BuildServiceProvider();
 
-            consoleInterface.Start();
+            var logicToConsole = serviceProvider.GetService<LogicToConsole>();
+            logicToConsole.Start();
+        }
+
+        private static IServiceCollection ConfigureServices()
+        {
+            var services = new ServiceCollection();
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+            var connectionString = configuration.Build().GetConnectionString("ConnectionUrlDatabase");
+
+            services.AddServicesFromConsole();
+            services.AddServicesFromLogic();
+            services.AddServicesBusinessLayer();
+            services.AddEfRepository<TestUrlsDbContext>(options => options.UseSqlServer(connectionString));
+
+            return services;
         }
     }
 }

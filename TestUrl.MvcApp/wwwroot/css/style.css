@@ -1,0 +1,11 @@
+﻿.countLines {
+    counter-reset: trCount;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.countLines tr td:first-child:before {
+    counter-increment: trCount;
+    content: counter(trCount);
+    color: #1d1f21;
+} 

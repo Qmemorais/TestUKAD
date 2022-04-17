@@ -10,8 +10,25 @@
 /TestURLS.UrlLogic/obj/
 /TestURLS.UrlLogic/bin/
 
+/TestURLS.EntityFramework/.vs/
+/TestURLS.EntityFramework/obj/
+/TestURLS.EntityFramework/bin/
+
 /TestURLS.ConsoleApp.Tests/bin/
 /TestURLS.ConsoleApp.Tests/obj/
 
 /TestURLS.UrlLogic.Tests/bin/
 /TestURLS.UrlLogic.Tests/obj/
+
+/TestUrls.BusinessLayer/.vs/
+/TestUrls.BusinessLayer/obj/
+/TestUrls.BusinessLayer/bin/
+
+/TestUrl.MvcApp/.vs/
+/TestUrl.MvcApp/obj/
+/TestUrl.MvcApp/bin/
+
+/Models/bin/
+/Models/obj/
+
+.vs/
