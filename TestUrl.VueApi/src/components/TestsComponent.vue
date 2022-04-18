@@ -6,7 +6,7 @@
     </div>
     <p></p>
     <div class="btn-group" v-for="value in pageInfo.pageCount" :key="value">
-        <button :disabled="isActive[value-1]" v-on:click="getLinks(value)">page {{value}}</button>
+        <button :disabled="isActive[value-1]" v-on:click="getLinksOnPage(value)">page {{value}}</button>
     </div>
     <p></p>
     <p>Test Results</p>
@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(link, index) in testedLinks" :key="index">
+            <tr v-for="(link, index) in linksOnPage" :key="index">
                 <td>{{index+1}}</td>
                 <td>{{link.link}}</td>
                 <td>{{link.createAt}}</td>
@@ -40,13 +40,13 @@
                 isActive: [],
                 posts: [],
                 pageInfo: [],
-                testedLinks:[]
+                testedLinks: [],
+                linksOnPage: []
             };
         },
         methods: {
-            getLinks: function (page) {
-                this.getEnable(page)
-                axios.get('https://localhost:5001/' + page)
+            getLinks: function () {
+                axios.get('https://localhost:5001/api/Tests')
                     .then((response) => {
                         this.posts = response.data
                         this.pageInfo = this.posts.pageInfo
@@ -65,6 +65,13 @@
                     })
                 }
             },
+            getLinksOnPage: function (page) {
+                this.getEnable(page)
+                this.linksOnPage = []
+                for (var i = (page - 1) * this.pageInfo.pageSize; i < page * this.pageInfo.pageSize && i < this.testedLinks.length; i++) {
+                    this.linksOnPage.push(this.testedLinks[i]);
+                }
+            },
             getEnable: function (id) {
                 this.isActive = []
                 for (var i = 0; i < this.pageInfo.pageCount; i++) {
@@ -76,7 +83,7 @@
             }
         },
         mounted() {
-            this.getLinks(1)
+            this.getLinks()
         }
     }
 </script>

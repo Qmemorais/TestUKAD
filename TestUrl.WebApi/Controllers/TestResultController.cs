@@ -4,12 +4,12 @@ using TestUrls.TestResultLogic;
 namespace TestUrl.WebApi.Controllers
 {
     [ApiController]
-    [Route("Test")]
-    public class TestController : ControllerBase
+    [Route("api/Tests")]
+    public class TestResultController : ControllerBase
     {
         private readonly TestResultService _testResultService;
 
-        public TestController(TestResultService testResultService)
+        public TestResultController(TestResultService testResultService)
         {
             _testResultService = testResultService;
         }

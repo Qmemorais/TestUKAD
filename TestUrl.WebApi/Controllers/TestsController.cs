@@ -6,18 +6,18 @@ using TestUrls.TestResultLogic;
 namespace TestUrl.WebApi.Controllers
 {
     [ApiController]
-    [Route("")]
-    public class HomeController : ControllerBase
+    [Route("api/[controller]")]
+    public class TestsController : ControllerBase
     {
         private readonly TestResultService _testResultService;
 
-        public HomeController(TestResultService testResultService)
+        public TestsController(TestResultService testResultService)
         {
             _testResultService = testResultService;
         }
 
-        [HttpGet("{page}")]
-        public IActionResult GetTests(int page = 1)
+        [HttpGet]
+        public IActionResult GetTests()
         {
             var totalItems = _testResultService.GetTotalCount();
 
@@ -28,10 +28,9 @@ namespace TestUrl.WebApi.Controllers
 
             var pageInfo = new PageInfo()
             {
-                PageNumber = page,
                 TotalItems = totalItems
             };
-            var linksOnPage = _testResultService.GetTestedLinks(page, pageInfo.PageSize).ToList();
+            var linksOnPage = _testResultService.GetTestedLinks();
 
             if (!linksOnPage.Any())
             {

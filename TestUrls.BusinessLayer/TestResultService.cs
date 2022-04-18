@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TestUrls.EntityFramework.Entities;
 using TestUrls.TestResultLogic.Models;
 using TestURLS.UrlLogic;
@@ -36,22 +37,22 @@ namespace TestUrls.TestResultLogic
             return testResult.Id;
         }
 
-        public virtual IEnumerable<TestModel> GetTestedLinks(int pageNumber, int pageSize)
+        public virtual IEnumerable<TestModel> GetTestedLinks()
         {
             var testedLinks = _testEntities
                 .GetAllAsNoTracking()
-                .OrderBy(link => link.Id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+                .OrderBy(link => link.Id);
 
-            var testResponse = testedLinks.Select(link => new TestModel
-            {
-                Id = link.Id,
-                Link = link.Link,
-                CreateAt = link.CreateAt
-            });
+            var testResponse = testedLinks
+                .Select(link => new TestModel
+                {
+                    Id = link.Id,
+                    Link = link.Link,
+                    CreateAt = link.CreateAt
+                })
+                .ToListAsync();
 
-            return testResponse;
+            return testResponse.Result;
         }
 
         public int GetTotalCount()

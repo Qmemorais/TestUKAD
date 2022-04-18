@@ -1,5 +1,5 @@
 <template>
-    <button v-on:click="openHomeComponent">Return</button>
+    <button v-on:click="openTestsComponent">Return</button>
     <button :disabled="isDisabled" v-if="link != ''" v-on:click="createTest">Create new Test</button>
     <button :disabled='isDisabled' v-if="id != -1" v-on:click="getExistLinks">Get Exist Test</button>
 
@@ -78,7 +78,7 @@
         },
         methods: {
             getExistLinks: function () {
-                axios.get('https://localhost:5001/Test/' + this.id.id)
+                axios.get('https://localhost:5001/api/Tests/' + this.id.id)
                     .then(response => this.getResponse(response))
             },
             createTest: function () {
@@ -86,7 +86,7 @@
                 bodyFormData.append('link', this.link.link);
                 axios({
                     method: "post",
-                    url: "https://localhost:5001/Test/",
+                    url: "https://localhost:5001/api/Tests/",
                     data: bodyFormData,
                     headers: { "Content-Type": "multipart/form-data" },
                 })
@@ -123,8 +123,8 @@
                     }
                 }
             },
-            openHomeComponent: function () {
-                this.$emit('openHomeComponent')
+            openTestsComponent: function () {
+                this.$emit('openTestsComponent')
             }
         },
         computed: {

@@ -1,47 +1,47 @@
 <template>
-    <HomeComponent v-if="homeComponent" @getDetails="getDetails" @createTest="createTest" />
-    <TestComponent v-if="testComponent" :link="link" :id="id" @openHomeComponent="openHomeComponent" />
+    <TestsComponent v-if="testsComponent" @getDetails="getDetails" @createTest="createTest" />
+    <TestResultComponent v-if="testResultComponent" :link="link" :id="id" @openTestsComponent="openTestsComponent" />
 </template>
 
 
 <script lang="ts">
     import { defineComponent } from 'vue';
-    import HomeComponent from './components/HomeComponent.vue';
-    import TestComponent from './components/TestComponent.vue';
+    import TestsComponent from './components/TestsComponent.vue';
+    import TestResultComponent from './components/TestResultComponent.vue';
 
     export default defineComponent({
         name: 'App',
         data() {
             return {
                 link: '',
-                homeComponent: true,
-                testComponent: false,
+                testsComponent: true,
+                testResultComponent: false,
                 id: -1
             }
         },
         methods: {
             getDetails: function (id: number) {
                 this.id = id
-                this.openTestComponent()
+                this.openTestResultComponent()
             },
             createTest: function (link: string) {
                 this.link = link
-                this.openTestComponent()
+                this.openTestResultComponent()
             },
-            openTestComponent: function () {
-                this.homeComponent = false
-                this.testComponent = true
+            openTestResultComponent: function () {
+                this.testsComponent = false
+                this.testResultComponent = true
             },
-            openHomeComponent: function () {
-                this.homeComponent = true
-                this.testComponent = false
+            openTestsComponent: function () {
+                this.testsComponent = true
+                this.testResultComponent = false
                 this.id = -1
                 this.link = ''
             }
         },
         components: {
-            HomeComponent,
-            TestComponent
+            TestsComponent,
+            TestResultComponent
         }
     })
 </script>
