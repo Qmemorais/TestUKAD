@@ -55,6 +55,26 @@ namespace TestUrls.TestResultLogic
             return testResponse.Result;
         }
 
+        public virtual IEnumerable<TestModel> GetTestedPageLinks(int page, int pageSize)
+        {
+            var testedLinks = _testEntities
+                   .GetAllAsNoTracking()
+                   .OrderBy(link => link.Id)
+                   .Skip((page-1)* pageSize)
+                   .Take(pageSize);
+
+            var testResponse = testedLinks
+                .Select(link => new TestModel
+                {
+                    Id = link.Id,
+                    Link = link.Link,
+                    CreateAt = link.CreateAt
+                })
+                .ToListAsync();
+
+            return testResponse.Result;
+        }
+
         public int GetTotalCount()
         {
             return _testEntities.GetAllAsNoTracking().Count();

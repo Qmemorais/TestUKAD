@@ -25,7 +25,7 @@ namespace TestUrl.MvcApp.Controllers
                 PageNumber = page,
                 TotalItems = totalItems
             };
-            var linksOnPage = _testResultService.GetTestedLinks(page, pageInfo.PageSize);
+            var linksOnPage = _testResultService.GetTestedPageLinks(page, pageInfo.PageSize);
             var pageView = new PageView()
             {
                 PageInfo = pageInfo,
