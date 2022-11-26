@@ -1,82 +1,117 @@
-﻿using Moq;
-using System.Net;
-using NUnit.Framework;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Moq;
+using NUnit.Framework;
+using TestURLS.UrlLogic.Interfaces;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Tests
 {
     public class MainLogicTests
     {
         private MainLogic _mainLogic;
-        private Mock<HttpWebResponse> _response;
-        private Mock<HttpWebRequest> _request;
-        private Mock<LogicScanByHTML> _scanByHTML;
-        private Mock<LogicScanBySitemap> _scanBySitemap;
+        private Mock<ILogicScanByHtml> _scanByHtml;
+        private Mock<ILogicScanBySitemap> _scanBySitemap;
+        private Mock<IUrlSettings> _urlSettings;
+        private Mock<ITimeTracker> _timeTracker;
+
+        /*string fakeHTML = @"<a href=""https://test.crawler.com/Info"">Link1</a>
+                            <a href=""https://test.crawler.com/main.html"">Link2</a>";*/
 
         [SetUp]
         public void Setup()
         {
-            _response = new Mock<HttpWebResponse>();
-            _request = new Mock<HttpWebRequest>();
-            _scanByHTML = new Mock<LogicScanByHTML>();
-            _scanBySitemap = new Mock<LogicScanBySitemap>();
-            _mainLogic = new MainLogic(_scanByHTML.Object, _scanBySitemap.Object);
+            _scanByHtml = new Mock<ILogicScanByHtml>();
+            _scanBySitemap = new Mock<ILogicScanBySitemap>();
+            _urlSettings = new Mock<IUrlSettings>();
+            _timeTracker = new Mock<ITimeTracker>();
+
+            _mainLogic = new MainLogic(
+                _scanByHtml.Object, 
+                _scanBySitemap.Object,
+                _urlSettings.Object,
+                _timeTracker.Object);
         }
 
         [Test]
-        public void Test1()
+        public void GetResults_OnlyScanWeb_LinksFromWeb()
         {
-            //
-            var fakeURL = new List<string>()
-            {
-                "http://test.crawler.com/"
-            };
-            var fakeHTML = @"<a href=""https://test.crawler.com/Info"">Link1</a>
-                            <a href=""https://test.crawler.com/main.html"">Link2</a>";
-            var expectedHTML = new List<string>()
-            {
-                "https://test.crawler.com/Info",
-                "https://test.crawler.com/main.html"
-            };
+            //arrange
+            var fakeUrl = "http://test.crawler.com/";
+            var domainName = "http://test.crawler.com";
+            var expectedLinks = GetStartDataModel();
 
-            var expectedBytes = Encoding.UTF8.GetBytes(fakeHTML);
-            var responseStream = new MemoryStream();
-            responseStream.Write(expectedBytes, 0, expectedBytes.Length);
-            responseStream.Seek(0, SeekOrigin.Begin);
-
-            _response.Setup(c => c.GetResponseStream()).Returns(responseStream);
-
-            _request.Setup(c => c.GetResponse()).Returns(_response.Object);
-
-            var factory = new Mock<IHttpWebRequestFactory>();
-            factory.Setup(c => c.Create(It.IsAny<string>()))
-                .Returns(_request.Object);
-
-            // act
-            var actualRequest = factory.Object.Create(fakeURL.First());
-            actualRequest.Method = WebRequestMethods.Http.Get;
-
-            _request.Setup(x => x.GetResponse()).Returns(actualRequest.GetResponse());
-
-            _scanByHTML
-                .Setup(x => x.ScanWebPages(fakeURL))
-                .Returns(expectedHTML);
+            _scanByHtml
+                .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
+                .Returns(expectedLinks);
             _scanBySitemap
-                .Setup(x => x.ScanExistSitemap(fakeURL.First(), fakeURL))
-                .Returns(expectedHTML);
-            //
-            //
-            var result = _mainLogic.GetResults(fakeURL.First());
-            Assert.AreEqual(true, result);
+                .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
+                .Returns(new List<string>());
+            _urlSettings
+                .Setup(getDomain => getDomain.GetDomainName(fakeUrl))
+                .Returns(domainName);
+            //act
+            var result = _mainLogic.GetResults(fakeUrl);
+            //assert
+            Assert.AreEqual(expectedLinks, result);
         }
 
-        public interface IHttpWebRequestFactory
+        [Test]
+        public void GetResults_LinksFromScanAndWeb_LinksWithScanAndWeb()
         {
-            HttpWebRequest Create(string uri);
+            //arrange
+            var fakeUrl = "http://test.crawler.com/";
+            var domainName = "http://test.crawler.com";
+            var linksFromWeb = GetStartDataModel();
+            var linksFromSitemap = GetDataFromSitemap();
+            var linksFromWebWithSitemap = GetLinksExistBothScan();
+
+            _scanByHtml
+                .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
+                .Returns(linksFromWeb);
+            _scanBySitemap
+                .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
+                .Returns(linksFromSitemap);
+            _urlSettings
+                .Setup(getDomain => getDomain.GetDomainName(linksFromWeb.FirstOrDefault().Link))
+                .Returns(domainName);
+            _urlSettings
+                .Setup(getValid => getValid.GetUrlLikeFromWeb(linksFromSitemap.FirstOrDefault(), domainName))
+                .Returns(linksFromSitemap.FirstOrDefault());
+            //act
+            var result = _mainLogic.GetResults(fakeUrl);
+            //assert
+            Assert.AreEqual(linksFromWebWithSitemap.Count, result.Count);
         }
 
+        private List<UrlModel> GetStartDataModel()
+        {
+            var expectedLinks = new List<UrlModel>()
+            {
+                new UrlModel{Link="https://test.crawler.com/Info", IsWeb=true }
+            };
+
+            return expectedLinks;
+        }
+
+        private List<string> GetDataFromSitemap()
+        {
+            var expectedLinks = new List<string>()
+            {
+                "https://test.crawler.com/Info"
+            };
+
+            return expectedLinks;
+        }
+
+        private List<UrlModel> GetLinksExistBothScan()
+        {
+            var expectedLinks = new List<UrlModel>()
+            {
+                new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
+            };
+
+            return expectedLinks;
+        }
     }
 }

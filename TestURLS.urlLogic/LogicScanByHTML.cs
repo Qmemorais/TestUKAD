@@ -1,111 +1,143 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+using HtmlAgilityPack;
+using TestURLS.UrlLogic.Interfaces;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanByHTML
+    public class LogicScanByHtml: ILogicScanByHtml
     {
-        private readonly GetSettingFromURL _settingOfURL = new GetSettingFromURL();
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
+        private readonly IUrlSettings _settingsUrl;
+        private readonly IHttpLogic _getHttp;
 
-        public LogicScanByHTML(GetSettingFromURL settingOfURL, GetResponseFromURL getResponse)
+        public LogicScanByHtml(IUrlSettings settingOfUrl, IHttpLogic getResponse)
         {
-            _settingOfURL = settingOfURL;
-            _getResponse = getResponse;
+            _settingsUrl = settingOfUrl;
+            _getHttp = getResponse;
         }
 
-        public LogicScanByHTML() { }
+        public LogicScanByHtml() { }
 
-        public virtual List<string> ScanWebPages(List<string> htmlScan)
+        public IEnumerable<UrlModel> GetUrlsFromScanPages(string url)
         {
             //get main page to find only url from website
-            var firstUrl = _settingOfURL.GetMainURL(htmlScan[0]);
+            var domainName = _settingsUrl.GetDomainName(url);
+            var linksWithScanPage = new List<UrlModel>();
 
-            if (!firstUrl.Equals(htmlScan[0]) && (htmlScan[0].Length - firstUrl.Length) != 1)
+            linksWithScanPage.Add(new UrlModel { Link = url, IsWeb = true });
+
+            if (domainName != url && (url.Length - domainName.Length) != 1)
             {
-                htmlScan.Add(firstUrl);
+                var newLink = new UrlModel { Link = url, IsWeb = true };
+                linksWithScanPage.Add(newLink);
             }
 
-            var scannedPages = new List<string>
+            linksWithScanPage = GetScannedUrls(linksWithScanPage, domainName);
+
+            return linksWithScanPage;
+        }
+
+        protected virtual bool IsUrl(string url)
+        {
+            if (url.Contains(".html"))
             {
-                htmlScan[0]
-            };
-            var href = @"href\s*=\s*(?:[""'](?<1>[^""']*)[""']|(?<1>\S+))";
-            var reg = new Regex(href, RegexOptions.IgnoreCase | RegexOptions.Compiled,
-                                            TimeSpan.FromSeconds(1));
-
-            for (int i = 0; i < htmlScan.Count; i++)
+                return true;
+            }
+            if (url.Contains(".php"))
             {
-                var response = _getResponse.GetResponse(htmlScan[i]);
-                var read = new StreamReader(response.GetResponseStream(), Encoding.Default, true, 8192);
-                var HTMLtxt = read.ReadToEnd();
-                response.Close();
+                return true;
+            }
+            if (url.Contains(".aspx"))
+            {
+                return true;
+            }
+            if (url[url.Length - 1] == '/')
+            {
+                return true;
+            }
+            return false;
+        }
 
-                var match = reg.Match(HTMLtxt);
-                var matches = new List<string>();
+        private List<UrlModel> GetScannedUrls(List<UrlModel> linksWithScanPage, string domainName)
+        {
+            var scannedPages = new List<string>();
+            scannedPages.AddRange(linksWithScanPage.Select(x => x.Link));
 
-                while (match.Success)
-                {   //delete part "href=''"
-                    var urlFromMatch = match.Value[6..];
+            for (int i = 0; i < linksWithScanPage.Count; i++)
+            {
+                var htmlTxt = _getHttp.GetBodyFromUrl(linksWithScanPage[i].Link);
 
-                    if (!urlFromMatch.Contains("http"))
-                    {
-                        //if we have href="/index.html"
-                        urlFromMatch = firstUrl + urlFromMatch;
-
-                        if (urlFromMatch.IndexOf(firstUrl + "/") == -1)
-                        {
-                            urlFromMatch = urlFromMatch.Insert(firstUrl.Length, "/");
-                        }
-                    }
-
-                    if (urlFromMatch.Contains(firstUrl))
-                    {   //delete \" at the end of string
-                        var length = urlFromMatch.LastIndexOf("\"");
-
-                        if (length != -1)
-                        {
-                            urlFromMatch = urlFromMatch[..length];
-                        }
-
-                        matches.Add(urlFromMatch);
-                    }
-
-                    match = match.NextMatch();
-                }
-
-                //scan only pages that doesn`t looking for before
-                matches = matches.Except(scannedPages).ToList();
-                scannedPages.AddRange(matches);
-
-                if (matches.Count != 0)
+                if (!string.IsNullOrEmpty(htmlTxt))
                 {
-                    for (int k = 0; k < matches.Count; k++)
-                    {
-                        //part of existing pages doesn`t interesting
-                        if (matches[k].IndexOf("#") == -1)
-                        {
-                            //if difference is only http or https
-                            var existingPages = htmlScan.Any(web => web.IndexOf(matches[k][5..]) != -1);
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(htmlTxt);
 
-                            if (!existingPages && matches[k] != firstUrl + "/")
-                            {
-                                if (_settingOfURL.IsPageHTML(matches[k]))
-                                //if this page is text/html then add to scanList
-                                {
-                                    htmlScan.Add(matches[k]);
-                                }
-                            }
-                        }
-                    }
+                    var matches = GetLinksFromPage(htmlDoc, domainName);
+                    //part of existing pages doesn`t interesting
+                    matches = matches
+                        .Except(scannedPages)
+                        .Distinct()
+                        .ToList();
+
+                    scannedPages.AddRange(matches);
+
+                    linksWithScanPage = GetMatchesFromScanPage(linksWithScanPage, matches);
                 }
             }
 
-            return htmlScan;
+            return linksWithScanPage;
+        }
+
+        private List<string> GetLinksFromPage(HtmlDocument htmlDoc, string domenName)
+        {
+            var matches = new List<string>();
+
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                var attributeHref = link.Attributes["href"];
+                attributeHref.Value = _settingsUrl.GetValidUrl(attributeHref.Value, domenName);
+
+                if (attributeHref.Value.Contains(domenName))
+                {
+                    var getLinkWithoutSymbols = RemoveSymbols(attributeHref.Value);
+
+                    if (IsUrl(getLinkWithoutSymbols))
+                    {
+                        matches.Add(getLinkWithoutSymbols);
+                    }
+                }
+            }
+            return matches;
+        }
+
+        private UrlModel AddLinkToClass(string url)
+        {
+            return new UrlModel { Link = url, IsWeb = true };
+        }
+
+        private string RemoveSymbols(string link)
+        {
+            if(link.Contains("#"))
+            {
+                var indexOfSymbol = link.IndexOf("#");
+                link = link.Substring(0, indexOfSymbol);
+            }
+            return link;
+        }
+
+        private List<UrlModel> GetMatchesFromScanPage(List<UrlModel> linksWithScanPage, List<string> matches)
+        {
+            if (matches.Count != 0)
+            {
+                foreach (string link in matches)
+                {
+                    var newLink = AddLinkToClass(link);
+                    linksWithScanPage.Add(newLink);
+                }
+            }
+
+            return linksWithScanPage;
         }
     }
 }

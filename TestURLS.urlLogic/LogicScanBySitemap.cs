@@ -1,70 +1,63 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
+using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanBySitemap
+    public class LogicScanBySitemap: ILogicScanBySitemap
     {
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
-        private readonly GetSettingFromURL _settingsOfURL = new GetSettingFromURL();
+        private readonly IHttpLogic _getResponse;
+        private readonly IUrlSettings _settingsOfUrl;
 
-        public LogicScanBySitemap(GetResponseFromURL getResponse, GetSettingFromURL settingsOfURL)
+        public LogicScanBySitemap(IHttpLogic getResponse, IUrlSettings settingsOfUrl)
         {
             _getResponse = getResponse;
-            _settingsOfURL = settingsOfURL;
+            _settingsOfUrl = settingsOfUrl;
         }
 
-        public LogicScanBySitemap() { }
-
-        public virtual List<string> ScanExistSitemap(string url, List<string> htmlSitemap)
+        public IEnumerable<string> GetLinksFromSitemapIfExist(string url)
         {
-            var firstUrl = _settingsOfURL.GetMainURL(url);
-            try
+            var linksFromSitemap = new List<string>();
+            var domainName = _settingsOfUrl.GetDomainName(url);
+            //try open page/sitemap.xml
+            var isSitemapExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
+
+            if (!string.IsNullOrEmpty(isSitemapExist))
             {
-                //try open page/sitemap.xml
-                var isSitemapExist = _settingsOfURL.IsPageHTML(firstUrl + "/sitemap.xml");
-                htmlSitemap = ScanSitemap(firstUrl + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(domainName + "/sitemap.xml");
             }
-            catch
-            {
-                //if it doesn`t exist try to find url of sitemap
-                var response = _getResponse.GetResponse(firstUrl + "/robots.txt");
-                var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(1251));
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line.IndexOf("Sitemap: ") != -1)
-                    {
-                        htmlSitemap = ScanSitemap(line[9..]);
-                    }
-                }
-                response.Close();
-            }
-            return htmlSitemap;
+
+            return linksFromSitemap;
         }
 
-        private List<string> ScanSitemap(string sitemapURL)
+        private List<string> ScanSitemap(string sitemapUrl)
         {
-            var htmlSitemap = new List<string>();
             //create value to get xml-document and data from
-            var xDoc = new XmlDocument();
-            try
+            var linksFromSitemap = new List<string>();
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(sitemapUrl);
+
+            var xmlElement = xmlDoc.DocumentElement;
+
+            foreach (XmlNode xmlNode in xmlElement)
             {
-                xDoc.Load(sitemapURL);
-                XmlElement xRoot = xDoc.DocumentElement;
-                foreach (XmlNode xnode in xRoot)
-                    foreach (XmlNode childnode in xnode.ChildNodes)
-                        if (childnode.Name == "loc")
-                            htmlSitemap.Add(childnode.InnerText);
-                htmlSitemap = htmlSitemap.Distinct().ToList();
+
+                foreach (XmlNode childnode in xmlNode.ChildNodes)
+                {
+
+                    if (childnode.Name == "loc")
+                    {
+                        linksFromSitemap.Add(childnode.InnerText);
+                    }    
+                }
             }
-            catch
-            {
-            }
-            return htmlSitemap;
+
+            linksFromSitemap = linksFromSitemap
+                .Distinct()
+                .ToList();
+
+            return linksFromSitemap;
         }
     }
 }

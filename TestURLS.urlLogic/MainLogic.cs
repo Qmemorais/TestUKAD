@@ -1,60 +1,70 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TestURLS.UrlLogic.Interfaces;
+using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class MainLogic
+    public class MainLogic : IMainLogic
     {
-        private readonly LogicScanByHTML _scanByHTML = new LogicScanByHTML();
-        private readonly LogicScanBySitemap _scanBySitemap = new LogicScanBySitemap();
-        private readonly GetResponseFromURL _getResponse = new GetResponseFromURL();
-        private readonly OutputList _outputList = new OutputList();
+        private readonly ILogicScanByHtml _scanByHtml;
+        private readonly ILogicScanBySitemap _scanBySitemap;
+        private readonly IUrlSettings _urlSettings;
+        private readonly ITimeTracker _timeTracker;
 
-        public MainLogic(LogicScanByHTML scanByHTML, LogicScanBySitemap scanBySitemap,
-            GetResponseFromURL getResponse, OutputList outputList)
+        public MainLogic(
+            ILogicScanByHtml scanByHtml, 
+            ILogicScanBySitemap scanBySitemap,
+            IUrlSettings settings,
+            ITimeTracker timeTracker)
         {
-            _scanByHTML = scanByHTML;
+            _scanByHtml = scanByHtml;
             _scanBySitemap = scanBySitemap;
-            _getResponse = getResponse;
-            _outputList = outputList;
+            _urlSettings = settings;
+            _timeTracker = timeTracker;
+        }
+        public List<UrlModel> GetResults(string url)
+        {
+            var allUrls = new List<UrlModel>();
+            // scan all exist pages on web
+            allUrls.AddRange(_scanByHtml.GetUrlsFromScanPages(url));
+            // find sitemap and if yes: scan
+            var linksFromSitemap = _scanBySitemap.GetLinksFromSitemapIfExist(url);
+            allUrls = AddLinksFromSitemap(allUrls, linksFromSitemap);
+
+            return allUrls;
         }
 
-        public MainLogic() { }
-
-        public virtual IEnumerable<string> GetResults(string url)
+        public IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime)
         {
-            //values to work
-            var htmlScan = new List<string>();
-            var htmlSitemap = new List<string>();
-            IEnumerable<string> stringToType = htmlScan;
+            var values = _timeTracker.GetLinksWithTime(htmlToGetTime);
 
-            try
-            {
-                //try open url
-                var response = _getResponse.GetResponse(url);
-                //if OK add this url to list and work
-                htmlScan.Add(url);
-                //scan all exist pages on web
-                htmlScan = _scanByHTML.ScanWebPages(htmlScan);
-                //find sitemap and if yes: scan
-                htmlSitemap = _scanBySitemap.ScanExistSitemap(url, htmlSitemap);
-                //
-                stringToType = _outputList.OutputTables(htmlScan, htmlSitemap);
-            }
-            catch (WebException e)
-            {
-                //catch 403 and 404 errorsdf
-                WebExceptionStatus status = e.Status;
+            return values;
+        }
 
-                if (status == WebExceptionStatus.ProtocolError)
+        private List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
+        {
+            var firstLink = allUrls.FirstOrDefault().Link;
+            var domainName = _urlSettings.GetDomainName(firstLink);
+
+            foreach (var linkFromSitemap in linksFromSitemap)
+            {
+                var newLinkFromSitemap = _urlSettings.GetUrlLikeFromWeb(linkFromSitemap,domainName);
+                var linkIsAlreadyExist = allUrls.Any(link => string.Equals(link.Link, newLinkFromSitemap));
+
+                if (linkIsAlreadyExist)
                 {
-                    HttpWebResponse httpResponse = (HttpWebResponse)e.Response;
-                    stringToType = 
-                        (IEnumerable<string>)(IEnumerable)$"{(int)httpResponse.StatusCode} - {httpResponse.StatusCode}";
+                    allUrls
+                        .FindAll(link => string.Equals(link.Link, newLinkFromSitemap))
+                        .ForEach(link => link.IsSitemap = true);
+                }
+                else
+                {
+                    allUrls.Add(new UrlModel { Link = linkFromSitemap, IsSitemap = true, IsWeb = false });
                 }
             }
-                return stringToType;
+
+            return allUrls;
         }
     }
 }

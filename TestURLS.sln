@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.UrlLogic", "TestUR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.ConsoleApp.Tests", "TestURLS.ConsoleApp.Tests\TestURLS.ConsoleApp.Tests.csproj", "{A53275A9-DA83-476B-91C2-FFE3B66B668F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestURLS.UrlLogic.Tests", "TestURLS.UrlLogic.Tests\TestURLS.UrlLogic.Tests.csproj", "{0EF5466A-FAC8-4CC9-B0EB-A115AF30C6B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestURLS.UrlLogic.Tests", "TestURLS.UrlLogic.Tests\TestURLS.UrlLogic.Tests.csproj", "{0EF5466A-FAC8-4CC9-B0EB-A115AF30C6B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
