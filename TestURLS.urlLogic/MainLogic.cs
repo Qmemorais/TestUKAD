@@ -7,64 +7,91 @@ namespace TestURLS.UrlLogic
 {
     public class MainLogic : IMainLogic
     {
-        private readonly ILogicScanByHtml _scanByHtml;
-        private readonly ILogicScanBySitemap _scanBySitemap;
-        private readonly IUrlSettings _urlSettings;
-        private readonly ITimeTracker _timeTracker;
+        private readonly ILogicToGetLinksFromScanWeb _getLinksFromScanWeb;
+        private readonly ILogicToGetLinksFromSitemap _getLinksFromScanSitemap;
+        private readonly ChangesAboveLink _getChanges;
+        private readonly ResponseTimeOfUrl _getResponseTime;
 
         public MainLogic(
-            ILogicScanByHtml scanByHtml, 
-            ILogicScanBySitemap scanBySitemap,
-            IUrlSettings settings,
-            ITimeTracker timeTracker)
+            ILogicToGetLinksFromScanWeb scanByHtml, 
+            ILogicToGetLinksFromSitemap scanBySitemap,
+            ChangesAboveLink settings,
+            ResponseTimeOfUrl timeTracker)
         {
-            _scanByHtml = scanByHtml;
-            _scanBySitemap = scanBySitemap;
-            _urlSettings = settings;
-            _timeTracker = timeTracker;
+            _getLinksFromScanWeb = scanByHtml;
+            _getLinksFromScanSitemap = scanBySitemap;
+            _getChanges = settings;
+            _getResponseTime = timeTracker;
         }
-        public List<UrlModel> GetResults(string url)
+        
+        public IEnumerable<UrlModel> GetResults(string url)
         {
-            var allUrls = new List<UrlModel>();
             // scan all exist pages on web
-            allUrls.AddRange(_scanByHtml.GetUrlsFromScanPages(url));
+            var linksFromScanPages = _getLinksFromScanWeb.GetUrlsFromScanPages(url);
             // find sitemap and if yes: scan
-            var linksFromSitemap = _scanBySitemap.GetLinksFromSitemapIfExist(url);
-            allUrls = AddLinksFromSitemap(allUrls, linksFromSitemap);
+            var linksFromScanSitemap = _getLinksFromScanSitemap.GetLinksFromSitemapIfExist(url);
+            var allUrls = GetLinksWithUrlModel(linksFromScanPages.ToList(), linksFromScanSitemap);
 
             return allUrls;
         }
 
-        public IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(List<UrlModel> htmlToGetTime)
+        public IEnumerable<UrlModelWithResponse> GetUrlsWithTimeResponse(IEnumerable<UrlModel> htmlToGetTime)
         {
-            var values = _timeTracker.GetLinksWithTime(htmlToGetTime);
+            var values = _getResponseTime.GetLinksWithTime(htmlToGetTime);
 
             return values;
         }
 
-        private List<UrlModel> AddLinksFromSitemap(List<UrlModel> allUrls, IEnumerable<string> linksFromSitemap)
+        private List<UrlModel> GetLinksWithUrlModel(
+            List<string> linksFromScanPages,
+            IEnumerable<string> linksFromScanSitemap)
         {
-            var firstLink = allUrls.FirstOrDefault().Link;
-            var domainName = _urlSettings.GetDomainName(firstLink);
+            var allLinks = new List<UrlModel>();
+            var linksOnlyFromScanPages = linksFromScanPages.Except(linksFromScanSitemap);
 
-            foreach (var linkFromSitemap in linksFromSitemap)
+            var modelsFromPages = MakeUrlModelFromScanPages(linksOnlyFromScanPages);
+            var modelsFromSitemap = MakeUrlModelFromSitemap(linksFromScanPages, linksFromScanSitemap);
+            allLinks.AddRange(modelsFromPages);
+            allLinks.AddRange(modelsFromSitemap);
+
+            return allLinks;
+        }
+
+        private List<UrlModel> MakeUrlModelFromScanPages(IEnumerable<string> linksFromScanPages)
+        {
+            var urlModelOfPages = new List<UrlModel>();
+
+            foreach (var linkFromPage in linksFromScanPages)
             {
-                var newLinkFromSitemap = _urlSettings.GetUrlLikeFromWeb(linkFromSitemap,domainName);
-                var linkIsAlreadyExist = allUrls.Any(link => string.Equals(link.Link, newLinkFromSitemap));
+                urlModelOfPages.Add(new UrlModel { Link = linkFromPage, IsWeb = true });
+            }
 
-                if (linkIsAlreadyExist)
+            return urlModelOfPages;
+        }
+
+        private List<UrlModel> MakeUrlModelFromSitemap(List<string> linksFromScanPages,
+            IEnumerable<string> linksFromScanSitemap)
+        {
+            var urlModelOfSitemap = new List<UrlModel>();
+            var firstLink = linksFromScanPages.FirstOrDefault();
+            var domainName = _getChanges.GetDomainName(firstLink);
+
+            foreach (var linkFromList in linksFromScanSitemap)
+            {
+                var newLinkFromSitemap = _getChanges.GetUrlLikeFromWeb(linkFromList, domainName);
+                var indexLinkFromList = linksFromScanPages.FindIndex(link => string.Equals(link, newLinkFromSitemap));
+
+                if (indexLinkFromList > -1)
                 {
-                    allUrls
-                        .FindAll(link => string.Equals(link.Link, newLinkFromSitemap))
-                        .ForEach(link => link.IsSitemap = true);
+                    urlModelOfSitemap.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true, IsWeb = true });
                 }
                 else
                 {
-                    allUrls.Add(new UrlModel { Link = linkFromSitemap, IsSitemap = true, IsWeb = false });
+                    urlModelOfSitemap.Add(new UrlModel { Link = newLinkFromSitemap, IsSitemap = true });
                 }
             }
 
-            return allUrls;
+            return urlModelOfSitemap;
         }
     }
 }

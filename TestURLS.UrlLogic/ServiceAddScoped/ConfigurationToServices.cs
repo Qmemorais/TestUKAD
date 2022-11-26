@@ -5,16 +5,14 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
 {
     public static class ConfigurationToServices
     {
-        public static IServiceCollection AddServicesFromLogic(this IServiceCollection services)
+        public static void AddServicesFromLogic(this IServiceCollection services)
         {
-            services.AddScoped<IHttpLogic, HttpLogic>()
-                    .AddScoped<ILogicScanByHtml,LogicScanByHtml>()
-                    .AddScoped<ILogicScanBySitemap,LogicScanBySitemap>()
+            services.AddScoped<HttpLogic>()
+                    .AddScoped<ILogicToGetLinksFromScanWeb,LogicToGetLinksFromScanWeb>()
+                    .AddScoped<ILogicToGetLinksFromSitemap,LogicToGetLinksFromSitemap>()
                     .AddScoped<IMainLogic, MainLogic>()
-                    .AddScoped<ITimeTracker, TimeTracker>()
-                    .AddScoped<IUrlSettings, UrlSettings>();
-
-            return services;
+                    .AddScoped<ResponseTimeOfUrl>()
+                    .AddScoped<ChangesAboveLink>();
         }
     }
 }

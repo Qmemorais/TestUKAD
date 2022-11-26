@@ -25,7 +25,7 @@ namespace TestURLS.ConsoleApp
             _consoleInOut.Write("Enter URL: ");
             var urlToScan = _consoleInOut.Read();
             var results = _logic.GetResults(urlToScan);
-            var isSitemapWasFound = results.Any(link => link.IsSitemap == true);
+            var isSitemapWasFound = results.Any(link => link.IsSitemap);
 
             if (isSitemapWasFound)
             {
@@ -33,7 +33,7 @@ namespace TestURLS.ConsoleApp
             }
 
             var getTime = _logic.GetUrlsWithTimeResponse(results);
-            _outputToConsole.WriteLinksWithTime(getTime.ToList());
+            _outputToConsole.WriteLinksWithTime(getTime);
 
             _outputToConsole.WriteCountLinks(results);
 

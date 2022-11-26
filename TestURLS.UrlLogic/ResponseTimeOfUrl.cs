@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic
 {
-    public class TimeTracker: ITimeTracker
+    public class ResponseTimeOfUrl
     {
-        public IEnumerable<UrlModelWithResponse> GetLinksWithTime(List<UrlModel> linksToGetTime)
+        public virtual IEnumerable<UrlModelWithResponse> GetLinksWithTime(IEnumerable<UrlModel> linksToGetTime)
         {
             List<UrlModelWithResponse> urlWithTime = new List<UrlModelWithResponse>();
 

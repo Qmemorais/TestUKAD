@@ -5,12 +5,12 @@ using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicScanBySitemap: ILogicScanBySitemap
+    public class LogicToGetLinksFromSitemap: ILogicToGetLinksFromSitemap
     {
-        private readonly IHttpLogic _getResponse;
-        private readonly IUrlSettings _settingsOfUrl;
+        private readonly HttpLogic _getResponse;
+        private readonly ChangesAboveLink _settingsOfUrl;
 
-        public LogicScanBySitemap(IHttpLogic getResponse, IUrlSettings settingsOfUrl)
+        public LogicToGetLinksFromSitemap(HttpLogic getResponse, ChangesAboveLink settingsOfUrl)
         {
             _getResponse = getResponse;
             _settingsOfUrl = settingsOfUrl;
@@ -21,11 +21,11 @@ namespace TestURLS.UrlLogic
             var linksFromSitemap = new List<string>();
             var domainName = _settingsOfUrl.GetDomainName(url);
             //try open page/sitemap.xml
-            var isSitemapExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
+            var getBodyFromSitemapIfExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
 
-            if (!string.IsNullOrEmpty(isSitemapExist))
+            if (!string.IsNullOrEmpty(getBodyFromSitemapIfExist))
             {
-                linksFromSitemap = ScanSitemap(domainName + "/sitemap.xml");
+                linksFromSitemap = ScanSitemap(getBodyFromSitemapIfExist);
             }
 
             return linksFromSitemap;
@@ -36,16 +36,14 @@ namespace TestURLS.UrlLogic
             //create value to get xml-document and data from
             var linksFromSitemap = new List<string>();
             var xmlDoc = new XmlDocument();
-            xmlDoc.Load(sitemapUrl);
+            xmlDoc.LoadXml(sitemapUrl);
 
             var xmlElement = xmlDoc.DocumentElement;
 
             foreach (XmlNode xmlNode in xmlElement)
             {
-
                 foreach (XmlNode childnode in xmlNode.ChildNodes)
                 {
-
                     if (childnode.Name == "loc")
                     {
                         linksFromSitemap.Add(childnode.InnerText);

@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class UrlSettings : IUrlSettings
+    public class ChangesAboveLink
     {
-        public string GetDomainName(string url)
+        public virtual string GetDomainName(string url)
         {
             var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
             var getPartAfterHttp = url.Split("://").LastOrDefault();
@@ -22,7 +21,7 @@ namespace TestURLS.UrlLogic
             return url;
         }
 
-        public string GetValidUrl(string url, string domainName)
+        public virtual string GetValidUrl(string url, string domainName)
         {
             if (!url.Contains("http"))
             {
@@ -43,7 +42,7 @@ namespace TestURLS.UrlLogic
             return url;
         }
 
-        public string GetUrlLikeFromWeb(string url, string domainName)
+        public virtual string GetUrlLikeFromWeb(string url, string domainName)
         {
             if (url.Contains(domainName))
             {
@@ -58,16 +57,17 @@ namespace TestURLS.UrlLogic
 
         private string GetUrlFromSitemapToWeb(string url, string domainName)
         {
-            var getIndexOfFirstDotFromWeb = domainName.IndexOf(".");
-            var getIndexOfFirstDotFromSitemap = url.IndexOf(".");
+            var indexOfFirstDotFromWeb = domainName.IndexOf(".");
+            var indexOfFirstDotFromSitemap = url.IndexOf(".");
 
-            if (getIndexOfFirstDotFromWeb != getIndexOfFirstDotFromSitemap)
+            if (indexOfFirstDotFromWeb != indexOfFirstDotFromSitemap)
             {
-                url = url.Substring(getIndexOfFirstDotFromSitemap);
+                url = url.Substring(indexOfFirstDotFromSitemap);
                 var indexOfSlash = url.IndexOf("/");
                 url = url.Substring(indexOfSlash);
                 url = domainName + url;
             }
+
             return url;
         }
     }

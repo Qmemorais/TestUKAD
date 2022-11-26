@@ -1,15 +1,14 @@
 ﻿using System.IO;
 using System.Net;
 using System.Text;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class HttpLogic: IHttpLogic
+    public class HttpLogic
     {
-        public string GetBodyFromUrl(string url)
+        public virtual string GetBodyFromUrl(string url)
         {
-            string bodyTxt;
+            var bodyTxt = string.Empty;
 
             try
             {
@@ -24,7 +23,7 @@ namespace TestURLS.UrlLogic
             }
             catch (WebException)
             {
-                throw;
+
             }
 
             return bodyTxt;

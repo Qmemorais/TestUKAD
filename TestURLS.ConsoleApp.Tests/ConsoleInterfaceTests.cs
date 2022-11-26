@@ -23,8 +23,8 @@ namespace TestURLS.ConsoleApp.Tests
             _mainLogic = new Mock<IMainLogic>();
             _outputToConsole = new Mock<IOutputToConsole>();
             _consoleInterface = new LogicToConsole(
-                _consoleInOut.Object, 
-                _mainLogic.Object, 
+                _consoleInOut.Object,
+                _mainLogic.Object,
                 _outputToConsole.Object);
         }
 
@@ -42,7 +42,8 @@ namespace TestURLS.ConsoleApp.Tests
                 .Setup(x => x.GetResults(""))
                 .Throws(new WebException(writeLineRes));
             //assert
-            Assert.Throws<WebException>(() => _consoleInterface.Start()).Message.Equals(writeLineRes);
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
@@ -83,7 +84,7 @@ namespace TestURLS.ConsoleApp.Tests
         public void Start_InputCorrectUrl_ReturnCorectCountWriteLine()
         {
             //arrange
-            var fakeURL = "https://example.com/";
+            var fakeUrl = "https://example.com/";
             var expectedUrl = new List<UrlModel>()
             {
                 new UrlModel{Link ="https://test.crawler.com/Info",IsWeb=true},
@@ -97,9 +98,9 @@ namespace TestURLS.ConsoleApp.Tests
 
             _consoleInOut
                 .Setup(x => x.Read())
-                .Returns(fakeURL);
+                .Returns(fakeUrl);
             _mainLogic
-                .Setup(x => x.GetResults(fakeURL))
+                .Setup(x => x.GetResults(fakeUrl))
                 .Returns(expectedUrl);
             _mainLogic
                 .Setup(x => x.GetUrlsWithTimeResponse(expectedUrl))
