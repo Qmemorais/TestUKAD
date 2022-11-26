@@ -20,13 +20,13 @@ namespace TestUrl.MvcApp.Controllers
         public IActionResult GetTests(int page = 1)
         {
             var totalItems = _testResultService.GetTotalCount();
-            var pageInfo = new PageInfo()
+            var pageInfo = new PageInfo
             {
                 PageNumber = page,
                 TotalItems = totalItems
             };
             var linksOnPage = _testResultService.GetTestedPageLinks(page, pageInfo.PageSize);
-            var pageView = new PageView()
+            var pageView = new PageView
             {
                 PageInfo = pageInfo,
                 TestedLinks = linksOnPage
