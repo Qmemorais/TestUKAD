@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestUrls.BusinessLayer\TestUrls.BusinessLogic.csproj" />
+    <ProjectReference Include="..\TestUrls.BusinessLayer\TestUrls.TestResultLogic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

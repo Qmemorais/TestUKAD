@@ -1,0 +1,44 @@
+﻿@using TestUrl.MvcApp.Models
+@using TestUrl.MvcApp.Helpers
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model PageView
+
+<form method="post" action="~/Test">
+    <label>Enter Link :</label>
+    <input type="text" name="link"/>
+    <input type="submit" value="Test" />
+</form>
+
+<p>Test Results</p>
+
+<table class="table table-bordered countLines">
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Link</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var link in Model.TestedLinks)
+        {
+            <tr>
+                <td></td>
+                <td>@link.Link</td>
+                <td>@link.CreateAt.ToShortDateString()</td>
+                <td><a href="~/Test/@link.Id">View Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p></p>
+
+<div class="btn-group">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("GetTests",new { page = x}))
+</div>

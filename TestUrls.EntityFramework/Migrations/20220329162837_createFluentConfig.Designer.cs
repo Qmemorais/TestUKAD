@@ -9,7 +9,7 @@ using TestUrls.EntityFramework;
 
 namespace TestUrls.EntityFramework.Migrations
 {
-    [DbContext(typeof(UrlContext))]
+    [DbContext(typeof(TestUrlsDbContext))]
     [Migration("20220329162837_createFluentConfig")]
     partial class createFluentConfig
     {

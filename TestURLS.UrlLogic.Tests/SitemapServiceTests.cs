@@ -7,19 +7,19 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class SitemapServiceTests
     {
-        private SitemapService _logicSitemap;
-        private Mock<StringService> _urlSettings;
-        private Mock<HttpService> _getHttp;
+        private SitemapService _sitemapService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<StringService>();
-            _getHttp = new Mock<HttpService>();
+            _stringService = new Mock<StringService>();
+            _httpService = new Mock<HttpService>();
 
-            _logicSitemap = new SitemapService(
-                _getHttp.Object,
-                _urlSettings.Object);
+            _sitemapService = new SitemapService(
+                _httpService.Object,
+                _stringService.Object);
         }
 
         [Test]
@@ -30,14 +30,14 @@ namespace TestURLS.UrlLogic.Tests
             var domainName = "test.crawler";
             var expectedLinks = new List<string>();
 
-            _getHttp
+            _httpService
                 .Setup(getBody => getBody.GetBodyFromUrl(invalidUrl))
                 .Returns(string.Empty);
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(invalidUrl))
                 .Returns(domainName);
             //
-            var actualResults = _logicSitemap.GetLinksFromSitemapIfExist(invalidUrl);
+            var actualResults = _sitemapService.GetLinksFromSitemapIfExist(invalidUrl);
             //assert
             Assert.AreEqual(expectedLinks, actualResults);
             Assert.AreEqual(expectedLinks.Count, actualResults.Count());
@@ -61,14 +61,14 @@ namespace TestURLS.UrlLogic.Tests
                     </url>
                 </urlset>";
 
-            _getHttp
+            _httpService
                 .Setup(getBody => getBody.GetBodyFromUrl(validUrl))
                 .Returns(fakeXml);
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(validUrl))
                 .Returns(domainName);
             //
-            var actualResults = _logicSitemap.GetLinksFromSitemapIfExist(validUrl);
+            var actualResults = _sitemapService.GetLinksFromSitemapIfExist(validUrl);
             //assert
             Assert.AreEqual(expectedLinks, actualResults);
             Assert.AreEqual(expectedLinks.Count, actualResults.Count());

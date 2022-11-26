@@ -8,7 +8,7 @@ using TestUrls.EntityFramework;
 
 namespace TestUrls.EntityFramework.Migrations
 {
-    [DbContext(typeof(UrlContext))]
+    [DbContext(typeof(TestUrlsDbContext))]
     partial class UrlContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace TestUrls.EntityFramework.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.SiteTestEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.Test", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,10 +36,10 @@ namespace TestUrls.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InfoEntities");
+                    b.ToTable("Test");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlWithResponse", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.TestResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace TestUrls.EntityFramework.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TestEntityId")
+                    b.Property<int>("TestId")
                         .HasColumnType("int");
 
                     b.Property<int>("TimeOfResponse")
@@ -63,23 +63,23 @@ namespace TestUrls.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestEntityId");
+                    b.HasIndex("TestId");
 
-                    b.ToTable("UrlWithResponseEntities");
+                    b.ToTable("TestResult");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlWithResponse", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.TestResult", b =>
                 {
-                    b.HasOne("TestUrls.EntityFramework.Entities.SiteTestEntity", "TestEntity")
+                    b.HasOne("TestUrls.EntityFramework.Entities.Test", "Test")
                         .WithMany("UrlWithResponseEntities")
-                        .HasForeignKey("TestEntityId")
+                        .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TestEntity");
+                    b.Navigation("Test");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.SiteTestEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.Test", b =>
                 {
                     b.Navigation("UrlWithResponseEntities");
                 });

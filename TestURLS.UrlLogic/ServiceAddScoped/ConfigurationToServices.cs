@@ -9,7 +9,7 @@ namespace TestURLS.UrlLogic.ServiceAddScoped
             services.AddScoped<HttpService>()
                     .AddScoped<WebService>()
                     .AddScoped<SitemapService>()
-                    .AddScoped<MainService>()
+                    .AddScoped<CrawlerService>()
                     .AddScoped<ResponseService>()
                     .AddScoped<StringService>();
         }

@@ -8,27 +8,27 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class MainServiceTests
     {
-        private MainService _mainLogic;
+        private CrawlerService _crawlerService;
         private Mock<WebService> _webService;
         private Mock<SitemapService> _sitemapService;
         private Mock<StringService> _stringService;
         private Mock<HttpService> _httpService;
-        private Mock<ResponseService> _responseServer;
+        private Mock<ResponseService> _responseService;
 
         [SetUp]
         public void Setup()
         {
             _stringService = new Mock<StringService>();
             _httpService = new Mock<HttpService>();
-            _responseServer = new Mock<ResponseService>();
+            _responseService = new Mock<ResponseService>();
             _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
             _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
 
-            _mainLogic = new MainService(
+            _crawlerService = new CrawlerService(
                 _webService.Object,
                 _sitemapService.Object,
                 _stringService.Object,
-                _responseServer.Object);
+                _responseService.Object);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace TestURLS.UrlLogic.Tests
                 .Setup(getDomain => getDomain.GetDomainName(fakeUrl))
                 .Returns(domainName);
             //act
-            var result = _mainLogic.GetResults(fakeUrl);
+            var result = _crawlerService.GetResults(fakeUrl);
             //assert
             Assert.AreEqual(expectedLinks.Count, result.Count());
             Assert.AreEqual(expectedLinks.FirstOrDefault().IsSitemap, result.FirstOrDefault().IsSitemap);
@@ -94,7 +94,7 @@ namespace TestURLS.UrlLogic.Tests
                 .Setup(getValid => getValid.GetUrlLikeFromWeb(linksFromSitemap.FirstOrDefault(), domainName))
                 .Returns(linksFromSitemap.FirstOrDefault());
             //act
-            var result = _mainLogic.GetResults(fakeUrl);
+            var result = _crawlerService.GetResults(fakeUrl);
             //assert
             Assert.AreEqual(linksFromWebWithSitemap.Count, result.Count());
         }
@@ -112,11 +112,11 @@ namespace TestURLS.UrlLogic.Tests
                 new UrlModelWithResponse{Link="https://test.crawler.com/Info", TimeOfResponse=14  }
             };
 
-            _responseServer
+            _responseService
                 .Setup(getTime => getTime.GetLinksWithTime(modelToGetTime))
                 .Returns(modelWithTime);
             //
-            var results = _mainLogic.GetUrlsWithTimeResponse(modelToGetTime);
+            var results = _crawlerService.GetUrlsWithTimeResponse(modelToGetTime);
             //assert
             Assert.AreEqual(modelWithTime, results);
         }

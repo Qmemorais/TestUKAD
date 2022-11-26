@@ -9,7 +9,7 @@ using TestUrls.EntityFramework;
 
 namespace TestUrls.EntityFramework.Migrations
 {
-    [DbContext(typeof(UrlContext))]
+    [DbContext(typeof(TestUrlsDbContext))]
     [Migration("20220328142345_InitDb")]
     partial class InitDb
     {

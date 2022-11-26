@@ -4,12 +4,12 @@ namespace TestURLS.UrlLogic.Tests
 {
     public class StringServiceTests
     {
-        private StringService _urlSettings;
+        private StringService _stringService;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new StringService();
+            _stringService = new StringService();
         }
 
         [Test]
@@ -17,7 +17,7 @@ namespace TestURLS.UrlLogic.Tests
         {
             var url = "https://test.crawler.com";
             //act
-            var results = _urlSettings.GetDomainName(url);
+            var results = _stringService.GetDomainName(url);
             //assert
             Assert.AreEqual(url, results);
         }
@@ -29,7 +29,7 @@ namespace TestURLS.UrlLogic.Tests
             var url = "https://test.crawler.com/Info/";
             var expectedRsult = "https://test.crawler.com";
             //
-            var results = _urlSettings.GetDomainName(url);
+            var results = _stringService.GetDomainName(url);
             //assert
             Assert.AreEqual(expectedRsult, results);
         }
@@ -41,7 +41,7 @@ namespace TestURLS.UrlLogic.Tests
             var url = "https://test.crawler.com/Info/";
             var domainName = "https://test.crawler.com";
             //
-            var result = _urlSettings.GetValidUrl(url, domainName);
+            var result = _stringService.GetValidUrl(url, domainName);
             //assert
             Assert.AreEqual(url, result);
         }
@@ -54,7 +54,7 @@ namespace TestURLS.UrlLogic.Tests
             var domainName = "https://test.crawler.com";
             var expectedResult = "https://test.crawler.com/Info/";
             //
-            var result = _urlSettings.GetValidUrl(url, domainName);
+            var result = _stringService.GetValidUrl(url, domainName);
             //assert
             Assert.AreEqual(expectedResult, result);
         }
@@ -67,7 +67,7 @@ namespace TestURLS.UrlLogic.Tests
             var domainName = "https://test.crawler.com";
             var expectedResult = "https://test.crawler.com/Info/";
             //
-            var result = _urlSettings.GetUrlLikeFromWeb(url, domainName);
+            var result = _stringService.GetUrlLikeFromWeb(url, domainName);
             //assert
             Assert.AreEqual(expectedResult, result);
         }
@@ -79,7 +79,7 @@ namespace TestURLS.UrlLogic.Tests
             var url = "https://test.crawler.com/Info/";
             var domainName = "https://test.crawler.com";
             //
-            var result = _urlSettings.GetUrlLikeFromWeb(url, domainName);
+            var result = _stringService.GetUrlLikeFromWeb(url, domainName);
             //assert
             Assert.AreEqual(url, result);
         }

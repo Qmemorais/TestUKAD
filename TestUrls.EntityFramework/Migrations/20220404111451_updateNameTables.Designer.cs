@@ -10,8 +10,8 @@ using TestUrls.EntityFramework;
 namespace TestUrls.EntityFramework.Migrations
 {
     [DbContext(typeof(TestUrlsDbContext))]
-    [Migration("20220328153921_updateGeneralEntity")]
-    partial class updateGeneralEntity
+    [Migration("20220404111451_updateNameTables")]
+    partial class updateNameTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace TestUrls.EntityFramework.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.GeneralInfoEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.Test", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,18 +38,15 @@ namespace TestUrls.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InfoEntities");
+                    b.ToTable("Test");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.TestResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("InfoEntityId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsSitemap")
                         .HasColumnType("bit");
@@ -60,63 +57,33 @@ namespace TestUrls.EntityFramework.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("InfoEntityId");
-
-                    b.ToTable("UrlEntities");
-                });
-
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlResponseEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("InfoEntityId")
+                    b.Property<int>("TestId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Link")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TimeOfResponse")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InfoEntityId");
+                    b.HasIndex("TestId");
 
-                    b.ToTable("UrlResponseEntities");
+                    b.ToTable("TestResult");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.TestResult", b =>
                 {
-                    b.HasOne("TestUrls.EntityFramework.Entities.GeneralInfoEntity", "InfoEntity")
-                        .WithMany("UrlEntities")
-                        .HasForeignKey("InfoEntityId")
+                    b.HasOne("TestUrls.EntityFramework.Entities.Test", "Test")
+                        .WithMany("UrlWithResponseEntities")
+                        .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InfoEntity");
+                    b.Navigation("Test");
                 });
 
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.UrlResponseEntity", b =>
+            modelBuilder.Entity("TestUrls.EntityFramework.Entities.Test", b =>
                 {
-                    b.HasOne("TestUrls.EntityFramework.Entities.GeneralInfoEntity", "InfoEntity")
-                        .WithMany("UrlResponseEntities")
-                        .HasForeignKey("InfoEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InfoEntity");
-                });
-
-            modelBuilder.Entity("TestUrls.EntityFramework.Entities.GeneralInfoEntity", b =>
-                {
-                    b.Navigation("UrlEntities");
-
-                    b.Navigation("UrlResponseEntities");
+                    b.Navigation("UrlWithResponseEntities");
                 });
 #pragma warning restore 612, 618
         }

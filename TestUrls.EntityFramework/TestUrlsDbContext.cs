@@ -6,14 +6,14 @@ using TestUrls.EntityFramework.Entities;
 
 namespace TestUrls.EntityFramework
 {
-    public class UrlContext : DbContext, IEfRepositoryDbContext
+    public class TestUrlsDbContext : DbContext, IEfRepositoryDbContext
     {
-        public DbSet<SiteTestEntity> InfoEntities { get; set; }
-        public DbSet<UrlWithResponse> UrlWithResponseEntities { get; set; }
+        public DbSet<Test> Test { get; set; }
+        public DbSet<TestResult> TestResult { get; set; }
 
-        public UrlContext() { }
+        public TestUrlsDbContext() { }
 
-        public UrlContext(DbContextOptions<UrlContext> options)
+        public TestUrlsDbContext(DbContextOptions<TestUrlsDbContext> options)
             : base(options)
         {
         }

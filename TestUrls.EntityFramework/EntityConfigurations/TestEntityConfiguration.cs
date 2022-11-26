@@ -4,9 +4,9 @@ using TestUrls.EntityFramework.Entities;
 
 namespace TestUrls.EntityFramework.EntityConfigurations
 {
-    public class SiteTestEntityConfiguration : IEntityTypeConfiguration<SiteTestEntity>
+    public class TestEntityConfiguration : IEntityTypeConfiguration<Test>
     {
-        public void Configure(EntityTypeBuilder<SiteTestEntity> builder)
+        public void Configure(EntityTypeBuilder<Test> builder)
         {
             builder
                 .HasKey(info => info.Id);

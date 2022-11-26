@@ -24,6 +24,10 @@
 /TestUrls.BusinessLayer/obj/
 /TestUrls.BusinessLayer/bin/
 
+/TestUrl.MvcApp/.vs/
+/TestUrl.MvcApp/obj/
+/TestUrl.MvcApp/bin/
+
 /Models/bin/
 /Models/obj/
 
