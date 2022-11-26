@@ -1,30 +1,48 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using Moq;
 using NUnit.Framework;
-using TestURLS.ConsoleApp.Interfaces;
-using TestURLS.UrlLogic.Interfaces;
+using TestUrls.BusinessLogic;
+using TestUrls.EntityFramework.Entities;
+using TestURLS.UrlLogic;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.ConsoleApp.Tests
 {
     public class LogicToConsoleTests
     {
-        private Mock<IConsoleInOut> _consoleInOut;
-        private Mock<IMainLogic> _mainLogic;
-        private Mock<IOutputToConsole> _outputToConsole;
+        private Mock<ConsoleInOut> _consoleInOut;
+        private Mock<MainService> _mainLogic;
+        private Mock<WebService> _webService;
+        private Mock<SitemapService> _sitemapService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
+        private Mock<ResponseService> _responseService;
+        private Mock<IRepository<SiteTestEntity>> _testEntities;
+        private Mock<OutputToConsole> _outputToConsole;
         private LogicToConsole _consoleInterface;
+        private Mock<BusinessService> _businessService;
         private readonly string _writeLineOutput = "Press <Enter>";
 
         [SetUp]
         public void Setup()
         {
-            _consoleInOut = new Mock<IConsoleInOut>();
-            _mainLogic = new Mock<IMainLogic>();
-            _outputToConsole = new Mock<IOutputToConsole>();
+            _consoleInOut = new Mock<ConsoleInOut>();
+            _httpService = new Mock<HttpService>();
+            _testEntities = new Mock<IRepository<SiteTestEntity>>();
+            _stringService = new Mock<StringService>();
+            _responseService = new Mock<ResponseService>();
+            _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
+            _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
+
+            _mainLogic = new Mock<MainService>(_webService.Object,_sitemapService.Object,_stringService.Object,
+                _responseService.Object);
+            _businessService = new Mock<BusinessService>(_mainLogic.Object, _testEntities.Object);
+            _outputToConsole = new Mock<OutputToConsole>(_consoleInOut.Object);
             _consoleInterface = new LogicToConsole(
                 _consoleInOut.Object,
-                _mainLogic.Object,
+                _businessService.Object,
                 _outputToConsole.Object);
         }
 
@@ -38,11 +56,12 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(""))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(""))
                 .Throws(new WebException(writeLineRes));
             //assert
             WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
             Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
@@ -56,11 +75,13 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(readLine))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
-            Assert.Throws<WebException>(() => _consoleInterface.Start()).Message.Equals(writeLineRes);
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
@@ -73,11 +94,13 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(readLine);
-            _mainLogic
-                .Setup(x => x.GetResults(readLine))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(readLine))
                 .Throws(new WebException(writeLineRes));
             //assert
-            Assert.Throws<WebException>(() => _consoleInterface.Start()).Message.Equals(writeLineRes);
+            WebException ex = Assert.Throws<WebException>(() => _consoleInterface.Start());
+            Assert.NotNull(ex);
+            Assert.That(ex.Message, Is.EqualTo(writeLineRes));
         }
 
         [Test]
@@ -99,11 +122,11 @@ namespace TestURLS.ConsoleApp.Tests
             _consoleInOut
                 .Setup(x => x.Read())
                 .Returns(fakeUrl);
-            _mainLogic
-                .Setup(x => x.GetResults(fakeUrl))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawler(fakeUrl))
                 .Returns(expectedUrl);
-            _mainLogic
-                .Setup(x => x.GetUrlsWithTimeResponse(expectedUrl))
+            _businessService
+                .Setup(x => x.GetLinksFromCrawlerWithResponse(expectedUrl))
                 .Returns(expectedUrlWithTime);
             //act
             _consoleInterface.Start();

@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using TestURLS.UrlLogic.Interfaces;
 
 namespace TestURLS.UrlLogic
 {
-    public class LogicToGetLinksFromSitemap: ILogicToGetLinksFromSitemap
+    public class SitemapService
     {
-        private readonly HttpLogic _getResponse;
-        private readonly ChangesAboveLink _settingsOfUrl;
+        private readonly HttpService _httpService;
+        private readonly StringService _stringService;
 
-        public LogicToGetLinksFromSitemap(HttpLogic getResponse, ChangesAboveLink settingsOfUrl)
+        public SitemapService(HttpService httpService, StringService stringService)
         {
-            _getResponse = getResponse;
-            _settingsOfUrl = settingsOfUrl;
+            _httpService = httpService;
+            _stringService = stringService;
         }
 
-        public IEnumerable<string> GetLinksFromSitemapIfExist(string url)
+        public virtual IEnumerable<string> GetLinksFromSitemapIfExist(string url)
         {
             var linksFromSitemap = new List<string>();
-            var domainName = _settingsOfUrl.GetDomainName(url);
+            var domainName = _stringService.GetDomainName(url);
             //try open page/sitemap.xml
-            var getBodyFromSitemapIfExist = _getResponse.GetBodyFromUrl(domainName + "/sitemap.xml");
+            var getBodyFromSitemapIfExist = _httpService.GetBodyFromUrl(domainName + "/sitemap.xml");
 
             if (!string.IsNullOrEmpty(getBodyFromSitemapIfExist))
             {

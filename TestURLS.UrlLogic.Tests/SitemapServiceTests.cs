@@ -5,19 +5,19 @@ using NUnit.Framework;
 
 namespace TestURLS.UrlLogic.Tests
 {
-    public class LogicScanBySitemapTests
+    public class SitemapServiceTests
     {
-        private LogicToGetLinksFromSitemap _logicSitemap;
-        private Mock<ChangesAboveLink> _urlSettings;
-        private Mock<HttpLogic> _getHttp;
+        private SitemapService _logicSitemap;
+        private Mock<StringService> _urlSettings;
+        private Mock<HttpService> _getHttp;
 
         [SetUp]
         public void Setup()
         {
-            _urlSettings = new Mock<ChangesAboveLink>();
-            _getHttp = new Mock<HttpLogic>();
+            _urlSettings = new Mock<StringService>();
+            _getHttp = new Mock<HttpService>();
 
-            _logicSitemap = new LogicToGetLinksFromSitemap(
+            _logicSitemap = new SitemapService(
                 _getHttp.Object,
                 _urlSettings.Object);
         }
@@ -26,8 +26,8 @@ namespace TestURLS.UrlLogic.Tests
         public void GetLinksFromSitemap_InvalidUrl_EmptyList()
         {
             //arrange
-            var invalidUrl = "hahahah";
-            var domainName = "hahahah";
+            var invalidUrl = "test.crawler";
+            var domainName = "test.crawler";
             var expectedLinks = new List<string>();
 
             _getHttp

@@ -2,7 +2,7 @@
 
 namespace TestURLS.UrlLogic
 {
-    public class ChangesAboveLink
+    public class StringService
     {
         public virtual string GetDomainName(string url)
         {

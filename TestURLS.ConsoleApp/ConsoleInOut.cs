@@ -1,16 +1,15 @@
 ﻿using System;
-using TestURLS.ConsoleApp.Interfaces;
 
 namespace TestURLS.ConsoleApp
 {
-    class ConsoleInOut:IConsoleInOut
+    public class ConsoleInOut
     {
-        public void Write(string s)
+        public virtual void Write(string line)
         {
-            Console.WriteLine(s);
+            Console.WriteLine(line);
         }
 
-        public string Read()
+        public virtual string Read()
         {
             return Console.ReadLine();
         }

@@ -2,32 +2,33 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using TestURLS.UrlLogic.Interfaces;
 using TestURLS.UrlLogic.Models;
 
 namespace TestURLS.UrlLogic.Tests
 {
-    public class MainLogicTests
+    public class MainServiceTests
     {
-        private MainLogic _mainLogic;
-        private Mock<ILogicToGetLinksFromScanWeb> _scanByHtml;
-        private Mock<ILogicToGetLinksFromSitemap> _scanBySitemap;
-        private Mock<ChangesAboveLink> _urlSettings;
-        private Mock<ResponseTimeOfUrl> _timeTracker;
+        private MainService _mainLogic;
+        private Mock<WebService> _webService;
+        private Mock<SitemapService> _sitemapService;
+        private Mock<StringService> _stringService;
+        private Mock<HttpService> _httpService;
+        private Mock<ResponseService> _responseServer;
 
         [SetUp]
         public void Setup()
         {
-            _scanByHtml = new Mock<ILogicToGetLinksFromScanWeb>();
-            _scanBySitemap = new Mock<ILogicToGetLinksFromSitemap>();
-            _urlSettings = new Mock<ChangesAboveLink>();
-            _timeTracker = new Mock<ResponseTimeOfUrl>();
+            _stringService = new Mock<StringService>();
+            _httpService = new Mock<HttpService>();
+            _responseServer = new Mock<ResponseService>();
+            _webService = new Mock<WebService>(_stringService.Object, _httpService.Object);
+            _sitemapService = new Mock<SitemapService>(_httpService.Object, _stringService.Object);
 
-            _mainLogic = new MainLogic(
-                _scanByHtml.Object,
-                _scanBySitemap.Object,
-                _urlSettings.Object,
-                _timeTracker.Object);
+            _mainLogic = new MainService(
+                _webService.Object,
+                _sitemapService.Object,
+                _stringService.Object,
+                _responseServer.Object);
         }
 
         [Test]
@@ -45,13 +46,13 @@ namespace TestURLS.UrlLogic.Tests
                 new UrlModel{Link = "https://test.crawler.com/Info", IsWeb=true}
             };
 
-            _scanByHtml
+            _webService
                 .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
                 .Returns(linkFromScanPage);
-            _scanBySitemap
+            _sitemapService
                 .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
                 .Returns(new List<string>());
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(fakeUrl))
                 .Returns(domainName);
             //act
@@ -80,16 +81,16 @@ namespace TestURLS.UrlLogic.Tests
                 new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
             };
 
-            _scanByHtml
+            _webService
                 .Setup(getLinks => getLinks.GetUrlsFromScanPages(fakeUrl))
                 .Returns(linksFromWeb);
-            _scanBySitemap
+            _sitemapService
                 .Setup(getLinks => getLinks.GetLinksFromSitemapIfExist(fakeUrl))
                 .Returns(linksFromSitemap);
-            _urlSettings
+            _stringService
                 .Setup(getDomain => getDomain.GetDomainName(linksFromWeb.FirstOrDefault()))
                 .Returns(domainName);
-            _urlSettings
+            _stringService
                 .Setup(getValid => getValid.GetUrlLikeFromWeb(linksFromSitemap.FirstOrDefault(), domainName))
                 .Returns(linksFromSitemap.FirstOrDefault());
             //act
@@ -101,7 +102,7 @@ namespace TestURLS.UrlLogic.Tests
         [Test]
         public void GetUrlsWithTimeResponse_NotNullList_NewListWithResponse()
         {
-            //assert
+            //arrange
             var modelToGetTime = new List<UrlModel>()
             {
                 new UrlModel{Link="https://test.crawler.com/Info", IsSitemap=true, IsWeb=true }
@@ -111,14 +112,13 @@ namespace TestURLS.UrlLogic.Tests
                 new UrlModelWithResponse{Link="https://test.crawler.com/Info", TimeOfResponse=14  }
             };
 
-            _timeTracker
+            _responseServer
                 .Setup(getTime => getTime.GetLinksWithTime(modelToGetTime))
                 .Returns(modelWithTime);
             //
             var results = _mainLogic.GetUrlsWithTimeResponse(modelToGetTime);
-            //
+            //assert
             Assert.AreEqual(modelWithTime, results);
-
         }
     }
 }
