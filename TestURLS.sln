@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrls.TestResultLogic", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.MvcApp", "TestUrl.MvcApp\TestUrl.MvcApp.csproj", "{D9EF028A-1685-47DD-BED5-3F73E0CD1EDF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUrl.WebApi", "TestUrl.WebApi\TestUrl.WebApi.csproj", "{DBCABE70-000B-4127-BF24-D4D79D54C234}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "testurl.vueapi", "TestUrl.VueApi\testurl.vueapi.esproj", "{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,16 @@ Global
 		{D9EF028A-1685-47DD-BED5-3F73E0CD1EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9EF028A-1685-47DD-BED5-3F73E0CD1EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9EF028A-1685-47DD-BED5-3F73E0CD1EDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBCABE70-000B-4127-BF24-D4D79D54C234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B94BBA2E-29C5-4627-9F1F-01FAD8A76FBD}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

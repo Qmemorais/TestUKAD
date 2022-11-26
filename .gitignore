@@ -28,7 +28,16 @@
 /TestUrl.MvcApp/obj/
 /TestUrl.MvcApp/bin/
 
+/TestUrl.WebApi/.vs/
+/TestUrl.WebApi/obj/
+/TestUrl.WebApi/bin/
+
 /Models/bin/
 /Models/obj/
 
+/TestUrl.VueApi/.vs/
+
 .vs/
+TestUrl.MvcApp/appsettings.json
+TestUrl.WebApi/appsettings.json
+TestURLS.ConsoleApp/appsettings.json
