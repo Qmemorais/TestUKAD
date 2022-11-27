@@ -8,14 +8,14 @@ namespace TestURLS.UrlLogic
         {
             var getHttpPartFromUrl = url.Split("://").FirstOrDefault();
             var getPartAfterHttp = url.Split("://").LastOrDefault();
-            var countToSubstringToGetMainUrl = getPartAfterHttp.IndexOf("/");
+            var countToSubstringToGetMainURL = getPartAfterHttp.IndexOf("/");
 
-            if (countToSubstringToGetMainUrl != -1)
+            if (countToSubstringToGetMainURL != -1)
             {
-                countToSubstringToGetMainUrl+= getHttpPartFromUrl.Length
+                countToSubstringToGetMainURL+= getHttpPartFromUrl.Length
                 + "://".Length;
                 var indexToStartSubstringUrl = url.IndexOf(url.FirstOrDefault());
-                url = url.Substring(indexToStartSubstringUrl, countToSubstringToGetMainUrl);
+                url = url.Substring(indexToStartSubstringUrl, countToSubstringToGetMainURL);
             }
 
             return url;
