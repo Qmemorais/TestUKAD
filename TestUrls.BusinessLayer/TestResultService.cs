@@ -82,7 +82,7 @@ namespace TestUrls.TestResultLogic
 
         public virtual int TestLink(string link)
         {
-            var testedLinks = GetLinksFromCrawler(link).ToList();
+            var testedLinks = GetLinksFromCrawler(link);
             var testedLinkWithResponse = GetLinksFromCrawlerWithResponse(testedLinks);
 
             var idTestResult = SaveToDatabase(link, testedLinks, testedLinkWithResponse);

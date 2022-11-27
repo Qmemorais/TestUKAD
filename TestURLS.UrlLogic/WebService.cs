@@ -47,8 +47,14 @@ namespace TestURLS.UrlLogic
 
         private IEnumerable<string> GetScannedUrls(string url, string domainName)
         {
-            var linksToScan = new List<string> { url };
-            var linksScannedByPages = new List<string> { url };
+            var linksToScan = new List<string>() 
+            { 
+                url 
+            };
+            var linksScannedByPages = new List<string>()
+            {
+                url
+            };
 
             while (linksToScan.Any())
             {
@@ -76,7 +82,7 @@ namespace TestURLS.UrlLogic
         {
             var matches = new List<string>();
 
-            foreach (var link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
+            foreach (HtmlNode link in htmlDoc.DocumentNode.SelectNodes("//a[@href]"))
             {
                 var attributeHref = link.Attributes["href"];
                 attributeHref.Value = _stringService.GetValidUrl(attributeHref.Value, domainName);
